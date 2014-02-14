@@ -144,7 +144,7 @@
 									 />
 							</s:HGroup>
 							<s:Spacer width="10"/>
-							<s:CheckBox id="termsCheck" label=""
+							<s:CheckBox id="termsCheck" label="" selected="true"
 										color="#000000" skinClass="skins.vodafoneCheckBox" width="36"/>
 							
 							

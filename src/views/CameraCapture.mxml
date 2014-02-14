@@ -26,7 +26,7 @@
 			import uk.soulwire.utils.display.Alignment;
 			import uk.soulwire.utils.display.DisplayUtils;
 			
-			import utils.JPGEncoder;
+			import ru.inspirit.image.encoder.JPGAsyncEncoder;
 			
 			import views.components.ProgressPopUp;
 			
@@ -99,7 +99,7 @@
 			private var sizeDefined:Boolean=false;
 			private var squareDims:Rectangle=new Rectangle(0,0,0,0);
 			
-			var theJPG:JPGEncoder=new JPGEncoder(90);
+			var theJPG:JPGAsyncEncoder = new JPGAsyncEncoder(85);
 			
 
 			
@@ -299,7 +299,7 @@
 					//open file in write mode
 					fs.open(destFile,FileMode.WRITE);
 					//write bytes from the byte array
-					fs.writeBytes(theJPG.ImageData);
+					fs.writeBytes(theJPG.encodedImageData);
 					//close the file
 					fs.close();
 				}catch(e:Error){

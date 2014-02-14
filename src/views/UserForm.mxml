@@ -167,15 +167,15 @@
 					<s:FormLayout/>
 				</s:layout>
 				<s:FormItem fontWeight="normal" label="First name:" backgroundAlpha="0" >
-					<s:TextInput id="userFirstName" text=""  />
+					<s:TextInput id="userFirstName" text="ALfonso"  />
 				</s:FormItem>
 				
 				<s:FormItem label="Surname:">
-					<s:TextInput id="userLastName" text=""  />
+					<s:TextInput id="userLastName" text="Florio"  />
 				</s:FormItem>
 				
 				<s:FormItem label="Email:" styleName="emailFormLabel" >
-					<s:TextInput id="userEmail" text="" softKeyboardType="email"  />
+					<s:TextInput id="userEmail" text="lisophorm@gmail.com" softKeyboardType="email"  />
 				</s:FormItem>
 				
 				<s:FormItem label="Postcode:">
