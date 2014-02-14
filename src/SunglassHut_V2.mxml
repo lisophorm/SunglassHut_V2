@@ -14,7 +14,7 @@
 			import flash.events.TimerEvent;
 			import flash.sensors.Geolocation;
 			import flash.utils.Timer;
-			import com.demonsters.debugger.MonsterDebugger;
+			
 			import mx.managers.PopUpManager;
 			
 			import spark.transitions.CrossFadeViewTransition;
