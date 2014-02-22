@@ -81,14 +81,17 @@
 	</fx:Script>
 	
 	
-	<s:Rect id="tbFill" left="0" right="0" top="0" bottom="0" radiusX="0" >
+	<!--s:Rect id="tbFill" left="0" right="0" top="0" bottom="0" radiusX="0" >
 		<s:stroke>
 			<s:SolidColorStroke id="borderStroke" color="0x00adee" weight="4"/>
 		</s:stroke>
 		<s:fill>
 			<s:SolidColor color="#FFFFFF"/>
 		</s:fill>
-	</s:Rect>
+	</s:Rect-->
+	<s:BorderContainer width="100%" height="100%" borderColor="#ED1C24" borderWeight="4" backgroundColor="0xffffff">
+		
+	
 	<s:VGroup width="100%" height="100%" paddingBottom="20" paddingTop="20" id="theBox" paddingLeft="20" paddingRight="20">
 		<s:HGroup width="100%" height="15%" horizontalAlign="center" verticalAlign="middle" click="image1_clickHandler(event)">
 			<s:HGroup width="90%" horizontalAlign="center" click="image1_clickHandler(event)">
@@ -100,7 +103,7 @@
 						 fontWeight="normal"
 						 fontSize="38"
 						 horizontalCenter="0" verticalCenter="1" verticalAlign="middle" 
-						 color="#00ADEE"/>
+						 color="#ED1C24"/>
 			</s:HGroup>
 			<s:HGroup horizontalAlign="right">
 				<s:Image source="assets/images/closeterms.png"  />
@@ -110,6 +113,7 @@
 		
 		<controls:WebView visible="false" id="tec" width="100%" height="80%" addedToStage="ta_addedToStageHandler(event)" render="tec_renderHandler(event)" resize="tec_resizeHandler(event)" />
 	</s:VGroup>
+	</s:BorderContainer>
 	
 	<fx:Metadata>
 		[Event(name="showTerms", type="flash.events.Event")]
