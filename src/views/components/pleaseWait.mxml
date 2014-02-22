@@ -7,9 +7,9 @@
 	</fx:Declarations> 
 	<s:Rect id="tbFill" left="0" right="0" top="0" bottom="1" radiusX="30" filters="{[shadowfilter]}">
 		<s:fill>
-			<s:SolidColor color="#E28CBB"/>
+			<s:SolidColor color="#ED1C24"/>
 
 		</s:fill>
 	</s:Rect>
-	<s:Label x="81" y="124" color="#FFFFFF"  fontFamily="Ultracomp CFF" fontSize="64" text="PLEASE WAIT"/>
+	<s:Label x="81" y="124" color="#FFFFFF"  fontFamily="Font Rg CFF" fontSize="64" text="PLEASE WAIT"/>
 </s:Group>

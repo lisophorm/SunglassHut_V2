@@ -19,14 +19,13 @@
 			
 			import events.KioskError;
 			import events.KioskProgressEvent;
+			import events.UploadResultEvent;
 			import events.ViewEvent;
 			
-			
+			import ru.inspirit.image.encoder.JPGAsyncEncoder;
 			
 			import uk.soulwire.utils.display.Alignment;
 			import uk.soulwire.utils.display.DisplayUtils;
-			
-			import ru.inspirit.image.encoder.JPGAsyncEncoder;
 			
 			import views.components.ProgressPopUp;
 			
@@ -289,6 +288,10 @@
 				
 				//theUser.destFileName=theUser.urn+"-"+StringUtils.generateRandomString(4)+".jpg";
 				
+				var fileParts:Array=theUser.destFileName.split(".");
+				
+				theUser.destFileName=fileParts[0]+"["+numPhotos.value.toString()+"].jpg";
+				
 				destFile = File.documentsDirectory.resolvePath(theUser.spoolerPath+File.separator+theUser.destFileName);
 				trace("destFileName "+theUser.destFileName);
 				trace("destFile "+destFile.url);
@@ -311,7 +314,8 @@
 				
 				ftpCopy=new FTPCopy(destFile,this.parentApplication.localURL+"upload.php");
 				ftpCopy.addEventListener(IOErrorEvent.IO_ERROR,handleLocalError);
-				ftpCopy.addEventListener(Event.COMPLETE,onCompleteLocal);
+				ftpCopy.addEventListener(UploadResultEvent.SUCCESS,onCompleteLocal);
+				ftpCopy.addEventListener(UploadResultEvent.ERROR,onErrorUpload);
 				ftpCopy.start();
 				
 				
@@ -328,10 +332,16 @@
 				//this.stage.setAspectRatio(StageAspectRatio.LANDSCAPE);
 				this.stage.setOrientation(StageOrientation.DEFAULT);
 
-				uploadPhoto();
+			
 				
 			}
-			private function onCompleteLocal(e:Event=null) {
+			
+			private function onErrorUpload(e:UploadResultEvent) {
+				this.navigator.dispatchEvent(new KioskError(KioskError.MODAL, e.message, "SERVER RETURNER ERROR",complete,riprova));
+			}
+			
+			private function onCompleteLocal(e:UploadResultEvent=null) {
+				uploadPhoto();
 				trace("photo uoloded locally");
 				photoPrinted=true;
 				complete();
@@ -343,7 +353,7 @@
 				
 			}
 			private function riprova(stringa:*=null) {
-			ftpCopy.start();
+				ftpCopy.start();
 			}
 			// uploads the photo
 			protected function savePhotoLocally(e:Event=null):void {
@@ -404,6 +414,7 @@
 				var passVars:Object=new Object();
 				passVars.urn=currentURN;
 				passVars.file=theUser.destFileName;
+				passVars.extraterms=theUser.extraterms;
 				//passVars.caption = caption.text;
 				
 
@@ -487,6 +498,7 @@
 			
 			protected function removeFileListeners():void {
 				if(destFile!=null) {
+
 					if(destFile.hasEventListener(Event.COMPLETE)) {
 						trace("removing COMPLETE event");
 						destFile.removeEventListener(Event.COMPLETE,uploadCompleteHandler);
@@ -527,6 +539,14 @@
 					if(ftpCopy.hasEventListener(IOErrorEvent.NETWORK_ERROR)) {
 						removeEventListener(IOErrorEvent.NETWORK_ERROR,handleLocalError);
 					}
+					if(ftpCopy.hasEventListener(UploadResultEvent.SUCCESS)) {
+						removeEventListener(UploadResultEvent.SUCCESS,onCompleteLocal);
+					}
+					if(ftpCopy.hasEventListener(UploadResultEvent.ERROR)) {
+						removeEventListener(UploadResultEvent.ERROR,onErrorUpload);
+					}
+					
+					
 					ftpCopy=null;
 					theJPG.removeEventListener(ProgressEvent.PROGRESS, onEncodingProgress);
 					theJPG.removeEventListener(Event.COMPLETE, onEncodeComplete);
@@ -637,19 +657,24 @@
 	<s:BorderContainer width="100%" height="100%" borderVisible="false" backgroundColor="0x000000">
 		<s:BitmapImage width="100%" height="100%" scaleMode="zoom" smooth="true" smoothingQuality="high" source="{Resource.BACKGROUND}" id="backgroundImg" />
 		<s:VGroup includeIn="pleasewait" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
-			<s:BusyIndicator horizontalCenter="0" verticalCenter="0" width="100" height="100" rotationInterval="200" symbolColor="#F383C3" id="busone" />
+			<s:BusyIndicator horizontalCenter="0" verticalCenter="0" width="100" height="100" rotationInterval="200" symbolColor="#ED1C24" id="busone" />
 			<s:Label text="Processing image please wait.." color="#FFFFFF" />
 			<s:Label id="jpgprogress" text="" fontWeight="bold" color="#FFFFFF" />
 	
 		</s:VGroup>
 
 		<s:VGroup includeIn="preview" width="100%" height="100%" verticalAlign="middle" horizontalAlign="center" id="previewContainer">
-			<s:BitmapImage id="finalImage" width="100%" height="{previewContainer.height - finalButtonBar.height - 100}" scaleMode="letterbox" ready="finalImage_readyHandler(event)" smoothingQuality="high" smooth="true" />
-			<s:HGroup id="finalButtonBar">
+			<s:BitmapImage id="finalImage" width="100%" height="{previewContainer.height - copiesHolder.width - finalButtonBar.height - 30}" scaleMode="letterbox" ready="finalImage_readyHandler(event)" smoothingQuality="high" smooth="true" />
+			<s:HGroup id="copiesHolder" horizontalAlign="center" verticalAlign="middle">
+				<s:Label color="0xED1C24" fontSize="40" paddingTop="10"  text="COPIES" /><s:Spacer width="5" /><s:HSlider id="numPhotos" maximum="10" skinClass="skins.SunglassHslider" minimum="1" width="150" /><s:Spacer width="5" /><s:Label color="0xED1C24" fontSize="40" paddingTop="10" id="numLabel" text="{numPhotos.value}" />
+
+			</s:HGroup>
+			<s:HGroup id="finalButtonBar" horizontalAlign="center" verticalAlign="middle">
 				<s:Button label="TAKE AGAIN" id="shootAgainButn" click="shootAgainButn_clickHandler(event)" />
-				<s:Spacer width="100" />
+
+				<s:Spacer width="40" />
 				<s:Button label="PUBLISH" id="publishButton" click="publishButton_clickHandler(event)" />
-				
+
 				
 			</s:HGroup>
 		</s:VGroup>

@@ -20,18 +20,18 @@ s|Label  {
 .verysmallprint {
 	fontSize: 14;
 	fontFamily: "Font Rg CFF";
-	color:#E28CBB;
+	color:#ED1C24;
 
 }
 .smallprint {
 	fontSize: 21;
-	fontFamily: "Font Rg CFF";
+	fontFamily: "Font Light CFF";
 	color:#FFFFFF;
 }
 .smallprintLink {
 	fontSize: 21;
-	fontFamily: "Font Rg CFF";
-	color:#E28CBB;
+	fontFamily: "Font Light CFF";
+	color:#ED1C24;
 }
 s|FormHeading s|Label#labelDisplay {
 	fontSize: 32;
@@ -58,7 +58,7 @@ s|VGroup.Game s|Label.heading
 	fontSize: 32;
 	fontFamily: "Font Rg CFF";
 	textAlign: left;
-	color: #E28CBB;
+	color: #ED1C24;
 }
 s|Button {
 	skinClass: ClassReference("skins.CustomButton");

@@ -109,12 +109,12 @@ in accordance with the terms of the license agreement accompanying it.
 			 maxDisplayedLines="1" 
 			 fontFamily="Font Rg CFF"
 			 fontWeight="normal"
-			 fontSize="40"
+			 fontSize="52"
 			 horizontalCenter="0" verticalCenter="1" verticalAlign="middle" paddingTop="15"
-			 color="0xFFFFFF">
+			 color="0xED1C24">
 	</s:Label>
 		<s:Spacer width="5" />
-		<s:BitmapImage source="@Embed('assets/images/button/button_normal.png')" includeIn="down"  />
-		<s:BitmapImage source="@Embed('assets/images/button/button_pressed.png')" includeIn="up,disabled" />
+		<s:BitmapImage source="@Embed('assets/images/button/button_normal.png')" includeIn="up,disabled"  />
+		<s:BitmapImage source="@Embed('assets/images/button/button_pressed.png')" includeIn="down" />
 	</s:HGroup>
 </s:SparkButtonSkin>

@@ -3,7 +3,7 @@
 							xmlns:s="library://ns.adobe.com/flex/spark" firstView="views.ScanWristband" 
 							splashScreenImage="@Embed('assets/images/splashimage.png')"
 							applicationComplete="onApplicationComplete()" backgroundColor="0x000000"
-							resizeForSoftKeyboard="true" applicationDPI="320" >
+							resizeForSoftKeyboard="true" applicationDPI="160" >
 	<fx:Script>
 		<![CDATA[
 			import com.alfo.CleverUrlMonitor;
@@ -256,7 +256,7 @@
 				progressWindow.message = e.message;
 				progressWindow.exitFunction = e.exitFunction;
 				
-				PopUpManager.addPopUp(progressWindow, this, true);
+				PopUpManager.addPopUp(progressWindow, this, false);
 				PopUpManager.centerPopUp(progressWindow);
 			}
 			
@@ -280,9 +280,8 @@
 				
 				clearPopups();
 				tcWindow = new tandcWindow();
-				tcWindow.exitFunction = e.exitFunction;
 				
-				PopUpManager.addPopUp(tcWindow, this, true);
+				PopUpManager.addPopUp(tcWindow, this, false);
 				PopUpManager.centerPopUp(tcWindow);
 			}
 			//NAVIGATION HANDLING BETWEEN VIEWS
@@ -527,7 +526,7 @@
 				alertbox.message = msg;
 				alertbox.windowTitle = title;
 				alertbox.exitFunction = exitFunction;
-				PopUpManager.addPopUp(alertbox, this, true);
+				PopUpManager.addPopUp(alertbox, this, false);
 				PopUpManager.centerPopUp(alertbox);
 				
 			}
@@ -542,7 +541,7 @@
 				modalbox.exitFunction = exitFunction;
 				modalbox.retryFunction = retryFunction;
 				
-				PopUpManager.addPopUp(modalbox, this, true);
+				PopUpManager.addPopUp(modalbox, this, false);
 				PopUpManager.centerPopUp(modalbox);
 				
 			}
@@ -695,7 +694,7 @@
 	<s:navigationContent>		
 		<s:HGroup verticalAlign="middle">
 			<s:Button id="takephoto" icon="assets/images/core/camera_icon.png" click="takephoto_clickHandler(event)" color="0xFFFFFF" />
-			<s:Label text="SUNGLASS HUT PHOTO UPLOADER" color="0xFFFFFF" fontSize="24" paddingLeft="10" />
+			<s:Label text="SUNGLASS HUT PHOTO UPLOADER" color="0xFFFFFF" fontSize="24" fontFamily="Font Light CFF" paddingLeft="10" />
 		</s:HGroup>
 	</s:navigationContent>
 	<s:actionContent>

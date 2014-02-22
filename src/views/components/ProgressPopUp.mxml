@@ -59,10 +59,10 @@
 
 			>
 		<s:stroke>
-			<s:SolidColorStroke id="borderStroke" color="#E28CBB" weight="0"/>
+			<s:SolidColorStroke id="borderStroke" color="#ED1C24" weight="0"/>
 		</s:stroke>
 		<s:fill>
-			<s:SolidColor id="bgFill" color="#E28CBB" alpha="1"  />
+			<s:SolidColor id="bgFill" color="#ED1C24" alpha="1"  />
 		</s:fill>
 		<s:filters>
 			<s:DropShadowFilter 
@@ -78,7 +78,7 @@
 		</s:filters>
 	</s:Rect>
 	<s:BorderContainer width="574" height="259" backgroundAlpha="0" borderVisible="false" >
-		<s:TextArea x="12" width="574" height="259" borderVisible="false" fontFamily="Ultracomp CFF" contentBackgroundAlpha="0" color="#ffffff"
+		<s:TextArea x="12" width="574" height="259" borderVisible="false" fontFamily="Font Rg CFF" contentBackgroundAlpha="0" color="#ffffff"
 					fontSize="36" editable="false" selectable="false" text="{message}" fontWeight="bold" textAlign="center" verticalAlign="middle" skinClass="spark.skins.spark.TextAreaSkin"/>
 	</s:BorderContainer>
 	</s:Group>

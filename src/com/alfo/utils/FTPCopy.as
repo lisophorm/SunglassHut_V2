@@ -1,5 +1,6 @@
 package com.alfo.utils
 {
+	import flash.events.DataEvent;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
@@ -7,6 +8,10 @@ package com.alfo.utils
 	import flash.net.URLRequest;
 	
 	import mx.core.UIComponent;
+	
+	import events.KioskError;
+	import events.UploadResultEvent;
+	import events.ViewEvent;
 	
 	
 	
@@ -26,6 +31,7 @@ package com.alfo.utils
 			complete=false;
 			_file=new File(file.nativePath);
 			urlRequest=new URLRequest(url);
+			_file.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA,uploadDataCompleteHandler);
 			_file.addEventListener(Event.COMPLETE,uploadCompleteHandler);
 			_file.addEventListener(ProgressEvent.PROGRESS,updateProgress);
 			_file.addEventListener(IOErrorEvent.IO_ERROR,onFileError);
@@ -35,6 +41,29 @@ package com.alfo.utils
 		
 		public function start():void {
 			_file.upload(urlRequest);
+		}
+		
+		private function uploadDataCompleteHandler(event:DataEvent):Boolean {
+			trace("data event upload");
+			
+			try {
+				var result:XML = new XML(event.data);
+			} catch (e:Error) {
+				dispatchEvent(new UploadResultEvent(UploadResultEvent.ERROR,"ERROR","Malformed XML result:"+e.message+"\r\n"+event.data.toString()));
+				return false;
+			}
+			trace("result from upload:"+result.toString());
+			trace("message:"+result.message);
+			trace("status:"+result.status);
+			if(result.status!="OK") {
+				dispatchEvent(new UploadResultEvent(UploadResultEvent.ERROR,"ERROR","Problem after file upload: "+result.message+"\r\n"+event.data.toString()));
+
+				return true;
+			} else {
+				dispatchEvent(new UploadResultEvent(UploadResultEvent.SUCCESS));
+				return true;
+				}
+			return true;
 		}
 		
 		private function uploadCompleteHandler(e:Event):void {

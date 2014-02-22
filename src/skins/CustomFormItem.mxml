@@ -116,6 +116,7 @@ Move the indicator tooltip string to a resource bundle
              bottom="row1:10" baseline="row1:0"/>
     <!--- @copy spark.components.FormItem#labelDisplay -->
     <s:Label id="labelDisplay"
+			 fontFamily="Font Light CFF"
              left="labelCol:0" right="labelCol:5" 
              bottom="row1:10" baseline="row1:0"/>  
     <!--- @copy spark.components.SkinnableContainer#contentGroup -->
@@ -138,12 +139,12 @@ Move the indicator tooltip string to a resource bundle
         
     <!--- @copy spark.components.FormItem#helpContentGroup -->
     <s:Group id="helpContentGroup" excludeFrom="errorStates"
-             fontStyle="italic" fontWeight="normal" color="0x666666"
+              fontWeight="normal" color="0x666666"
              left="helpCol:27" right="helpCol:10"
              bottom="row1:10" baseline="row1:0"/>
     <!--- @copy spark.components.FormItem#errorTextDisplay -->
     <s:RichText id="errorTextDisplay" includeIn="errorStates"
-                fontStyle="italic" fontWeight="normal" color="0xFE0000"
+                fontWeight="normal" color="0xFE0000"
                 left="helpCol:27" right="helpCol:10"
                 bottom="row1:10" baseline="row1:0" 
                 maxDisplayedLines="-1"/>    

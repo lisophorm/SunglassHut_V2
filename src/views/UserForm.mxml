@@ -166,20 +166,20 @@
 				<s:layout>
 					<s:FormLayout/>
 				</s:layout>
-				<s:FormItem fontWeight="normal" label="First name:" backgroundAlpha="0" >
-					<s:TextInput id="userFirstName" text="ALfonso"  />
+				<s:FormItem fontWeight="normal" label="First name:" backgroundAlpha="0"  >
+					<s:TextInput id="userFirstName" text="" autoCapitalize="word" autoCorrect="false"  enter="{userLastName.setFocus()}" />
 				</s:FormItem>
 				
 				<s:FormItem label="Surname:">
-					<s:TextInput id="userLastName" text="Florio"  />
+					<s:TextInput id="userLastName" autoCapitalize="word" autoCorrect="false" text="" enter="{userEmail.setFocus()}"  />
 				</s:FormItem>
 				
 				<s:FormItem label="Email:" styleName="emailFormLabel" >
-					<s:TextInput id="userEmail" text="lisophorm@gmail.com" softKeyboardType="email"  />
+					<s:TextInput id="userEmail"  autoCorrect="false" text="" enter="{userMobile.setFocus()}" softKeyboardType="email"  />
 				</s:FormItem>
 				
 				<s:FormItem label="Postcode:">
-					<s:TextInput id="userMobile" paddingLeft="20" softKeyboardType="default"  />
+					<s:TextInput id="userMobile" autoCapitalize="all" autoCorrect="false" paddingLeft="20" enter="{submit()}" softKeyboardType="default"  />
 				</s:FormItem>
 				<s:Spacer height="30" />
 				<s:HGroup width="100%" horizontalAlign="center">
