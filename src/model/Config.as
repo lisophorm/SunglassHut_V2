@@ -23,7 +23,10 @@ public class Config
 		public function Config()
 		{
 			prefsFile = File.applicationStorageDirectory;
-			prefsFile = prefsFile.resolvePath("assets/xml/preferences.xml"); 
+			prefsFile = prefsFile.resolvePath("assets/xml/preferences.xml");
+            if(!prefsFile.exists) {
+                trace("preferences file does not exists");
+            }
 			trace("preferences: "+prefsFile.nativePath);
 			readXML();
 		}

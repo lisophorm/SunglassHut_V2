@@ -22,11 +22,11 @@ package com.alfo.res
     [Bindable]
     public static var LOGO : Class;
 
-        [Embed(source="/assets/images/logo.png")]
+        [Embed(source="/assets/images/button/button_normal.png")]
         [Bindable]
         public static var BUTTON_NORMAL : Class;
 
-        [Embed(source="/assets/images/logo.png")]
+        [Embed(source="/assets/images/button/button_pressed.png")]
         [Bindable]
         public static var BUTTON_PRESSED : Class;
 	}
