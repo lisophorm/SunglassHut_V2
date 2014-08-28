@@ -76,10 +76,10 @@ s|RadioButton {
 	
 }
 s|Scroller {
-	skinClass:ClassReference("skins.AngryScroller");
+	skinClass:ClassReference("skins.MyScroller");
 }
 s|ActionBar {
-	skinClass:ClassReference("skins.AngryActionBar");
+	skinClass:ClassReference("skins.FlatActionBar");
 }
 .thankyou
 {

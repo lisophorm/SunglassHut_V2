@@ -63,14 +63,14 @@
 
         private var scaledBitmap:Bitmap;
 
-        var foregroundLoader:Loader = new Loader();
-        var backgroundLoader:Loader = new Loader();
+        private var foregroundLoader:Loader = new Loader();
+        private var backgroundLoader:Loader = new Loader();
 
-        var loaded1:Boolean = false;
-        var loaded2:Boolean = false;
+        private var loaded1:Boolean = false;
+        private var loaded2:Boolean = false;
 
-        var destWidth:Number;
-        var destHeight:Number;
+        private var destWidth:Number;
+        private var destHeight:Number;
 
         private var tempPhotoDisplay:DisplayObject;
 
