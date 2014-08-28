@@ -17,15 +17,15 @@ package uk.soulwire.utils.display
 	 * Licensed under a Creative Commons Attribution 3.0 License
 	 * http://creativecommons.org/licenses/by/3.0/
 	 */
-	 
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.DisplayObject;
-	import flash.display.PixelSnapping;
-	import flash.geom.Matrix;
-	import flash.geom.Rectangle;	
 
-	public class DisplayUtils 
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.DisplayObject;
+import flash.display.PixelSnapping;
+import flash.geom.Matrix;
+import flash.geom.Rectangle;
+
+public class DisplayUtils
 	{	
 
 		//---------------------------------------------------------------------------

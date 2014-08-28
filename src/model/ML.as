@@ -1,10 +1,10 @@
 package model
 {
-	public class ML
+import flash.filesystem.*;
+
+public class ML
 	{
-		import flash.filesystem.*;
-		
-		public static var langFile:File; // The preferences prefsFile
+        public static var langFile:File; // The preferences prefsFile
 		public static var langXML:XML; // The XML data
 		public static var stream:FileStream; // The FileStream object used to read and write prefsFile data.
 		

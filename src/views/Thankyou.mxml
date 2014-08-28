@@ -1,41 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		xmlns:s="library://ns.adobe.com/flex/spark" title="" 
-		addedToStage="view1_addedToStageHandler(event)" 
-		removedFromStage="view1_removedFromStageHandler(event)" 
-		skinClass="skins.BarView" xmlns:components="views.components.*">
-	
-	<fx:Script>
-		<![CDATA[
-			import events.ViewEvent;
-			
-			import flash.utils.setInterval;
-			
-			
-			
-			protected var intervallo:Number;
-			
-			protected function view1_addedToStageHandler(event:Event):void
-			{
-				intervallo=setInterval(close,2000);
-				//var temp:File=File.applicationDirectory.resolvePath("/data/data/air.BarclaysFaceBook01/cache/webviewCache");
-				
-			}
-			
-			protected function view1_removedFromStageHandler(event:Event):void
-			{
-				// TODO Auto-generated method stub
-				
-			}
-			protected function close():void {
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+        xmlns:s="library://ns.adobe.com/flex/spark" title=""
+        addedToStage="view1_addedToStageHandler(event)"
+        removedFromStage="view1_removedFromStageHandler(event)"
+        skinClass="skins.BarView">
 
-				clearInterval(intervallo);
-				//navigator.popToFirstView();
-				this.navigator.dispatchEvent(new ViewEvent( ViewEvent.LOCATION_RESTART ));
-				
-			}
-			
-		]]>
+    <fx:Script>
+		<![CDATA[
+        import events.ViewEvent;
+
+        protected var intervallo:Number;
+
+        protected function view1_addedToStageHandler(event:Event):void {
+            intervallo = setInterval(close, 2000);
+            //var temp:File=File.applicationDirectory.resolvePath("/data/data/air.BarclaysFaceBook01/cache/webviewCache");
+
+        }
+
+        protected function view1_removedFromStageHandler(event:Event):void {
+            // TODO Auto-generated method stub
+
+        }
+
+        protected function close():void {
+
+            clearInterval(intervallo);
+            //navigator.popToFirstView();
+            this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_RESTART));
+
+        }
+        ]]>
 	</fx:Script>
 	
 	<fx:Declarations>

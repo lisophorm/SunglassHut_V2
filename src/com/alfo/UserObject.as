@@ -1,10 +1,11 @@
 package com.alfo
 {
-	import flash.display.Sprite;
-	import flash.filesystem.File;
-	import flash.filesystem.FileStream;
-	
-	public class UserObject extends Sprite
+import flash.display.Sprite;
+import flash.filesystem.File;
+import flash.filesystem.FileMode;
+import flash.filesystem.FileStream;
+
+public class UserObject extends Sprite
 	{
 		
 		private var _photo1:String;
@@ -48,7 +49,7 @@ package com.alfo
 			return userXML.hometown;
 		}
 		
-		public function set hometown(town:String) {
+		public function set hometown(town:String):void {
 			userXML.hometown=town;
 		}
 		
@@ -199,6 +200,7 @@ package com.alfo
 			} else {
 				return false;
 			}
+            return false;
 		}
 		public function set isBatch(thebatch:Boolean):void {
 			userXML.isBatch=thebatch?"1":"0";
@@ -226,7 +228,7 @@ package com.alfo
 			var s:FileStream = new FileStream();
 			try
 			{
-				s.open(f,flash.filesystem.FileMode.WRITE);
+				s.open(f,FileMode.WRITE);
 				s.writeUTFBytes(userXML.toXMLString());
 				message="OK";
 			} catch(e:Error) {

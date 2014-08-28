@@ -1,10 +1,10 @@
 package model
 {
-	public class Config2
+import flash.filesystem.*;
+
+public class Config2
 	{
-		import flash.filesystem.*;
-		
-		public var prefsFile:File; // The preferences prefsFile
+        public var prefsFile:File; // The preferences prefsFile
 		[Bindable] public var prefsXML:XML; // The XML data
 		public var stream:FileStream; // The FileStream object used to read and write prefsFile data.
 		

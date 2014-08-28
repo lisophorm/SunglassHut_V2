@@ -1,9 +1,9 @@
 package com.lia.display {
-	import flash.display.MovieClip;
-	import flash.display.Sprite;
-	import flash.geom.ColorTransform;
+import flash.display.MovieClip;
+import flash.display.Sprite;
+import flash.geom.ColorTransform;
 
-	/**
+/**
 	 * @author FlashDynamix
 	 */
 	dynamic public class Poller extends Sprite {

@@ -1,20 +1,11 @@
 package com.alfo.utils
 {
-	import flash.data.SQLConnection;
-	
-	import flash.data.SQLMode;
-	
-	import flash.data.SQLResult;
-	
-	import flash.data.SQLStatement;
-	
-	import flash.events.SQLErrorEvent;
-	
-	import flash.events.SQLEvent;
-	
-	import flash.filesystem.File;
-	
-	public class SQLiteConnector
+import flash.data.SQLConnection;
+import flash.events.SQLErrorEvent;
+import flash.events.SQLEvent;
+import flash.filesystem.File;
+
+public class SQLiteConnector
 	{
 		
 		private static var instance:SQLiteConnector;

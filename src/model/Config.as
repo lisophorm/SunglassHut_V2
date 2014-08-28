@@ -1,10 +1,10 @@
 package model
 {
-	public class Config
+import flash.filesystem.*;
+
+public class Config
 	{
-		import flash.filesystem.*;
-		
-		private static const PI_OVER_180 : Number = Math.PI / 180.0;
+        private static const PI_OVER_180 : Number = Math.PI / 180.0;
 		
 		public var prefsFile:File; // The preferences prefsFile
 		[Bindable] public var prefsXML:XML; // The XML data

@@ -1,70 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="600" height="300" added="onAdded()" remove="exit()">
-	<fx:Script>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         width="600" height="300" added="onAdded()" remove="exit()">
+    <fx:Script>
 		<![CDATA[
-			import com.alfo.DelayedExecution;
-			
-			import mx.events.FlexEvent;
-			import mx.managers.PopUpManager;
-			
-			import model.ML;
-			
-			
-			protected var isremoving:Boolean = false;
-			private var gino:DelayedExecution;
-			
-			[Bindable]
-			public var message:String="";
-			
-			[Bindable]
-			public var windowTitle:String="I/O ERROR:";
-			
-			[Bindable]
-			public var exitFunction:Function = null;
-			
-			[Bindable]
-			public var retryFunction:Function = null;
-			
-			protected function onAdded(e:FlexEvent=null):void
-			{
-				isremoving = false;
-				//gino =new DelayedExecution(8000,this,cancelFunc);
-			}
+        import com.alfo.DelayedExecution;
 
-			
-			protected function exit(e:FlexEvent=null):void
-			{
-				//gino.stop();
-				isremoving = true;
-			
-			}
-			public function get isRemoving():Boolean
-			{
-				return isremoving;
-			}
-			
-			protected function tryAgainFunc(event:MouseEvent):void
-			{
-				trace("TRY AGAIN");
-				if (retryFunction!=null) {
-					retryFunction(null);
-				}
-				PopUpManager.removePopUp(this);
-				
-			}
-			
-			protected function cancelFunc(event:MouseEvent=null):void
-			{
-				trace("GO OFFLINE");
-				if (exitFunction!=null) {
-					exitFunction(null);
-				}
-				PopUpManager.removePopUp(this);
-			}
-			
-		]]>
+        import mx.events.FlexEvent;
+        import mx.managers.PopUpManager;
+
+        protected var isremoving:Boolean = false;
+        private var gino:DelayedExecution;
+
+        [Bindable]
+        public var message:String = "";
+
+        [Bindable]
+        public var windowTitle:String = "I/O ERROR:";
+
+        [Bindable]
+        public var exitFunction:Function = null;
+
+        [Bindable]
+        public var retryFunction:Function = null;
+
+        protected function onAdded(e:FlexEvent = null):void {
+            isremoving = false;
+            //gino =new DelayedExecution(8000,this,cancelFunc);
+        }
+
+
+        protected function exit(e:FlexEvent = null):void {
+            //gino.stop();
+            isremoving = true;
+
+        }
+
+        public function get isRemoving():Boolean {
+            return isremoving;
+        }
+
+        protected function tryAgainFunc(event:MouseEvent):void {
+            trace("TRY AGAIN");
+            if (retryFunction != null) {
+                retryFunction(null);
+            }
+            PopUpManager.removePopUp(this);
+
+        }
+
+        protected function cancelFunc(event:MouseEvent = null):void {
+            trace("GO OFFLINE");
+            if (exitFunction != null) {
+                exitFunction(null);
+            }
+            PopUpManager.removePopUp(this);
+        }
+        ]]>
 	</fx:Script>
 <fx:Metadata>
 	[Event(name="closeError", type="flash.events.Event")]

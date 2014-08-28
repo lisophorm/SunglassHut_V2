@@ -1,8 +1,8 @@
 package events
 {
-	import flash.events.Event;
-	
-	public class KioskEvent extends Event
+import flash.events.Event;
+
+public class KioskEvent extends Event
 	{
 		public static var TERMS_NOTIFY:String = "KIOSKEVENT_TERMS_NOTIFY";
 		public static var PROGRESS:String = 	"KIOSKEVENT_PROGRESS";

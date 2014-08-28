@@ -1,8 +1,8 @@
 package events
 {
-	import flash.events.Event;
-	
-	public class ViewEvent extends Event
+import flash.events.Event;
+
+public class ViewEvent extends Event
 	{
 		public static var NAVIGATE:String = "NAVIGATE";
 		

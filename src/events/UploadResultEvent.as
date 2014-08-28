@@ -1,8 +1,8 @@
 package events
 {
-	import flash.events.Event;
-	
-	public class UploadResultEvent extends Event
+import flash.events.Event;
+
+public class UploadResultEvent extends Event
 	{
 		
 		public static var SUCCESS:String="upload_success";

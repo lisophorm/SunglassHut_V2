@@ -1,8 +1,8 @@
 package com.alfo
 {
-	import flash.events.Event;
-	
-	internal class ShowSyncError extends Event
+import flash.events.Event;
+
+internal class ShowSyncError extends Event
 	{
 		
 		public var errorMessage:String;

@@ -1,153 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
-		xmlns:s="library://ns.adobe.com/flex/spark" creationComplete="onAddToStage(event)" skinClass="skins.BarView"
-		title="Publish on score" xmlns:components="views.components.*" currentState="default" xmlns:components1="br.com.components.*"  >
-	
-	<fx:Script>
+        xmlns:s="library://ns.adobe.com/flex/spark" creationComplete="onAddToStage(event)" skinClass="skins.BarView"
+        title="Publish on score" currentState="default">
+
+    <fx:Script>
 		<![CDATA[
-			import com.alfo.utils.EncryptWrapper;
-			import com.lia.crypto.AES;
-			
-			import events.KioskError;
-			import events.KioskProgressEvent;
-			import events.ViewEvent;
-			
-			import model.ML;
-			
-			import mx.events.FlexEvent;
-			import mx.managers.PopUpManager;
-			import mx.rpc.events.FaultEvent;
-			import mx.rpc.events.ResultEvent;
-			
-			import views.components.*;
-			
-			private var urlRequest:URLRequest
-			private var file:File;
-			
-			private var currentURN:String;
-			
-			private var progressPop:ProgressPopUp;
-			protected var fileTransfer:Boolean=false;
-			
-			[Bindable]
-			public var maskFormat:String = "99:99";
-			
-			[Bindable]
-			public var activitytitle:String ="Pit Stop Challenge";
-			
-			[Bindable]
-			public var userName:String="";
-			
-			[Bindable]
-			public var posts:int=0;
-			
-			protected var applicationType:int = 0;
-			
-			protected function onAddToStage(event:Event):void
-			{
-				if (data!=null)
-				{
-					currentURN = data.urn;
-					maskFormat = data.scoreFormat;		
-					
-					activitytitle = data.activitytitle;
-					applicationType = data.type;
-					this.currentState = data.facebook ? "facebook" : "default";
+        import com.alfo.utils.EncryptWrapper;
 
-					var passVars:Object=new Object;
-					passVars.urn=EncryptWrapper.Wrap(currentURN);
-					
-					//userScore.fullText="";
-					userScore.text = "";
-					userScore.setFocus();
+        import events.KioskError;
+        import events.KioskProgressEvent;
+        import events.ViewEvent;
 
-					
-					// LOOK-UP USER INFO FOR THIS URN
-					getUser.send(passVars);
-					fileTransfer=false;
-				} else {
-					trace("URN MISSING");
-				}		
-				publishScoreBTN.visible=true;
-				
-			}
-			
-			protected function getUser_resultHandler(event:ResultEvent):void
-			{
-				userName =EncryptWrapper.Wrap(getUser.lastResult.name);
-				posts = int(EncryptWrapper.Wrap(getUser.lastResult.posts));
-				if (this.currentState=="facebook")
-					facebookposts_check.selected = this.canPost;
-				trace("** USER INFO RETRIVED:\nUser's lastname:"+user.text+"\nPosts:"+posts);
-			}
-			
-			protected function httpservice_faultHandler(event:FaultEvent):void
-			{
-				this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, event.fault.faultString, "NETWORK ERROR"));
-				
-			}
-			
-			// SCORE HANDLING
-			protected function publishScoreBTN_clickHandler(event:MouseEvent):void
-			{
-				if(userScore.text!="") {
-					var passVars:Object=new Object();
-					
-					passVars.urn=EncryptWrapper.Wrap(currentURN);
-					passVars.score=EncryptWrapper.Wrap(userScore.text);
-					if (this.currentState=="facebook")
-						passVars.facebook_optin= this.facebookposts_check.selected ? 1 : 0;
-					else
-						passVars.facebook_optin= 0;
-					passVars.type = this.applicationType;
-					
-					putScore.send(passVars);
-					
-					this.navigator.dispatchEvent( new KioskProgressEvent(KioskProgressEvent.NOTIFY, "Publishing Score" ) );
-					//userScore.fullText="";
-					userScore.text="";
+        import mx.rpc.events.FaultEvent;
+        import mx.rpc.events.ResultEvent;
 
-					
-				}
-			}
-			
-			protected function publishscore_resultHandler(event:ResultEvent):void
-			{
-				this.navigator.dispatchEvent( new KioskProgressEvent(KioskProgressEvent.UPDATE_COMPLETE ) );
-				
-				if(putScore.lastResult.result!="SUCCESS") 
-				{
-					
-					this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, putScore.lastResult.message, "ERROR"));
-				} else {
-					userScore.visible=true;
-					publishScoreBTN.visible=false;
-					checkForEnd();
-				}
-			}
-			
-			protected function checkForEnd():void
-			{
-				this.navigator.dispatchEvent( new ViewEvent( ViewEvent.LOCATION_GAME_COMPLETE ) );
-			}
-			
-			
-			public function restart(e:Event):void
-			{
-				this.navigator.dispatchEvent( new ViewEvent( ViewEvent.LOCATION_RESTART ) );
-			}
-			
-			
-			protected function cancelBTN_clickHandler(event:MouseEvent):void
-			{
-				this.navigator.dispatchEvent( new ViewEvent( ViewEvent.LOCATION_RESTART ));
-			}
-			protected function get canPost():Boolean
-			{
-				
-				return (int(posts)<5);
-			}
-		]]>
+        import views.components.*;
+
+        private var urlRequest:URLRequest
+        private var file:File;
+
+        private var currentURN:String;
+
+        private var progressPop:ProgressPopUp;
+        protected var fileTransfer:Boolean = false;
+
+        [Bindable]
+        public var maskFormat:String = "99:99";
+
+        [Bindable]
+        public var activitytitle:String = "Pit Stop Challenge";
+
+        [Bindable]
+        public var userName:String = "";
+
+        [Bindable]
+        public var posts:int = 0;
+
+        protected var applicationType:int = 0;
+
+        protected function onAddToStage(event:Event):void {
+            if (data != null) {
+                currentURN = data.urn;
+                maskFormat = data.scoreFormat;
+
+                activitytitle = data.activitytitle;
+                applicationType = data.type;
+                this.currentState = data.facebook ? "facebook" : "default";
+
+                var passVars:Object = new Object;
+                passVars.urn = EncryptWrapper.Wrap(currentURN);
+
+                //userScore.fullText="";
+                userScore.text = "";
+                userScore.setFocus();
+
+
+                // LOOK-UP USER INFO FOR THIS URN
+                getUser.send(passVars);
+                fileTransfer = false;
+            } else {
+                trace("URN MISSING");
+            }
+            publishScoreBTN.visible = true;
+
+        }
+
+        protected function getUser_resultHandler(event:ResultEvent):void {
+            userName = EncryptWrapper.Wrap(getUser.lastResult.name);
+            posts = int(EncryptWrapper.Wrap(getUser.lastResult.posts));
+            if (this.currentState == "facebook")
+                facebookposts_check.selected = this.canPost;
+            trace("** USER INFO RETRIVED:\nUser's lastname:" + user.text + "\nPosts:" + posts);
+        }
+
+        protected function httpservice_faultHandler(event:FaultEvent):void {
+            this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, event.fault.faultString, "NETWORK ERROR"));
+
+        }
+
+        // SCORE HANDLING
+        protected function publishScoreBTN_clickHandler(event:MouseEvent):void {
+            if (userScore.text != "") {
+                var passVars:Object = new Object();
+
+                passVars.urn = EncryptWrapper.Wrap(currentURN);
+                passVars.score = EncryptWrapper.Wrap(userScore.text);
+                if (this.currentState == "facebook")
+                    passVars.facebook_optin = this.facebookposts_check.selected ? 1 : 0;
+                else
+                    passVars.facebook_optin = 0;
+                passVars.type = this.applicationType;
+
+                putScore.send(passVars);
+
+                this.navigator.dispatchEvent(new KioskProgressEvent(KioskProgressEvent.NOTIFY, "Publishing Score"));
+                //userScore.fullText="";
+                userScore.text = "";
+
+
+            }
+        }
+
+        protected function publishscore_resultHandler(event:ResultEvent):void {
+            this.navigator.dispatchEvent(new KioskProgressEvent(KioskProgressEvent.UPDATE_COMPLETE));
+
+            if (putScore.lastResult.result != "SUCCESS") {
+
+                this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, putScore.lastResult.message, "ERROR"));
+            } else {
+                userScore.visible = true;
+                publishScoreBTN.visible = false;
+                checkForEnd();
+            }
+        }
+
+        protected function checkForEnd():void {
+            this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_GAME_COMPLETE));
+        }
+
+
+        public function restart(e:Event):void {
+            this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_RESTART));
+        }
+
+
+        protected function cancelBTN_clickHandler(event:MouseEvent):void {
+            this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_RESTART));
+        }
+
+        protected function get canPost():Boolean {
+
+            return (int(posts) < 5);
+        }
+        ]]>
 	</fx:Script>
 	
 	<fx:Declarations>

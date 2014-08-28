@@ -1,8 +1,8 @@
 package events
 {
-	import flash.events.Event;
-	
-	public class UserObjectEvent extends Event
+import flash.events.Event;
+
+public class UserObjectEvent extends Event
 	{
 		public static var OFFLINE:String = "offline";
 		public static var ONLINE:String = "online";

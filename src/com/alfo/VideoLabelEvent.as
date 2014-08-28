@@ -1,10 +1,8 @@
 package com.alfo
 {
-	import flash.events.Event;
-	
-	
-	
-	public class VideoLabelEvent extends Event
+import flash.events.Event;
+
+public class VideoLabelEvent extends Event
 	{
 		
 		public static const CLICK:String="Clicked";

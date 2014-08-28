@@ -1,19 +1,19 @@
 package com.alfo.utils
 {
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.events.GeolocationEvent;
-	import flash.events.IOErrorEvent;
-	import flash.events.TimerEvent;
-	import flash.filesystem.File;
-	import flash.filesystem.FileMode;
-	import flash.filesystem.FileStream;
-	import flash.net.URLLoader;
-	import flash.net.URLRequest;
-	import flash.sensors.Geolocation;
-	import flash.utils.Timer;
+import flash.events.Event;
+import flash.events.EventDispatcher;
+import flash.events.GeolocationEvent;
+import flash.events.IOErrorEvent;
+import flash.events.TimerEvent;
+import flash.filesystem.File;
+import flash.filesystem.FileMode;
+import flash.filesystem.FileStream;
+import flash.net.URLLoader;
+import flash.net.URLRequest;
+import flash.sensors.Geolocation;
+import flash.utils.Timer;
 
-	public class GeoUtils extends EventDispatcher
+public class GeoUtils extends EventDispatcher
 	{
 		private static const PI_OVER_180 : Number = Math.PI / 180.0;
 		public static var CHANGE_THRESHOLD:Number=1000;
@@ -27,7 +27,7 @@ package com.alfo.utils
 		
 		private var geo:Geolocation;
 		
-		var pollTimer:Timer;
+		private var pollTimer:Timer;
 		private var _latitude:Number=0;
 		private var _longitude:Number=0;
 		private var _accuracy:Number;
@@ -76,7 +76,7 @@ package com.alfo.utils
 		public function formatted_address():String {
 			return prefsXML.formatted_address;
 		}
-		private function onLoaderError(e:IOErrorEvent) {
+		private function onLoaderError(e:IOErrorEvent):void {
 			
 		}
 		private function onLoaderComplete(e:Event):void 
@@ -86,7 +86,7 @@ package com.alfo.utils
 			trace("XML status:"+XMLdata.status);
 			trace("XML length:"+XMLdata.result.length());
 			if(XMLdata.status=="OK") {
-				for (var i=0;i<XMLdata.result.length();i++) {
+				for (var i:int=0;i<XMLdata.result.length();i++) {
 					if(XMLdata.result[i].type.length()==null) {
 						trace("TYPE IS SINGLE");
 					} else {
@@ -131,7 +131,7 @@ package com.alfo.utils
 		
 		}
 		
-		public function checkForGPS(e:TimerEvent=null) {
+		public function checkForGPS(e:TimerEvent=null):void {
 			trace("checkforGPS");
 			if(! geo.muted){
 				

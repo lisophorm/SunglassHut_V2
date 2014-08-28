@@ -48,17 +48,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package utils {
-	import flash.display.BitmapData;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.events.ProgressEvent;
-	import flash.events.TimerEvent;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import flash.utils.ByteArray;
-	import flash.utils.Timer;
-	
-	public class JPGEncoder extends EventDispatcher
+import flash.display.BitmapData;
+import flash.events.Event;
+import flash.events.EventDispatcher;
+import flash.events.ProgressEvent;
+import flash.events.TimerEvent;
+import flash.geom.Point;
+import flash.geom.Rectangle;
+import flash.utils.ByteArray;
+import flash.utils.Timer;
+
+public class JPGEncoder extends EventDispatcher
 	{
 		private const origin:Point = new Point();
 		public static const CONTENT_TYPE:String = "image/jpeg";

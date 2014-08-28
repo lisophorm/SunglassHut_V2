@@ -1,18 +1,18 @@
 package br.com.components
 {
-	
-	import flash.events.FocusEvent;
-	import flash.events.KeyboardEvent;
-	import flash.events.MouseEvent;
-	import flash.ui.Keyboard;
-	
-	import flashx.textLayout.operations.PasteOperation;
-	
-	import spark.components.TextInput;
-	import spark.components.TextSelectionHighlighting;
-	import spark.events.TextOperationEvent;
-	
-	/**
+
+import flash.events.FocusEvent;
+import flash.events.KeyboardEvent;
+import flash.events.MouseEvent;
+import flash.ui.Keyboard;
+
+import flashx.textLayout.operations.PasteOperation;
+
+import spark.components.TextInput;
+import spark.components.TextSelectionHighlighting;
+import spark.events.TextOperationEvent;
+
+/**
 	 * @author Rafael Zimmermann
 	 * <br>TextInput com máscara<br>
 	 * # - Letras<br>

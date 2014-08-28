@@ -4,115 +4,113 @@
 		creationComplete="onCreationCompleteHandler(event)" backgroundColor="0x000000"  remove="view1_removeHandler(event)" >
 	<fx:Script>
 		<![CDATA[
-			import com.alfo.DelayedExecution;
-			import com.alfo.UserObject;
-			import com.alfo.utils.FTPCopy;
-			
-			import mx.events.FlexEvent;
-			
-			import events.ApplicationEvent;
-			import events.KioskError;
-			import events.ViewEvent;
-			
-			private var ftpCopy:FTPCopy;
-			private var file:File;
-			import com.alfo.utils.StringUtils;
-			private var theUser:UserObject;
-			
-			protected function onCreationCompleteHandler(event:FlexEvent):void
-			{
-				theUser = UserObject.getInstance();
-				var tempo:DelayedExecution=new DelayedExecution(1000,this,refresh);
-				var tempo:DelayedExecution=new DelayedExecution(1001,this,refresh1);
-				if (data!=null)
-				{
-					this.localserver.text=data.xml.localIP;
-					this.server.text = data.xml.serverIP;
-					this.facebookAPI_ID.text = data.xml.facebookAppID;
-					this.urnLength.text = data.xml.urnLength;
-					this.scoreFormat.text = data.xml.scoreFormat;
-					this.radioGroup.selectedValue = data.xml.applicationtype;
-					
-				}
-				
-			}
-			function refresh() {
-				trace("invalidaaaaaaa");
-				scoreFormat.invalidateDisplayList();
-				urnLength.invalidateDisplayList();
-				urnLength.setFocus();
-				
-			}
-			function refresh1() {
-				trace("invalidaaaaaaa2");
-				scoreFormat.invalidateDisplayList();
-				urnLength.invalidateDisplayList();
-				submitButton.setFocus();
-				
-			}
-			
-			
-			protected function submit(e:MouseEvent):void
-			{
-				
-				this.navigator.dispatchEvent( new ApplicationEvent( ApplicationEvent.SAVE_TYPE, { serverIP: server.text.toString(),
-					facebookAppID: facebookAPI_ID.text.toString(), 
-					urnLength: urnLength.text.toString(), 
-					applicationtype: radioGroup.selectedValue.toString(),
-					scoreFormat: scoreFormat.text.toString(),localIP:localserver.text.toString()} ) );
-				
-			}
-			protected function cancel(e:MouseEvent):void
-			{
-				this.navigator.dispatchEvent( new ViewEvent(ViewEvent.LOCATION_RESTART ));
-			}
-			protected function forceLogout(e:MouseEvent):void
-			{
-				this.navigator.dispatchEvent( new ViewEvent(ViewEvent.LOCATION_FACEBOOK_FORCELOGOUT ));
-			}
-			
-			protected function forcePrint_clickHandler(event:MouseEvent):void
-			{
-				file= File.applicationDirectory.resolvePath("assets/images/blankshot.jpg");
-				if(file.exists) {
-					trace("file exists!");
-				var destFile:File=File.documentsDirectory.resolvePath(theUser.tempPath+File.separator+"blank_"+StringUtils.generateRandomString(4)+".jpg");
-					try {
-						file.copyTo(destFile,true);
-					} catch(e:Error){
-						trace("******** error saving file"+e.message);
-						this.navigator.dispatchEvent( new KioskError(KioskError.ERROR, e.message, "I/O error, check SD Card available space" ) );
-					} finally {
-						trace("file copied");
-					}
-				} else {
-					trace("****** blank file does not exists");
-				}
-				ftpCopy=new FTPCopy(destFile,this.parentApplication.localURL+"upload.php");
-				ftpCopy.addEventListener(IOErrorEvent.IO_ERROR,handleLocalError);
-				ftpCopy.addEventListener(Event.COMPLETE,onCompleteLocal);
-				ftpCopy.start();
-			}
-			private function handleLocalError(e:IOErrorEvent) {
-				this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, "The local server appears to be offline. Please check the laptop and the wireless connection", "ERROR SENDING TO PRINTER"));
-			}
-			private function onCompleteLocal(e:Event) {
-				trace("photo uoloded locally");
-			}
-			
-			protected function view1_removeHandler(event:FlexEvent):void
-			{
-				if(ftpCopy != null) {
-					if(ftpCopy.hasEventListener(IOErrorEvent.NETWORK_ERROR)) {
-						ftpCopy.removeEventListener(IOErrorEvent.NETWORK_ERROR,handleLocalError);
-						ftpCopy.removeEventListener(Event.COMPLETE,onCompleteLocal);
-					}
-					ftpCopy=null;
-				}
-				
-			}
-			
-		]]>
+        import com.alfo.DelayedExecution;
+        import com.alfo.UserObject;
+        import com.alfo.utils.FTPCopy;
+        import com.alfo.utils.StringUtils;
+
+        import events.ApplicationEvent;
+        import events.KioskError;
+        import events.ViewEvent;
+
+        import mx.events.FlexEvent;
+
+        private var ftpCopy:FTPCopy;
+        private var file:File;
+        private var theUser:UserObject;
+
+        protected function onCreationCompleteHandler(event:FlexEvent):void {
+            theUser = UserObject.getInstance();
+            var tempo:DelayedExecution = new DelayedExecution(1000, this, refresh);
+            var tempo1:DelayedExecution = new DelayedExecution(1001, this, refresh1);
+            if (data != null) {
+                this.localserver.text = data.xml.localIP;
+                this.server.text = data.xml.serverIP;
+                this.facebookAPI_ID.text = data.xml.facebookAppID;
+                this.urnLength.text = data.xml.urnLength;
+                this.scoreFormat.text = data.xml.scoreFormat;
+                this.radioGroup.selectedValue = data.xml.applicationtype;
+
+            }
+
+        }
+
+        protected function refresh() {
+            trace("invalidaaaaaaa");
+            scoreFormat.invalidateDisplayList();
+            urnLength.invalidateDisplayList();
+            urnLength.setFocus();
+
+        }
+
+        protected function refresh1() {
+            trace("invalidaaaaaaa2");
+            scoreFormat.invalidateDisplayList();
+            urnLength.invalidateDisplayList();
+            submitButton.setFocus();
+
+        }
+
+
+        protected function submit(e:MouseEvent):void {
+
+            this.navigator.dispatchEvent(new ApplicationEvent(ApplicationEvent.SAVE_TYPE, { serverIP: server.text.toString(),
+                facebookAppID: facebookAPI_ID.text.toString(),
+                urnLength: urnLength.text.toString(),
+                applicationtype: radioGroup.selectedValue.toString(),
+                scoreFormat: scoreFormat.text.toString(), localIP: localserver.text.toString()}));
+
+        }
+
+        protected function cancel(e:MouseEvent):void {
+            this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_RESTART));
+        }
+
+        protected function forceLogout(e:MouseEvent):void {
+            this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_FACEBOOK_FORCELOGOUT));
+        }
+
+        protected function forcePrint_clickHandler(event:MouseEvent):void {
+            file = File.applicationDirectory.resolvePath("assets/images/blankshot.jpg");
+            if (file.exists) {
+                trace("file exists!");
+                var destFile:File = File.documentsDirectory.resolvePath(theUser.tempPath + File.separator + "blank_" + StringUtils.generateRandomString(4) + ".jpg");
+                try {
+                    file.copyTo(destFile, true);
+                } catch (e:Error) {
+                    trace("******** error saving file" + e.message);
+                    this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, e.message, "I/O error, check SD Card available space"));
+                } finally {
+                    trace("file copied");
+                }
+            } else {
+                trace("****** blank file does not exists");
+            }
+            ftpCopy = new FTPCopy(destFile, this.parentApplication.localURL + "upload.php");
+            ftpCopy.addEventListener(IOErrorEvent.IO_ERROR, handleLocalError);
+            ftpCopy.addEventListener(Event.COMPLETE, onCompleteLocal);
+            ftpCopy.start();
+        }
+
+        private function handleLocalError(e:IOErrorEvent):void {
+            this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, "The local server appears to be offline. Please check the laptop and the wireless connection", "ERROR SENDING TO PRINTER"));
+        }
+
+        private function onCompleteLocal(e:Event):void {
+            trace("photo uoloded locally");
+        }
+
+        protected function view1_removeHandler(event:FlexEvent):void {
+            if (ftpCopy != null) {
+                if (ftpCopy.hasEventListener(IOErrorEvent.NETWORK_ERROR)) {
+                    ftpCopy.removeEventListener(IOErrorEvent.NETWORK_ERROR, handleLocalError);
+                    ftpCopy.removeEventListener(Event.COMPLETE, onCompleteLocal);
+                }
+                ftpCopy = null;
+            }
+
+        }
+        ]]>
 	</fx:Script>
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->						

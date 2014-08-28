@@ -1,8 +1,8 @@
 package events
 {
-	import flash.events.Event;
-	
-	public class KioskError extends Event
+import flash.events.Event;
+
+public class KioskError extends Event
 	{
 		public static var ERROR:String = "KIOSKERROR_Error";
 		public static var MODAL:String = "KIOSKERROR_Modal";

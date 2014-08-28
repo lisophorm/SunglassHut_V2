@@ -4,23 +4,23 @@
  * License is WTFYW 2.0
  * */
 package com.flexcapacitor.controls  {
-	
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.events.ErrorEvent;
-	import flash.events.Event;
-	import flash.events.FocusEvent;
-	import flash.events.KeyboardEvent;
-	import flash.events.LocationChangeEvent;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import flash.media.StageWebView;
-	import flash.ui.Keyboard;
-	
-	import mx.core.FlexGlobals;
-	import mx.core.UIComponent;
-	
-	/**
+
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.events.ErrorEvent;
+import flash.events.Event;
+import flash.events.FocusEvent;
+import flash.events.KeyboardEvent;
+import flash.events.LocationChangeEvent;
+import flash.geom.Point;
+import flash.geom.Rectangle;
+import flash.media.StageWebView;
+import flash.ui.Keyboard;
+
+import mx.core.FlexGlobals;
+import mx.core.UIComponent;
+
+/**
 	 * @copy flash.media.StageWebView#ErrorEvent.ERROR
 	 * */
 	[Event(name="error", type="flash.events.ErrorEvent")]

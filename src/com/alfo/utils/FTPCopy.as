@@ -1,21 +1,17 @@
 package com.alfo.utils
 {
-	import flash.events.DataEvent;
-	import flash.events.Event;
-	import flash.events.IOErrorEvent;
-	import flash.events.ProgressEvent;
-	import flash.filesystem.File;
-	import flash.net.URLRequest;
-	
-	import mx.core.UIComponent;
-	
-	import events.KioskError;
-	import events.UploadResultEvent;
-	import events.ViewEvent;
-	
-	
-	
-	public class FTPCopy extends UIComponent
+import events.UploadResultEvent;
+
+import flash.events.DataEvent;
+import flash.events.Event;
+import flash.events.IOErrorEvent;
+import flash.events.ProgressEvent;
+import flash.filesystem.File;
+import flash.net.URLRequest;
+
+import mx.core.UIComponent;
+
+public class FTPCopy extends UIComponent
 	{
 		
 		private var _username:String;

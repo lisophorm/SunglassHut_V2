@@ -1,23 +1,21 @@
 
 package com.flexcapacitor.components  {
-	
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.FocusDirection;
-	import flash.display.Stage;
-	import flash.events.ErrorEvent;
-	import flash.events.Event;
-	import flash.events.FocusEvent;
-	import flash.events.KeyboardEvent;
-	import flash.events.LocationChangeEvent;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import flash.media.StageWebView;
-	import flash.ui.Keyboard;
-	
-	import mx.core.UIComponent;
-	
-	/**
+
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.events.ErrorEvent;
+import flash.events.Event;
+import flash.events.FocusEvent;
+import flash.events.KeyboardEvent;
+import flash.events.LocationChangeEvent;
+import flash.geom.Point;
+import flash.geom.Rectangle;
+import flash.media.StageWebView;
+import flash.ui.Keyboard;
+
+import mx.core.UIComponent;
+
+/**
 	 * @copy flash.media.StageWebView#ErrorEvent.ERROR
 	 * */
 	[Event(name="error", type="flash.events.ErrorEvent")]

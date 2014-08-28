@@ -1,8 +1,8 @@
 package events
 {
-	import flash.events.Event;
-	
-	public class ApplicationEvent extends Event
+import flash.events.Event;
+
+public class ApplicationEvent extends Event
 	{
 		public static var SAVE_TYPE:String = "SAVE_TYPE";
 

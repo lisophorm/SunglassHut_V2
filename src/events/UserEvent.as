@@ -1,8 +1,8 @@
 package events
 {
-	import flash.events.Event;
-	
-	public class UserEvent extends Event
+import flash.events.Event;
+
+public class UserEvent extends Event
 	{
 		public static var URN:String = "URN";
 		public static var SCORE:String = "SCORE";

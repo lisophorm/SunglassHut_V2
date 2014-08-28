@@ -1,15 +1,14 @@
 package model
 {
-	import air.net.URLMonitor;
-	
-	import flash.desktop.NativeApplication;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.events.StatusEvent;
-	import flash.net.URLRequest;
+import air.net.URLMonitor;
 
+import flash.desktop.NativeApplication;
+import flash.events.Event;
+import flash.events.EventDispatcher;
+import flash.events.StatusEvent;
+import flash.net.URLRequest;
 
-	public class MonitorConnection extends EventDispatcher
+public class MonitorConnection extends EventDispatcher
 	{
 		
 		public static var EVENT_USER_IDLE_TIMEOUT:String = "EVENT_USER_IDLE_TIMEOUT";

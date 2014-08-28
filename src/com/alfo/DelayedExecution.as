@@ -1,10 +1,10 @@
 package com.alfo
 {
-	import flash.events.Event;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
-	
-	public class DelayedExecution
+import flash.events.Event;
+import flash.events.TimerEvent;
+import flash.utils.Timer;
+
+public class DelayedExecution
 	{
 		private var
 		_obj:Object,
@@ -49,7 +49,7 @@ package com.alfo
 		{
 			_func.apply(_obj, _args);
 		}
-		public function stop() {
+		public function stop():void {
 			t.stop();
 		}
 	}

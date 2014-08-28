@@ -1,8 +1,8 @@
 package com.alfo.utils
 {
-	import flash.events.Event;
-	
-	public class GeoUtilEvent extends Event
+import flash.events.Event;
+
+public class GeoUtilEvent extends Event
 	{
 		public static const LOCATION_UPDATED:String="locationupdated";
 		public static const GPS_ENABLED:String="gpsenabled";

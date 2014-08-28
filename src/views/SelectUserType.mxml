@@ -3,111 +3,102 @@
 		xmlns:s="library://ns.adobe.com/flex/spark" creationComplete="init(event)" removedFromStage="view1_removedFromStageHandler(event)" xmlns:components="views.components.*" xmlns:mx="library://ns.adobe.com/flex/mx">
 	<fx:Script>
 		<![CDATA[
-			import com.alfo.UserObject;
-			import com.alfo.res.Resource;
-			import com.alfo.utils.FTPCopy;
-			
-			import mx.events.FlexEvent;
-			import mx.validators.Validator;
-			
-			import events.KioskError;
-			import events.KioskEvent;
-			import events.UserEvent;
-			import events.UserObjectEvent;
-			import events.ViewEvent;
-			
-			
-			protected var validatorArr:Array;
-			protected var alfo:UserObject;
-			
-			var timer:Timer;
-			
-			[Bindable]
-			private var groupWidth:Number;
-			
-			
-			protected function init( e:FlexEvent = null ):void
-			{
-				groupWidth=normalbut.width;
-				//this.navigator.addEventListener(UserObjectEvent.STATUS_CHANGE,checkNetStatus);
-				trace("opening  welcome screen");
-				alfo=UserObject.getInstance();
-				
-				
-				validatorArr = new Array();
-				validatorArr.push(validateTerms);
-				//checkNetStatus();
-				//validatorArr.push(validateMarketing);
-				if(Capabilities.screenDPI>300) {
-					rezScreen.scaleX=rezScreen.scaleY=1.3;
-				}
-				
-				this.navigator.addEventListener(UserObjectEvent.STATUS_CHANGE,checkNetStatus);
-				
-			}
-			protected function checkNetStatus(e:UserObjectEvent) {
-				trace("net status event inside userselect");
-				if(alfo.isConnected) {
-					faceBtn.visible=true;
-					faceSpacer.visible=true;
-					faceBtn.includeInLayout=true;
-					faceSpacer.includeInLayout=true;
-					normalbut.label="I DON’T HAVE A FACEBOOK ACCOUNT";
-				} else {
-					faceBtn.visible=false;
-					faceSpacer.visible=false;
-					faceBtn.includeInLayout=false;
-					faceSpacer.includeInLayout=false;
-					normalbut.label="REGISTER USING EMAIL";
-				}
-			}
-			protected function isValid():Boolean
-			{
-				var validatorErrorArray:Array = Validator.validateAll(validatorArr);
-				if(validatorErrorArray.length !=0) {
-					this.navigator.dispatchEvent( new KioskError(KioskError.ERROR, "You must agree to the terms and conditions in order to proceed", "ERROR"));
-				}
-				return validatorErrorArray.length == 0;
-			}
-			
-			protected function facebook(e:Event=null):void
-			{
-				if (isValid())
-				{  
-					this.parentApplication.dispatchEvent( new UserEvent( UserEvent.OPTIN_TERMS, termsCheck.selected ? "true" : "false" ))
-					//this.parentApplication.dispatchEvent( new UserEvent( UserEvent.OPTIN_MARKETING, marketCheck.selected ? "true" : "false" ))
-					this.navigator.dispatchEvent( new ViewEvent( ViewEvent.LOCATION_FACEBOOK ));
-				}
-			}
-			protected function standard(e:Event=null):void
-			{
-				if (isValid())
-				{
-					this.parentApplication.dispatchEvent( new UserEvent( UserEvent.OPTIN_TERMS, termsCheck.selected ? "true" : "false" ))
-					//this.parentApplication.dispatchEvent( new UserEvent( UserEvent.OPTIN_MARKETING, marketCheck.selected ? "true" : "false" ))
-					this.navigator.dispatchEvent( new ViewEvent( ViewEvent.LOCATION_STANDARD_REGISTRATION ));
-				}
-			}
-			
-			protected function tandcd_clickHandler(event:MouseEvent):void
-			{
-				this.navigator.dispatchEvent(new KioskEvent(KioskEvent.TERMS_NOTIFY));
-			}
-			
-			protected function view1_removedFromStageHandler(event:Event):void
-			{
-				this.navigator.removeEventListener(UserObjectEvent.STATUS_CHANGE,checkNetStatus);
-				trace("clising welcome screen");
-				
-			}
-			
-			protected function extraCheck_clickHandler(event:MouseEvent):void
-			{
-				alfo.extraterms=!extraCheck.selected;
-				
-			}
-			
-		]]>
+        import com.alfo.UserObject;
+        import com.alfo.res.Resource;
+
+        import events.KioskError;
+        import events.KioskEvent;
+        import events.UserEvent;
+        import events.UserObjectEvent;
+        import events.ViewEvent;
+
+        import mx.events.FlexEvent;
+        import mx.validators.Validator;
+
+        protected var validatorArr:Array;
+        protected var alfo:UserObject;
+
+        var timer:Timer;
+
+        [Bindable]
+        private var groupWidth:Number;
+
+
+        protected function init(e:FlexEvent = null):void {
+            groupWidth = normalbut.width;
+            //this.navigator.addEventListener(UserObjectEvent.STATUS_CHANGE,checkNetStatus);
+            trace("opening  welcome screen");
+            alfo = UserObject.getInstance();
+
+
+            validatorArr = new Array();
+            validatorArr.push(validateTerms);
+            //checkNetStatus();
+            //validatorArr.push(validateMarketing);
+            if (Capabilities.screenDPI > 300) {
+                rezScreen.scaleX = rezScreen.scaleY = 1.3;
+            }
+
+            this.navigator.addEventListener(UserObjectEvent.STATUS_CHANGE, checkNetStatus);
+
+        }
+
+        protected function checkNetStatus(e:UserObjectEvent) {
+            trace("net status event inside userselect");
+            if (alfo.isConnected) {
+                faceBtn.visible = true;
+                faceSpacer.visible = true;
+                faceBtn.includeInLayout = true;
+                faceSpacer.includeInLayout = true;
+                normalbut.label = "I DON’T HAVE A FACEBOOK ACCOUNT";
+            } else {
+                faceBtn.visible = false;
+                faceSpacer.visible = false;
+                faceBtn.includeInLayout = false;
+                faceSpacer.includeInLayout = false;
+                normalbut.label = "REGISTER USING EMAIL";
+            }
+        }
+
+        protected function isValid():Boolean {
+            var validatorErrorArray:Array = Validator.validateAll(validatorArr);
+            if (validatorErrorArray.length != 0) {
+                this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, "You must agree to the terms and conditions in order to proceed", "ERROR"));
+            }
+            return validatorErrorArray.length == 0;
+        }
+
+        protected function facebook(e:Event = null):void {
+            if (isValid()) {
+                this.parentApplication.dispatchEvent(new UserEvent(UserEvent.OPTIN_TERMS, termsCheck.selected ? "true" : "false"))
+                //this.parentApplication.dispatchEvent( new UserEvent( UserEvent.OPTIN_MARKETING, marketCheck.selected ? "true" : "false" ))
+                this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_FACEBOOK));
+            }
+        }
+
+        protected function standard(e:Event = null):void {
+            if (isValid()) {
+                this.parentApplication.dispatchEvent(new UserEvent(UserEvent.OPTIN_TERMS, termsCheck.selected ? "true" : "false"))
+                //this.parentApplication.dispatchEvent( new UserEvent( UserEvent.OPTIN_MARKETING, marketCheck.selected ? "true" : "false" ))
+                this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_STANDARD_REGISTRATION));
+            }
+        }
+
+        protected function tandcd_clickHandler(event:MouseEvent):void {
+            this.navigator.dispatchEvent(new KioskEvent(KioskEvent.TERMS_NOTIFY));
+        }
+
+        protected function view1_removedFromStageHandler(event:Event):void {
+            this.navigator.removeEventListener(UserObjectEvent.STATUS_CHANGE, checkNetStatus);
+            trace("clising welcome screen");
+
+        }
+
+        protected function extraCheck_clickHandler(event:MouseEvent):void {
+            alfo.extraterms = !extraCheck.selected;
+
+        }
+        ]]>
 	</fx:Script>
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->

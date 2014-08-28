@@ -1,17 +1,15 @@
 package com.alfo
 {
-	import flash.display.Sprite;
-	import flash.events.StatusEvent;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
-	
-	import mx.rpc.events.FaultEvent;
-	import mx.rpc.events.ResultEvent;
-	import mx.rpc.http.HTTPService;
-	
+import flash.display.Sprite;
+import flash.events.StatusEvent;
+import flash.events.TimerEvent;
+import flash.utils.Timer;
 
-	
-	public class CleverUrlMonitor extends Sprite
+import mx.rpc.events.FaultEvent;
+import mx.rpc.events.ResultEvent;
+import mx.rpc.http.HTTPService;
+
+public class CleverUrlMonitor extends Sprite
 	{
 		public var idleTime:Number=30000;
 		
@@ -35,30 +33,30 @@ package com.alfo
 			checkingService.addEventListener(FaultEvent.FAULT,ko);
 			currentURL=theUrl;
 		}
-		private function ok(e:ResultEvent) {
+		private function ok(e:ResultEvent):void {
 			available=true;
 			var stato:StatusEvent=new StatusEvent(StatusEvent.STATUS);
 			dispatchEvent(stato);
 		
 		}
-		private function ko(e:FaultEvent) {
+		private function ko(e:FaultEvent):void {
 			available=false;
 			var stato:StatusEvent=new StatusEvent(StatusEvent.STATUS);
 			dispatchEvent(stato);
 		}
-		private function checkNetwork(e:TimerEvent=null) {
+		private function checkNetwork(e:TimerEvent=null):void {
 			checkingService.url=currentURL+"?gino="+Math.random().toString();
 			checkingService.send();
 		}
-		public function start() {
+		public function start():void {
 			checkStatus=new Timer(idleTime);
 			checkStatus.addEventListener(TimerEvent.TIMER,checkNetwork);
 			checkStatus.start();
 		}
-		public function stop() {
+		public function stop():void {
 			checkStatus.stop();
 		}
-		public function checkIt() {
+		public function checkIt():void {
 			checkNetwork();
 		}
 	}

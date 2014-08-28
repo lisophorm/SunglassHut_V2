@@ -17,5 +17,17 @@ package com.alfo.res
         [Embed(source="/assets/images/nophoto.jpg")]
         [Bindable]
         public static var NO_PHOTO : Class;
+
+        [Embed(source="/assets/images/logo.png")]
+    [Bindable]
+    public static var LOGO : Class;
+
+        [Embed(source="/assets/images/logo.png")]
+        [Bindable]
+        public static var BUTTON_NORMAL : Class;
+
+        [Embed(source="/assets/images/logo.png")]
+        [Bindable]
+        public static var BUTTON_PRESSED : Class;
 	}
 }

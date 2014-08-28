@@ -1,24 +1,22 @@
 package com.lia.documents {
-	import fl.controls.Button;
-	import fl.controls.TextArea;
+import com.lia.display.Poller;
 
-	import com.lia.display.Poller;
+import flash.display.Sprite;
+import flash.events.Event;
+import flash.events.MouseEvent;
+import flash.net.URLLoader;
+import flash.net.URLRequest;
+import flash.net.URLRequestMethod;
+import flash.net.URLVariables;
+import flash.text.TextFormat;
 
-	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.net.URLLoader;
-	import flash.net.URLRequest;
-	import flash.net.URLRequestMethod;
-	import flash.net.URLVariables;
-	import flash.text.TextFormat;
-
-	/**
+/**
 	 * @author Shane McCartney
 	 */
 	public class AESFlashToPHPDemo extends Sprite {
 
-		private var encryptUrlLoader : URLLoader = new URLLoader();		private var decryptUrlLoader : URLLoader = new URLLoader();
+		private var encryptUrlLoader : URLLoader = new URLLoader();
+		private var decryptUrlLoader : URLLoader = new URLLoader();
 
 		public var keyInputTextField : TextArea;
 		public var encryptInputTextField : TextArea;
@@ -60,7 +58,8 @@ package com.lia.documents {
 			encryptButton.addEventListener(MouseEvent.MOUSE_DOWN, onEncryptMouseDown);
 			decryptButton.addEventListener(MouseEvent.MOUSE_DOWN, onDecryptMouseDown);
 			
-			encryptUrlLoader.addEventListener(Event.COMPLETE, onEncryptDataLoaded);			decryptUrlLoader.addEventListener(Event.COMPLETE, onDecryptDataLoaded);
+			encryptUrlLoader.addEventListener(Event.COMPLETE, onEncryptDataLoaded);
+			decryptUrlLoader.addEventListener(Event.COMPLETE, onDecryptDataLoaded);
 		}
 
 		private function onDecryptDataLoaded(event : Event) : void {
