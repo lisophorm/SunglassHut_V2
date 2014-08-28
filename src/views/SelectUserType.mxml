@@ -126,7 +126,7 @@
 		<s:BitmapImage width="100%" height="100%" scaleMode="zoom" smooth="true" smoothingQuality="high" source="{Resource.BACKGROUND}"/>
 		
 		<s:VGroup horizontalAlign="center" verticalAlign="middle" width="100%" height="100%">
-			<s:BitmapImage source="@Embed('assets/images/logo.png')"/>
+			<s:BitmapImage source="@Embed('/assets/images/logo.png')"/>
 			<s:Spacer height="45" />
 			<s:VGroup id="rezScreen" horizontalAlign="center">
 				<s:VGroup horizontalAlign="center" >

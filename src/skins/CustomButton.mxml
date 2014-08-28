@@ -114,7 +114,7 @@ in accordance with the terms of the license agreement accompanying it.
 			 color="0xED1C24">
 	</s:Label>
 		<s:Spacer width="5" />
-		<s:BitmapImage source="@Embed('assets/images/button/button_normal.png')" includeIn="up,disabled"  />
-		<s:BitmapImage source="@Embed('assets/images/button/button_pressed.png')" includeIn="down" />
+		<s:BitmapImage source="@Embed('/assets/images/button/button_normal.png')" includeIn="up,disabled"  />
+		<s:BitmapImage source="@Embed('/assets/images/button/button_pressed.png')" includeIn="down" />
 	</s:HGroup>
 </s:SparkButtonSkin>
