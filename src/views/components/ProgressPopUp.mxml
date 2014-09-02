@@ -49,9 +49,7 @@
 		
 	
 	<s:Rect top="0" bottom="0" left="0" right="0"
-			id="borderRect"
-
-			>
+			id="borderRect">
 		<s:stroke>
 			<s:SolidColorStroke id="borderStroke" color="#ED1C24" weight="0"/>
 		</s:stroke>
@@ -73,10 +71,10 @@
 	</s:Rect>
 	<s:BorderContainer width="574" height="259" backgroundAlpha="0" borderVisible="false" >
 		<s:TextArea x="12" width="574" height="259" borderVisible="false" fontFamily="Font Rg CFF" contentBackgroundAlpha="0" color="#ffffff"
-					fontSize="36" editable="false" selectable="false" text="{message}" fontWeight="bold" textAlign="center" verticalAlign="middle" skinClass="spark.skins.spark.TextAreaSkin"/>
+					fontSize="36" editable="false" selectable="false" text="{message}" textAlign="center" verticalAlign="middle" skinClass="spark.skins.spark.TextAreaSkin"/>
 	</s:BorderContainer>
 	</s:Group>
 
 
 
-</s:Group>
+        </s:Group>

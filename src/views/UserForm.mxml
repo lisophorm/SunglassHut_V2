@@ -64,14 +64,7 @@
                 theUser.email = userEmail.text;
                 theUser.mobile = userMobile.text;
 
-                if (theUser.isConnected) {
-                    saveData.send({urn: this.currentURN,
-                        firstname: userFirstName.text, lastname: userLastName.text, mobile: userMobile.text, current_location: theUser.current_location,
-                        email: userEmail.text, extraterms: theUser.extraterms ? 1 : 0 });
-                } else {
-                    goBatch();
-                }
-                //	save();
+
             }
         }
 
@@ -158,19 +151,19 @@
 					<s:FormLayout/>
 				</s:layout>
 				<s:FormItem fontWeight="normal" label="First name:" backgroundAlpha="0"  >
-					<s:TextInput id="userFirstName" text="" autoCapitalize="word" autoCorrect="false"  enter="{userLastName.setFocus()}" />
+					<s:TextInput id="userFirstName" text="Alfonso" autoCapitalize="word" autoCorrect="false"  enter="{userLastName.setFocus()}" />
 				</s:FormItem>
 				
 				<s:FormItem label="Surname:">
-					<s:TextInput id="userLastName" autoCapitalize="word" autoCorrect="false" text="" enter="{userEmail.setFocus()}"  />
+					<s:TextInput id="userLastName" autoCapitalize="word" autoCorrect="false" text="Florio" enter="{userEmail.setFocus()}"  />
 				</s:FormItem>
 				
 				<s:FormItem label="Email:" styleName="emailFormLabel" >
-					<s:TextInput id="userEmail"  autoCorrect="false" text="" enter="{userMobile.setFocus()}" softKeyboardType="email"  />
+					<s:TextInput id="userEmail"  autoCorrect="false" text="lisophorm@gmail.com" enter="{userMobile.setFocus()}" softKeyboardType="email"  />
 				</s:FormItem>
 				
 				<s:FormItem label="Postcode:">
-					<s:TextInput id="userMobile" autoCapitalize="all" autoCorrect="false" paddingLeft="20" enter="{submit()}" softKeyboardType="default"  />
+					<s:TextInput id="userMobile" autoCapitalize="all" autoCorrect="false" text="N15 3rg" paddingLeft="20" enter="{submit()}" softKeyboardType="default"  />
 				</s:FormItem>
 				<s:Spacer height="30" />
 				<s:HGroup width="100%" horizontalAlign="center">

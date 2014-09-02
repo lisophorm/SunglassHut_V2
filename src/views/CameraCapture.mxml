@@ -11,6 +11,9 @@
         import com.alfo.utils.FTPCopy;
         import com.alfo.utils.StringUtils;
 
+
+        import com.alfo.utils.Uploader;
+
         import events.KioskError;
         import events.KioskProgressEvent;
         import events.UploadResultEvent;
@@ -95,13 +98,15 @@
         private var sizeDefined:Boolean = false;
         private var squareDims:Rectangle = new Rectangle(0, 0, 0, 0);
 
-        var theJPG:JPGAsyncEncoder = new JPGAsyncEncoder(85);
+        private var theJPG:JPGAsyncEncoder = new JPGAsyncEncoder(85);
+
+        private var iosLoader:Loader;
 
 
         private var ftpCopy:FTPCopy;
 
         function onCompletePhoto(event:Event):void {
-
+            trace("i am here!");
             photoBitmaps[currentPhoto] = DisplayUtils.createThumb(Bitmap(LoaderInfo(event.target).content).bitmapData, 620, 616, Alignment.MIDDLE, true).bitmapData;
             completedPhotos[currentPhoto] = true;
             //photoBitmaps[0] = Bitmap(LoaderInfo(event.target).content).bitmapData;
@@ -252,11 +257,29 @@
 
         //when the selection is complete upload it
         protected function takePhotoCompleteHandler(event:MediaEvent = null):void {
-            photoLoader.load(new URLRequest(event.data.file.url));
+            trace("photo taken ,now IOS jump")
+            var mediaPromise:MediaPromise = event.data;
+
+            if (mediaPromise.file == null) {
+                iosLoader = new Loader();
+                iosLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, onCompletePhoto);
+                iosLoader.loadFilePromise(mediaPromise);
+                trace("Loading ios photo");
+            } else {
+                photoLoader.load(new URLRequest(event.data.file.url));
+            }
 
 
         }
 
+        private function iosLoaderComplete(event:Event):void {
+            var loaderInfo:LoaderInfo = event.target as LoaderInfo;
+
+            if (CameraRoll.supportsAddBitmapData) {
+
+
+            }
+        }
 
         private function onEncodingProgress(e:ProgressEvent):void {
             jpgprogress.text = Math.round(e.bytesLoaded / e.bytesTotal * 100).toString() + "%";
@@ -292,27 +315,22 @@
                 fs.close();
             }
 
-            ftpCopy = new FTPCopy(destFile, this.parentApplication.localURL + "upload.php");
+            ftpCopy = new FTPCopy(destFile, this.parentApplication.localURL + "upload.php");/*
             ftpCopy.addEventListener(IOErrorEvent.IO_ERROR, handleLocalError);
-            ftpCopy.addEventListener(UploadResultEvent.SUCCESS, onCompleteLocal);
-            ftpCopy.addEventListener(UploadResultEvent.ERROR, onErrorUpload);
-            ftpCopy.start();
+             ftpCopy.addEventListener(UploadResultEvent.SUCCESS, onCompleteLocal);
+             ftpCopy.addEventListener(UploadResultEvent.ERROR, onErrorUpload);
+             ftpCopy.start();*/
 
 
-            var moveFile:File = File.documentsDirectory.resolvePath(theUser.tempPath + File.separator + theUser.destFileName);
-            try {
-                destFile.copyTo(moveFile, true);
-            } catch (e:Error) {
-                trace("******** error saving file" + e.message);
-                this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, e.message, "I/O error, check SD Card available space"));
-            }
-
-            destFile = File.documentsDirectory.resolvePath(theUser.tempPath + File.separator + theUser.destFileName);
-
-            //this.stage.setAspectRatio(StageAspectRatio.LANDSCAPE);
-            this.stage.setOrientation(StageOrientation.DEFAULT);
 
 
+            this.stage.setAspectRatio(StageAspectRatio.LANDSCAPE);
+            //this.stage.setOrientation(StageOrientation.DEFAULT);
+
+            uploadPhoto();
+            trace("encodingComplete");
+            photoPrinted = true;
+            complete();
         }
 
         private function onErrorUpload(e:UploadResultEvent) {
@@ -359,19 +377,14 @@
         }
 
         protected function uploadPhoto():void {
-            urlRequest = new URLRequest(this.parentApplication.baseURL + "uploader.php");
-            if (theUser.isBatch || theUser.isConnected == false) {
-                savePhotoLocally();
-            } else {
-                destFile.addEventListener(Event.COMPLETE, uploadCompleteHandler);
-                destFile.addEventListener(Event.OPEN, openUploadHandler);
-                destFile.addEventListener(ProgressEvent.PROGRESS, updateProgress);
-                destFile.addEventListener(IOErrorEvent.IO_ERROR, onFileError);
-                destFile.upload(urlRequest);
+
+                Uploader.instance.addFile(destFile);
+                Uploader.instance.start(this.parentApplication.baseURL + "uploader.php");
+
                 fileTransfer = true;
 
-                this.navigator.dispatchEvent(new KioskProgressEvent(KioskProgressEvent.NOTIFY, "Uploading file"));
-            }
+                complete();
+
         }
 
         protected function onFileError(error:IOErrorEvent):void {
@@ -448,13 +461,9 @@
 
         protected function complete(stringa:* = null):void {
             trace("complete! published:" + photoPublished.toString() + " sent to print:" + photoPrinted.toString());
-            if (photoPublished && photoPrinted) {
-                trace("photo is published");
-                //if(ftpCopy.complete && photoPublished) {
-                this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_GAME_COMPLETE));
-            } else {
-                trace("photo is not published");
-            }
+
+            this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_GAME_COMPLETE));
+
         }
 
 
@@ -521,7 +530,6 @@
             theJPG.removeEventListener(ProgressEvent.PROGRESS, onEncodingProgress);
             theJPG.removeEventListener(Event.COMPLETE, onEncodeComplete);
             theJPG = null;
-            8
             theBitmapAsset = null;
             photoBitmaps[0] = null;
             photoBitmaps[1] = null;
@@ -605,6 +613,11 @@
             this.stage.setAspectRatio(StageAspectRatio.LANDSCAPE);
             backgroundImg.source = Resource.BACKGROUND;
         }
+
+        private function hGroup1_updateCompleteHandler(event:FlexEvent):void {
+            trace("photo group updated width is:"+event.currentTarget.width)
+
+        }
         ]]>
 	</fx:Script>
 	
@@ -623,7 +636,7 @@
 		<s:VGroup includeIn="pleasewait" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
 			<s:BusyIndicator horizontalCenter="0" verticalCenter="0" width="100" height="100" rotationInterval="200" symbolColor="#ED1C24" id="busone" />
 			<s:Label text="Processing image please wait.." color="#FFFFFF" />
-			<s:Label id="jpgprogress" text="" fontWeight="bold" color="#FFFFFF" />
+			<s:Label id="jpgprogress" text=""  color="#FFFFFF" />
 	
 		</s:VGroup>
 
@@ -645,7 +658,7 @@
 		<s:VGroup styleName="Game" horizontalAlign="center" verticalAlign="middle" width="100%" height="592" includeIn="default,facebook">
 			<s:VGroup horizontalAlign="center" width="100%" height="100%">
 				<s:Label id="statusText" color="#009BD7" />
-				<s:HGroup horizontalAlign="center" verticalAlign="middle">
+				<s:HGroup horizontalAlign="center" verticalAlign="middle" updateComplete="hGroup1_updateCompleteHandler(event)">
 					<s:VGroup width="33%" height="100%" horizontalAlign="center">
 						<s:BitmapImage id="photo1Preview" width="100%"   source="{Resource.NO_PHOTO}" ready="photo1Preview_readyHandler(event)"    complete="photo1Preview_completeHandler(event)" fillMode="scale" scaleMode="zoom" smooth="true" />
 						<s:Button id="takePhotoButton" horizontalCenter="0" label="TAKE PHOTO 1"  click="takePhoto(0)"/>

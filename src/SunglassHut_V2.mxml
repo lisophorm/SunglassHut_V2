@@ -10,6 +10,7 @@
         import com.alfo.UserObject;
         import com.alfo.utils.GeoUtilEvent;
         import com.alfo.utils.GeoUtils;
+        import com.alfo.utils.SQLConnectionWrapper;
 
         import events.ApplicationEvent;
         import events.KioskError;
@@ -120,8 +121,10 @@
 
         protected function onApplicationComplete(e:Event = null):void {
 
+            SQLConnectionWrapper.instance.init();
+
             trace("initialize display list");
-            traceDisplayList(this.stage);
+
             theUser = UserObject.getInstance();
             theUser.addEventListener(UserObjectEvent.ERROR, handleOfflineError);
 
@@ -146,7 +149,7 @@
                 geoUtil = new GeoUtils();
                 geoUtil.init();
                 geoUtil.checkForGPS();
-                geoUtil.addEventListener(GeoUtilEvent.LOCATION_UPDATED, updateLocation);
+                //geoUtil.addEventListener(GeoUtilEvent.LOCATION_UPDATED, updateLocation);
             }
 
 
