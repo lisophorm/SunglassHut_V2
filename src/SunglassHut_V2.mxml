@@ -11,6 +11,7 @@
         import com.alfo.utils.GeoUtilEvent;
         import com.alfo.utils.GeoUtils;
         import com.alfo.utils.SQLConnectionWrapper;
+        import com.alfo.utils.Uploader;
 
         import events.ApplicationEvent;
         import events.KioskError;
@@ -121,7 +122,7 @@
 
         protected function onApplicationComplete(e:Event = null):void {
 
-            SQLConnectionWrapper.instance.init();
+            Uploader.instance.toString();
 
             trace("initialize display list");
 
@@ -143,14 +144,6 @@
             cleverUrlMonitor = new CleverUrlMonitor(baseURL + "ping.php");
             cleverUrlMonitor.addEventListener(StatusEvent.STATUS, announceStatus);
             cleverUrlMonitor.start();
-
-
-            if (GeoUtils.isGPSSupported()) {
-                geoUtil = new GeoUtils();
-                geoUtil.init();
-                geoUtil.checkForGPS();
-                //geoUtil.addEventListener(GeoUtilEvent.LOCATION_UPDATED, updateLocation);
-            }
 
 
             //Display connect symbol
@@ -490,7 +483,6 @@
             alertbox.exitFunction = exitFunction;
             PopUpManager.addPopUp(alertbox, this, false);
             PopUpManager.centerPopUp(alertbox);
-
         }
 
         protected function showModal(msg:String = "", title:String = "", exitFunction:Function = null, retryFunction:Function = null):void {

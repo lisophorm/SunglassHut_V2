@@ -3,12 +3,13 @@
 		xmlns:s="library://ns.adobe.com/flex/spark"
 		xmlns:mx="library://ns.adobe.com/flex/mx"
 		addedToStage="onAddedToStage()"
-		removedFromStage="removed(event)" backgroundColor="#000000">
+     backgroundColor="#000000">
 	<fx:Script>
 		<![CDATA[
         import com.alfo.DelayedExecution;
         import com.alfo.UserObject;
         import com.alfo.res.Resource;
+        import com.alfo.utils.SQLConnectionWrapper;
 
         import events.KioskError;
         import events.UserEvent;
@@ -30,9 +31,8 @@
 
         protected function onAddedToStage(e:Event = null):void {
             theUser = UserObject.getInstance();
-            this.navigator.addEventListener(UserObjectEvent.STATUS_CHANGE, checkNetStatus);
-            theUser.facebook = false;
 
+            theUser.facebook = false;
 
             if (data != null) {
                 this.currentURN = data.urn;
@@ -58,13 +58,16 @@
             theUser.isBatch = false;
             var validatorErrorArray:Array = Validator.validateAll(validatorArr);
             var isValidForm:Boolean = validatorErrorArray.length == 0;
+            var outputString:String;
             if (isValidForm) {
                 theUser.firstname = userFirstName.text;
                 theUser.lastname = userLastName.text;
                 theUser.email = userEmail.text;
                 theUser.mobile = userMobile.text;
-
-
+                trace("hello");
+                trace(outputString);
+                this.navigator.dispatchEvent(new UserEvent(UserEvent.REGISTERED, "classic"));
+                this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_NON_FACEBOOK_REGISTERED));
             }
         }
 
@@ -81,43 +84,6 @@
             //this.navigator.dispatchEvent( new ViewEvent( ViewEvent.LOCATION_RESTART ));
 
         }
-
-
-        protected function save(e:ResultEvent = null):void {
-            // -> Do we need to send an isRegistered? We should divide Facebook and Direct registration perhaps
-            if (e.result.result == "OK") {
-                theUser.isBatch = false;
-                this.navigator.dispatchEvent(new UserEvent(UserEvent.REGISTERED, "classic"));
-                this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_NON_FACEBOOK_REGISTERED));
-            } else {
-                this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, e.result.message.toString(), "COMMUNICATION ERROR"));
-
-            }
-        }
-
-        protected function error(e:FaultEvent):void {
-            //this.navigator.dispatchEvent(new KioskError(KioskError.MODAL, e.fault.message.toString(), "COMMUNICATION ERROR",goBatch,submit));
-            goBatch();
-        }
-
-        protected function goBatch(e:Event = null) {
-            theUser.isBatch = true;
-            this.navigator.dispatchEvent(new UserEvent(UserEvent.REGISTERED, "classic"));
-            this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_NON_FACEBOOK_REGISTERED));
-        }
-
-
-        protected function removed(event:Event):void {
-            trace("end of registration");
-            this.navigator.removeEventListener(UserObjectEvent.STATUS_CHANGE, checkNetStatus);
-
-        }
-
-        protected function checkNetStatus(e:UserObjectEvent):void {
-            if (e.netStatus) {
-            } else {
-            }
-        }
         ]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -133,9 +99,7 @@
 		<mx:PhoneNumberValidator id="validateMobile" minDigits="6" property="text"
 								 source="{userMobile}">
 		</mx:PhoneNumberValidator>
-		<s:HTTPService id="saveData" fault="error(event)" method="POST" result="save(event)"
-					   resultFormat="flashvars"
-					   url="{(this.parentApplication).baseURL+'register.php'}"/>
+
 	</fx:Declarations>
 	<s:BorderContainer width="100%" height="100%" borderVisible="false" backgroundAlpha="0">
 		<s:BitmapImage width="100%" height="100%" scaleMode="zoom" smooth="true" smoothingQuality="high" source="{Resource.BACKGROUND}"/>

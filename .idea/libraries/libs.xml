@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="libs">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/jpgencoder.swc!/" />
+      <root url="jar://$PROJECT_DIR$/libs/as3corelib.swc!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

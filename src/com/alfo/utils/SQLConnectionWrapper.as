@@ -4,19 +4,17 @@ import flash.data.SQLConnection;
 import flash.data.SQLResult;
 import flash.data.SQLStatement;
 import flash.errors.SQLError;
+import flash.events.EventDispatcher;
 import flash.events.SQLErrorEvent;
 import flash.events.SQLEvent;
 import flash.filesystem.File;
 import flash.net.Responder;
 
-public class SQLConnectionWrapper
+public class SQLConnectionWrapper extends EventDispatcher
 {
     private static const SINGLETON_INSTANCE:SQLConnectionWrapper = new SQLConnectionWrapper(SingletonLock);
 
     public var connection:SQLConnection;
-
-    private var selectRecord:SQLStatement;
-    private var insertRecordQuery:SQLStatement;
 
     public static var errorLog:String="";
     public static var lastQuery:String="";
@@ -29,26 +27,26 @@ public class SQLConnectionWrapper
 
     public function SQLConnectionWrapper(lock:Class)
     {
+        trace("SQLconnectionWrapper main class");
         // This ensures that only once instance of this class may be created and accessed
         if(lock != SingletonLock){
             throw new Error("Class Cannot Be Instantiated: Use SQLConnectionWrapper.instance");
         }
-
         createDatabase();
+
     }
 
-    public function init():void {
-        trace("HELLOOOWWW SQLLITE CLASS");
-    }
+
 
     private function createDatabase():void
     {
         // This creates an SQLConnection object , which can be accessed publicly so that event listeners can be defined for it
         connection = new SQLConnection();
         connection.addEventListener( SQLEvent.OPEN, onSqlOpen );
-        connection.addEventListener( SQLErrorEvent.ERROR, onSqlOpen );
+
 
         var databaseFile:File = File.applicationStorageDirectory.resolvePath("database.db");
+        trace("database file:"+databaseFile.nativePath);
         connection.openAsync(databaseFile);
     }
 
@@ -56,8 +54,12 @@ public class SQLConnectionWrapper
         trace("sql database open!");
         var stat:SQLStatement = new SQLStatement();
         stat.sqlConnection = connection;
-        stat.text = "CREATE TABLE IF NOT EXISTS userdata (id INTEGER PRIMARY KEY AUTOINCREMENT, created DATETIME, modified DATETIME, vars TEXT,bin BLOB)";
+        stat.text = "CREATE TABLE IF NOT EXISTS userdata (id INTEGER PRIMARY KEY AUTOINCREMENT, created DATETIME, modified DATETIME, vars TEXT, status TEXT,url TEXT,filename TEXT,lastresult TEXT)";
         stat.execute(-1, new Responder(handleSuccess,handleFailure));
+    }
+
+    private function onSqlError(result:SQLErrorEvent) {
+
     }
 
     private function handleSuccess(result:SQLResult):void
@@ -73,32 +75,40 @@ public class SQLConnectionWrapper
         errorLog+=" - "+lastQuery;
     }
 
-    public function insertRecord(vars:String):SQLStatement {
-        if(!(insertRecordQuery is SQLStatement)) {
-            insertRecordQuery = new SQLStatement();
-            insertRecordQuery.sqlConnection = connection;
-            insertRecordQuery.text= "INSERT INTO userdata (vars,created,modified) VALUES (:vars,datetime(),datetime())";
+    public function totalRecords(tblName:String):SQLStatement {
+        var totalRecordQuery:SQLStatement = new SQLStatement();
+        totalRecordQuery.sqlConnection=connection;
+        totalRecordQuery.text = "SELECT count(*) as totalrows from "+tblName;
+        return totalRecordQuery;
+    }
 
-        }
-        insertRecordQuery.parameters[":vars"]=vars;
+    public function insertRecord(vars:String,url:String,filename:String):SQLStatement {
+
+            var insertRecordQuery:SQLStatement = new SQLStatement();
+            insertRecordQuery.sqlConnection = connection;
+            insertRecordQuery.text= "INSERT INTO userdata (vars,status,url,filename,created,modified) VALUES (:vars,:status,:url,:filename,datetime(),datetime())";
+
+
+            insertRecordQuery.parameters[":vars"]=vars;
+            insertRecordQuery.parameters[":status"]='QUEUED';
+            insertRecordQuery.parameters[":url"]=url;
+            insertRecordQuery.parameters[":filename"]=filename;
         return insertRecordQuery;
     }
 
-    public function getRecord(recordId:int):SQLStatement
+    public function getNextRecord():SQLStatement
     {
         // If selectRecord has not been instantiated, then create the instance with all the data that it needs
         // If it has been instantiated, then we can skip over this part and take advantage of the fact that it has now been cached
-        if(!(selectRecord is SQLStatement)){
-            selectRecord= new SQLStatement();
+
+            var selectRecord:SQLStatement= new SQLStatement();
             selectRecord.sqlConnection = connection;
             selectRecord.text =
-                    "SELECT record_id, description, is_active " +
-                    "FROM record_tbl " +
-                    "WHERE record_id = :recordId";
-        }
+                    "select * from userdata where status='QUEUED' order by modified";
+
         // This simply changes the one parameter that needs to be changed
         // Because recordId has already been declared as an int, this will be converted into an SQLite recognized integer
-        selectRecord.parameters[":recordId"] = recordId;
+
 
         return selectRecord;
     }

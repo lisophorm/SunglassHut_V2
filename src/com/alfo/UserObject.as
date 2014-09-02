@@ -16,7 +16,7 @@ public class UserObject extends Sprite
 		//public var urn:String;
 		
 		
-		public static var userXML:XML;
+		public static var userDataObj:Object;
 		
 		public var batchPath:String="specsavers_jpg_xml/";
 		
@@ -32,40 +32,40 @@ public class UserObject extends Sprite
 		
 		public function get photo2():String
 		{
-			return userXML.photo2;
+			return userDataObj.photo2;
 		}
 
 		public function set photo2(value:String):void
 		{
-			userXML.photo2 = value;
+			userDataObj.photo2 = value;
 		}
 
 		public function get photo1():String
 		{
-			return userXML.photo1;
+            return userDataObj.photo1;
 		}
 		
 		public function get hometown():String {
-			return userXML.hometown;
+			return userDataObj.hometown;
 		}
 		
 		public function set hometown(town:String):void {
-			userXML.hometown=town;
+			userDataObj.hometown=town;
 		}
 		
 		public function set extraterms(value:Boolean):void
 		{
 			if(value) {
-				userXML.extraterms = "1";
+				userDataObj.extraterms = "1";
 			} else {
-				userXML.extraterms = "0";
+				userDataObj.extraterms = "0";
 			}
 			
 		}
 		
 		public function get extraterms():Boolean
 		{
-			if(userXML.extraterms=="1") {
+			if(userDataObj.extraterms=="1") {
 				return true;
 			} else {
 				return false;
@@ -74,37 +74,37 @@ public class UserObject extends Sprite
 
 		public function set photo1(value:String):void
 		{
-			userXML.photo1 = value;
+			userDataObj.photo1 = value;
 		}
 
 		public function get photo3():String
 		{
-			return userXML.photo3;
+			return userDataObj.photo3;
 		}
 
 		public function set photo3(value:String):void
 		{
-			userXML.photo3 = value;
+            userDataObj.photo3 = value;
 		}
 
 		public function get current_location():String
 		{
-			return userXML.current_location;
+			return userDataObj.current_location;
 		}
 		
 		public function set location(value:String):void
 		{
-			userXML.location = value;
+			userDataObj.location = value;
 		}
 		
 		public function get location():String
 		{
-			return userXML.location;
+			return userDataObj.location;
 		}
 		
 		public function set current_location(value:String):void
 		{
-			userXML.current_location = value;
+			userDataObj.current_location = value;
 		}
 		
 		
@@ -115,23 +115,23 @@ public class UserObject extends Sprite
 				_instance.init();
 			} else {
 				trace("**************old instance");
-				trace(userXML.toXMLString());
-				trace("first name:"+userXML.firstname);
+				trace(userDataObj.toString());
+				trace("first name:"+userDataObj.firstname);
 			}
 			return _instance;
 		}
 		
 		public function init():void {
 			trace("***** init userobject");
-			userXML =new XML("<user/>");
+			userDataObj =new Object();
 			var now:Date= new Date();
-			userXML.added=convertASDateToMySQLTimestamp(now);
-			userXML.isConnected="1";
-			userXML.isBatch="0";
-			userXML.photo1="";
-			userXML.photo2="";
-			userXML.photo3="";
-			userXML.extraterms = "1";
+			userDataObj.added=convertASDateToMySQLTimestamp(now);
+			userDataObj.isConnected="1";
+			userDataObj.isBatch="0";
+			userDataObj.photo1="";
+			userDataObj.photo2="";
+			userDataObj.photo3="";
+			userDataObj.extraterms = "1";
 			trace("new userobject");
 			var workDirectory:File = File.documentsDirectory.resolvePath(batchPath);
 			trace("directory url:"+workDirectory.url);
@@ -149,87 +149,96 @@ public class UserObject extends Sprite
 		
 		public function eject():void {
 			trace("XML:");
-			trace(userXML.toXMLString());
+			trace(userDataObj.toXMLString());
 		}
 		
 		public function set urn(theURN:String):void {
-			userXML.urn=theURN;
+			userDataObj.urn=theURN;
 		}
 		public function get urn():String {
-			return userXML.urn;
+			return userDataObj.urn;
 		}
 		public function set token(thetoken:String):void {
-			userXML.token=thetoken;
+			userDataObj.token=thetoken;
 		}
 		public function get token():String {
-			return userXML.token;
+			return userDataObj.token;
 		}
 		public function set firstname(thefirstname:String):void {
-			userXML.firstname=thefirstname;
+			userDataObj.firstname=thefirstname;
 		}
 		public function get firstname():String {
-			return userXML.firstname;
+			return userDataObj.firstname;
 		}
 		public function set lastname(thelastname:String):void {
-			userXML.lastname=thelastname;
+			userDataObj.lastname=thelastname;
 		}
 		public function set mobile(themobile:String):void {
-			userXML.mobile=themobile;
+			userDataObj.mobile=themobile;
 		}
 		public function set email(theemail:String):void {
-			userXML.email=theemail;
+			userDataObj.email=theemail;
 		}
 		public function set fb_id(thefb_id:String):void {
-			userXML.fb_id=thefb_id;
+			userDataObj.fb_id=thefb_id;
 		}
 		public function set data_saved(thedata_saved:Boolean):void {
-			userXML.data_saved=thedata_saved?"1":"0";
+			userDataObj.data_saved=thedata_saved?"1":"0";
 		}
 		public function set facebook(thefacebook:Boolean):void {
-			userXML.facebook=thefacebook?"1":"0";
+			userDataObj.facebook=thefacebook?"1":"0";
 		}
 		public function set hasphoto(thehasphoto:Boolean):void {
-			userXML.hasphoto=thehasphoto?"1":"0";
+			userDataObj.hasphoto=thehasphoto?"1":"0";
 		}
 		public function set isConnected(theconnection:Boolean):void {
-			userXML.isConnected=theconnection?"1":"0";
+			userDataObj.isConnected=theconnection?"1":"0";
 		}
+
 		public function get isConnected():Boolean {
-			if(userXML.isConnected=="1") {
+			if(userDataObj.isConnected=="1") {
 				return true;
 			} else {
 				return false;
 			}
             return false;
 		}
+
 		public function set isBatch(thebatch:Boolean):void {
-			userXML.isBatch=thebatch?"1":"0";
+			userDataObj.isBatch=thebatch?"1":"0";
 		}
+
 		public function get isBatch():Boolean {
-			if(userXML.isBatch=="1") {
+			if(userDataObj.isBatch=="1") {
 				return true;
 			} else {
 				return false;
 			}
 		}
+
 		public function set destFileName(thedestFileName:String):void {
-			userXML.destFileName=thedestFileName;
+			userDataObj.destFileName=thedestFileName;
 		}
 		public function get destFileName():String {
-			return userXML.destFileName;
+			return userDataObj.destFileName;
 		}
+
+        public function get JSONobject():String {
+            trace("current jsonobject:"+JSON.stringify(userDataObj));
+            return JSON.stringify(userDataObj);
+        }
 		
 		public function saveXML():String {
-			var f:File = File.documentsDirectory.resolvePath(batchPath+userXML.urn+".xml");
+			var f:File = File.documentsDirectory.resolvePath(batchPath+userDataObj.urn+".xml");
 			trace("save xml");
-			trace("file:"+userXML.urn);
+			trace("file:"+userDataObj.urn);
 			trace("path:"+f.url);
 			var message:String;
 			var s:FileStream = new FileStream();
 			try
 			{
 				s.open(f,FileMode.WRITE);
-				s.writeUTFBytes(userXML.toXMLString());
+				s.writeUTFBytes(userDataObj.toXMLString());
 				message="OK";
 			} catch(e:Error) {
 				trace("error saving xml"+e.message);
@@ -242,15 +251,15 @@ public class UserObject extends Sprite
 		}
 		
 		private function convertASDateToMySQLTimestamp( d:Date ):String {
-			var s:String = d.fullYear + '-';
-			s += prependZero( d.month + 1 ) + '-';
-			s += prependZero( d.date ) + ' ';
-			
-			s += prependZero( d.hours ) + ':';
-			s += prependZero( d.minutes ) + ':';
-			s += prependZero( d.seconds );			
-			
-			return s;
+                var s:String = d.fullYear + '-';
+                s += prependZero( d.month + 1 ) + '-';
+                s += prependZero( d.date ) + ' ';
+
+                s += prependZero( d.hours ) + ':';
+                s += prependZero( d.minutes ) + ':';
+                s += prependZero( d.seconds );
+
+                return s;
 		}
 		
 		private function prependZero( n:Number ):String {
