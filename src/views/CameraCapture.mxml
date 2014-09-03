@@ -287,7 +287,7 @@
 
             var fileParts:Array = theUser.destFileName.split(".");
 
-            theUser.destFileName = fileParts[0] + "[" + numPhotos.value.toString() + "].jpg";
+            theUser.destFileName = fileParts[0] + "-" + numPhotos.value.toString() + ".jpg";
 
             destFile = File.documentsDirectory.resolvePath(theUser.spoolerPath + File.separator + theUser.destFileName);
             trace("destFileName " + theUser.destFileName);
@@ -310,7 +310,7 @@
                 fs.close();
             }
             if (writeSuccess) {
-                Uploader.instance.addFile(destFile, UserObject.getInstance().JSONobject, this.parentApplication.baseURL + "uploader.php");
+                Uploader.instance.addFile(theUser.destFileName, UserObject.getInstance().JSONobject, this.parentApplication.baseURL + "uploader.php");
                 //ftpCopy = new FTPCopy(destFile, this.parentApplication.localURL + "upload.php");/*
                 this.stage.setAspectRatio(StageAspectRatio.LANDSCAPE);
                 this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_GAME_COMPLETE));

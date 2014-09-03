@@ -23,11 +23,14 @@ public class Uploader extends EventDispatcher
     {
 
         private static var _totalFiles:Number;
-    private var files:Array;
+        private static var isRunning:Boolean;
+        private static var _currentID:Number;
+        private static var _status:String;
+        private var files:Array;
         private var totalSize:uint;
         private var uploadedSoFar:uint;
         private var currentFile:File;
-        public var url:String;
+
 
         private static const SINGLETON_INSTANCE:Uploader = new Uploader(SingletonLock);
 
@@ -40,7 +43,10 @@ public class Uploader extends EventDispatcher
         public function Uploader(lock:Class):void
         {
             trace("initialization of uploader");
+            var dir:File=File.documentsDirectory.resolvePath("specsavers_print");
+            if(dir.exists) {var files:Array=dir.getDirectoryListing();}
 
+            trace("files content:");
             if(lock != SingletonLock){
                 throw new Error("Class Cannot Be Instantiated: Use SQLConnectionWrapper.instance");
             }
@@ -48,6 +54,7 @@ public class Uploader extends EventDispatcher
             SQLConnectionWrapper.instance.connection.open();
             _totalFiles=0;
             totalSize = 0;
+
 
         }
         public function init():void {
@@ -61,10 +68,10 @@ public class Uploader extends EventDispatcher
         /*
          * This function starts the uploading process of all files that were not uploaded yet
          */
-        public function addFile(file:File,vars:String,url:String):void
+        public function addFile(file:String,vars:String,url:String):void
         {
             trace("adding file into uploader");
-            var statement:SQLStatement = SQLConnectionWrapper.instance.insertRecord(vars,url,file.nativePath);
+            var statement:SQLStatement = SQLConnectionWrapper.instance.insertRecord(vars,url,file);
             statement.execute(-1,new Responder(handleInsert,handleFailure));
         }
        private function handleInsert(result:SQLResult):void {
@@ -75,6 +82,9 @@ public class Uploader extends EventDispatcher
         private function handleRecordCount(result:SQLResult):void {
             _totalFiles=result.data[0].totalrows;
             trace("result count!"+_totalFiles);
+            if(_totalFiles>0) {
+                start();
+            }
         }
         private function handleFailure(error:SQLError):void
         {
@@ -85,6 +95,13 @@ public class Uploader extends EventDispatcher
          */
         public function start():void
         {
+            if(!isRunning) {
+                isRunning=true;
+                queryNextRecord();
+            }
+
+        }
+        private function queryNextRecord() {
             var statement:SQLStatement = SQLConnectionWrapper.instance.getNextRecord();
             statement.execute(-1,new Responder(uploadNext,handleFailure));
         }
@@ -93,11 +110,12 @@ public class Uploader extends EventDispatcher
          */
         private function uploadNext(result:SQLResult):void
         {
-            trace("within upload next");
-            if (files.length > 0)
+            trace("uploadNext");
+            _totalFiles=result.data.length;
+            if (result.data.length>0)
             {
-                currentFile = files.pop() as File;
-                uploadFile(currentFile,"gino");
+                _currentID=result.data[0].id;
+                uploadFile(result.data[0].filename,result.data[0].vars,result.data[0].url);
             }
             else
             {
@@ -107,8 +125,16 @@ public class Uploader extends EventDispatcher
         /*
          * Calls the upload() method for one File object
          */
-        private function uploadFile(file:File,jsonData:String):void
+        private function uploadFile(nativePath:String,jsonData:String,url:String):void
         {
+            var file:File=File.documentsDirectory.resolvePath("specsavers_print"+File.separator+nativePath);
+
+            if(file.exists) {
+                trace("the file is here!");
+            } else {
+                trace("no file found!!!"+file.nativePath);
+            }
+
             var vars:URLVariables=new URLVariables();
             vars.jsonData=jsonData;
             trace("sending uploadfile");
@@ -133,6 +159,7 @@ public class Uploader extends EventDispatcher
             var progressEvt:ProgressEvent = event;
             event.bytesLoaded = uploadedAmt;
             event.bytesTotal = totalSize;
+            trace("uppload progress "+event.bytesLoaded);
             dispatchEvent(event);
         }
 
@@ -150,14 +177,14 @@ public class Uploader extends EventDispatcher
         private function uploadComplete(event:Event):void
         {
             trace("current file uploaded");
-            uploadedSoFar += currentFile.size;
-            var newLocation:File = currentFile.parent.resolvePath("uploaded/" + currentFile.name);
-            uploadNext();
+
+
+            // UPDATE THE CURRENT RECORD
         }
         /*
          * Upload error callback.
          */
-        private function uploadError(event:Event):void
+        private function uploadError(event:SecurityErrorEvent):void
         {
             var errorStr:String = event.toString();
             trace("Error uploading: " + currentFile.nativePath + "\n  Message: " + errorStr);
