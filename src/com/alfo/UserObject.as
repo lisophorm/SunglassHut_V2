@@ -11,7 +11,7 @@ public class UserObject extends Sprite
 		private var _photo1:String;
 		private var _photo2:String;
 		private var _photo3:String;
-		
+
 		private static var _instance:UserObject=null;
 		//public var urn:String;
 		
@@ -125,7 +125,7 @@ public class UserObject extends Sprite
 			trace("***** init userobject");
 			userDataObj =new Object();
 			var now:Date= new Date();
-			userDataObj.added=convertASDateToMySQLTimestamp(now);
+			userDataObj.creationdate=convertASDateToMySQLTimestamp(now);
 			userDataObj.isConnected="1";
 			userDataObj.isBatch="0";
 			userDataObj.photo1="";
@@ -153,10 +153,10 @@ public class UserObject extends Sprite
 		}
 		
 		public function set urn(theURN:String):void {
-			userDataObj.urn=theURN;
+			userDataObj.uuid=theURN;
 		}
 		public function get urn():String {
-			return userDataObj.urn;
+			return userDataObj.uuid;
 		}
 		public function set token(thetoken:String):void {
 			userDataObj.token=thetoken;
@@ -165,19 +165,19 @@ public class UserObject extends Sprite
 			return userDataObj.token;
 		}
 		public function set firstname(thefirstname:String):void {
-			userDataObj.firstname=thefirstname;
+			userDataObj.firstName=thefirstname;
 		}
 		public function get firstname():String {
-			return userDataObj.firstname;
+			return userDataObj.firstName;
 		}
 		public function set lastname(thelastname:String):void {
-			userDataObj.lastname=thelastname;
+			userDataObj.lastName=thelastname;
 		}
 		public function set mobile(themobile:String):void {
-			userDataObj.mobile=themobile;
+			userDataObj.postcode=themobile;
 		}
 		public function set email(theemail:String):void {
-			userDataObj.email=theemail;
+			userDataObj.emailAddress=theemail;
 		}
 		public function set fb_id(thefb_id:String):void {
 			userDataObj.fb_id=thefb_id;
@@ -204,17 +204,7 @@ public class UserObject extends Sprite
             return false;
 		}
 
-		public function set isBatch(thebatch:Boolean):void {
-			userDataObj.isBatch=thebatch?"1":"0";
-		}
 
-		public function get isBatch():Boolean {
-			if(userDataObj.isBatch=="1") {
-				return true;
-			} else {
-				return false;
-			}
-		}
 
 		public function set destFileName(thedestFileName:String):void {
 			userDataObj.destFileName=thedestFileName;

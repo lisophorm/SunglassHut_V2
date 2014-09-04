@@ -43,8 +43,7 @@ public class Uploader extends EventDispatcher
         public function Uploader(lock:Class):void
         {
             trace("initialization of uploader");
-            var dir:File=File.documentsDirectory.resolvePath("specsavers_print");
-            if(dir.exists) {var files:Array=dir.getDirectoryListing();}
+
 
             trace("files content:");
             if(lock != SingletonLock){
@@ -101,7 +100,8 @@ public class Uploader extends EventDispatcher
             }
 
         }
-        private function queryNextRecord() {
+        private function queryNextRecord(result:SQLResult=null) {
+            trace("queryNextRecord Statement");
             var statement:SQLStatement = SQLConnectionWrapper.instance.getNextRecord();
             statement.execute(-1,new Responder(uploadNext,handleFailure));
         }
@@ -111,7 +111,13 @@ public class Uploader extends EventDispatcher
         private function uploadNext(result:SQLResult):void
         {
             trace("uploadNext");
-            _totalFiles=result.data.length;
+            if(result.data) {
+                _totalFiles=result.data.length;
+            } else {
+                _totalFiles=0;
+                dispatchEvent(new Event(Event.COMPLETE));
+            }
+
             if (result.data.length>0)
             {
                 _currentID=result.data[0].id;
@@ -147,7 +153,7 @@ public class Uploader extends EventDispatcher
             file.addEventListener(SecurityErrorEvent.SECURITY_ERROR, uploadError);
             file.addEventListener(HTTPStatusEvent.HTTP_STATUS, uploadError);
             file.addEventListener(IOErrorEvent.IO_ERROR, uploadError);
-            file.upload(urlRequest, "Filedata");
+            file.upload(urlRequest, "file");
         }
 
         /*
@@ -168,13 +174,19 @@ public class Uploader extends EventDispatcher
          */
         private function uploadServerData(event:DataEvent):void
         {
+            isRunning=false;
             trace("server data callback");
             trace(event.data);
+            var returnData:Object=JSON.parse(event.data.toString());
+            var statement:SQLStatement = SQLConnectionWrapper.instance.updateRecord(returnData.status,returnData.message,_currentID.toString());
+            statement.execute(-1,new Responder(queryNextRecord,handleFailure));
+
         }
+
         /*
          * Complete callback.
          */
-        private function uploadComplete(event:Event):void
+    private function uploadComplete(event:Event):void
         {
             trace("current file uploaded");
 

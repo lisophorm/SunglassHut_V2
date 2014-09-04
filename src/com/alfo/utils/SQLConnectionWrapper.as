@@ -82,6 +82,17 @@ public class SQLConnectionWrapper extends EventDispatcher
         return totalRecordQuery;
     }
 
+    public function updateRecord(status:String,lastresult:String,id:String):SQLStatement {
+
+        var updateRecordQuery:SQLStatement = new SQLStatement();
+        updateRecordQuery.sqlConnection = connection;
+        updateRecordQuery.text= "UPDATE userdata set modified=datetime(),status=:status,lastresult=:lastresult where id=:id";
+        updateRecordQuery.parameters[":status"]=status;
+        updateRecordQuery.parameters[":lastresult"]=lastresult;
+        updateRecordQuery.parameters[":id"]=id;
+        return updateRecordQuery;
+    }
+
     public function insertRecord(vars:String,url:String,filename:String):SQLStatement {
 
             var insertRecordQuery:SQLStatement = new SQLStatement();
@@ -105,6 +116,22 @@ public class SQLConnectionWrapper extends EventDispatcher
             selectRecord.sqlConnection = connection;
             selectRecord.text =
                     "select * from userdata where status='QUEUED' order by modified";
+
+        // This simply changes the one parameter that needs to be changed
+        // Because recordId has already been declared as an int, this will be converted into an SQLite recognized integer
+
+
+        return selectRecord;
+    }
+    public function getAllRecords():SQLStatement
+    {
+        // If selectRecord has not been instantiated, then create the instance with all the data that it needs
+        // If it has been instantiated, then we can skip over this part and take advantage of the fact that it has now been cached
+
+        var selectRecord:SQLStatement= new SQLStatement();
+        selectRecord.sqlConnection = connection;
+        selectRecord.text =
+                "select * from userdata order by modified";
 
         // This simply changes the one parameter that needs to be changed
         // Because recordId has already been declared as an int, this will be converted into an SQLite recognized integer

@@ -55,7 +55,6 @@
 
         protected function submit(event:MouseEvent = null):void {
             trace("submit form");
-            theUser.isBatch = false;
             var validatorErrorArray:Array = Validator.validateAll(validatorArr);
             var isValidForm:Boolean = validatorErrorArray.length == 0;
             var outputString:String;

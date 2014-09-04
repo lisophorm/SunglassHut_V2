@@ -310,7 +310,7 @@
                 fs.close();
             }
             if (writeSuccess) {
-                Uploader.instance.addFile(theUser.destFileName, UserObject.getInstance().JSONobject, this.parentApplication.baseURL + "uploader.php");
+                Uploader.instance.addFile(theUser.destFileName, UserObject.getInstance().JSONobject, this.parentApplication.baseURL + "photoboothUpload.php");
                 //ftpCopy = new FTPCopy(destFile, this.parentApplication.localURL + "upload.php");/*
                 this.stage.setAspectRatio(StageAspectRatio.LANDSCAPE);
                 this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_GAME_COMPLETE));
@@ -394,11 +394,11 @@
             photoBitmaps[1].dispose();
             photoBitmaps[2].dispose();
 
-            if (!theUser.isBatch) {
+
                 if (logOutView != null) {
                     logOutView.dispose();
                 }
-            }
+
 
         }
 

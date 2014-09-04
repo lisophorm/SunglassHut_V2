@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" title="Configuration"
-		creationComplete="onCreationCompleteHandler(event)" backgroundColor="0x000000"  remove="view1_removeHandler(event)" >
+		creationComplete="onCreationCompleteHandler(event)" backgroundColor="0x000000" addedToStage=""  remove="view1_removeHandler(event)" >
 	<fx:Script>
 		<![CDATA[
         import com.alfo.DelayedExecution;
         import com.alfo.UserObject;
         import com.alfo.utils.FTPCopy;
+        import com.alfo.utils.SQLConnectionWrapper;
         import com.alfo.utils.StringUtils;
+        import com.alfo.utils.Uploader;
 
         import events.ApplicationEvent;
         import events.KioskError;
         import events.ViewEvent;
+
+        import mx.collections.ArrayCollection;
 
         import mx.events.FlexEvent;
 
@@ -19,10 +23,17 @@
         private var file:File;
         private var theUser:UserObject;
 
+        [Bindable]
+        private var uploadDP:ArrayCollection=new ArrayCollection();
+
         protected function onCreationCompleteHandler(event:FlexEvent):void {
             theUser = UserObject.getInstance();
             var tempo:DelayedExecution = new DelayedExecution(1000, this, refresh);
             var tempo1:DelayedExecution = new DelayedExecution(1001, this, refresh1);
+
+            var statement:SQLStatement = SQLConnectionWrapper.instance.getNextRecord();
+            statement.execute(-1,new Responder(handleRecordCount,handleFailure));
+
             if (data != null) {
                 this.localserver.text = data.xml.localIP;
                 this.server.text = data.xml.serverIP;
@@ -33,6 +44,17 @@
 
             }
 
+        }
+
+        private function handleRecordCount(result:SQLResult):void {
+
+            var data:Array=result.data;
+            uploadDP=new ArrayCollection(data);
+            trace("got all the records from ApplicationType");
+        }
+        private function handleFailure(error:SQLError):void
+        {
+            trace("Epic Fail from ApplicationType: " + error.message);
         }
 
         protected function refresh() {
@@ -178,7 +200,7 @@
 					<s:Button label="Force print" id="forcePrint" click="forcePrint_clickHandler(event)" />
 				</s:HGroup>
 				
-				
+			<s:DataGrid height="400" dataProvider="{uploadDP}" width="900" />
 			</s:VGroup>
 
 	</s:Scroller>
