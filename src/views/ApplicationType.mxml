@@ -31,7 +31,7 @@
             var tempo:DelayedExecution = new DelayedExecution(1000, this, refresh);
             var tempo1:DelayedExecution = new DelayedExecution(1001, this, refresh1);
 
-            var statement:SQLStatement = SQLConnectionWrapper.instance.getNextRecord();
+            var statement:SQLStatement = SQLConnectionWrapper.instance.getAllRecords();
             statement.execute(-1,new Responder(handleRecordCount,handleFailure));
 
             if (data != null) {
@@ -186,7 +186,7 @@
 								<s:RadioButton width="100%" skinClass="spark.skins.mobile.RadioButtonSkin" label="Virtual waterpool" value="waterpool" group="{radioGroup}" visible="false" includeInLayout="false" />
 								<s:RadioButton width="100%" skinClass="spark.skins.mobile.RadioButtonSkin" label="Gastro cooking" value="cooking" group="{radioGroup}" visible="false" includeInLayout="false" />
 								<s:RadioButton width="100%" skinClass="spark.skins.mobile.RadioButtonSkin" label="Dj course" value="dj" group="{radioGroup}" visible="false" includeInLayout="false" />
-								
+
 							</s:VGroup>
 						</s:HGroup>
 						
@@ -199,8 +199,8 @@
 					<s:Button id="submitButton" x="909" y="591" label="Submit" click="submit(event)" />
 					<s:Button label="Force print" id="forcePrint" click="forcePrint_clickHandler(event)" />
 				</s:HGroup>
-				
-			<s:DataGrid height="400" dataProvider="{uploadDP}" width="900" />
+
+			<s:DataGrid height="400" dataProvider="{uploadDP}" width="700" />
 			</s:VGroup>
 
 	</s:Scroller>

@@ -9,20 +9,20 @@
               <dependency linkage="Merged" />
             </entry>
           </entries>
-          <sdk name="AIR FLEX 14" />
+          <sdk name="AIR 15 flex sdk" />
         </dependencies>
         <compiler-options />
         <packaging-air-desktop />
-        <packaging-android enabled="true" package-file-name="*">
+        <packaging-android enabled="true" use-generated-descriptor="false" custom-descriptor-path="$MODULE_DIR$/SunglassHut_V2-app.xml" package-file-name="*">
           <files-to-package>
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/assets" path-in-package="assets" />
           </files-to-package>
         </packaging-android>
-        <packaging-ios enabled="true" custom-descriptor-path="$MODULE_DIR$/SunglassHut_V2-app.xml" package-file-name="*">
+        <packaging-ios enabled="true" custom-descriptor-path="$MODULE_DIR$/SunglassHut_V2-app.xml" package-file-name="com.wmgllc.twittersphere">
           <files-to-package>
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/assets" path-in-package="assets" />
           </files-to-package>
-          <AirSigningOptions adt-options="-useLegacyAOT no" keystore-path="$USER_HOME$/Desktop/Certificates.p12" provisioning-profile-path="$USER_HOME$/Downloads/iOS_Team_Provisioning_Profile_.mobileprovision" />
+          <AirSigningOptions keystore-path="$USER_HOME$/Desktop/Certificates.p12" provisioning-profile-path="$USER_HOME$/Downloads/iOS_Team_Provisioning_Profile_.mobileprovision" />
         </packaging-ios>
       </configuration>
     </configurations>
@@ -33,7 +33,7 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="AIR FLEX 14" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="jdk" jdkName="AIR 15 flex sdk" jdkType="Flex SDK Type (new)" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="libs" level="project" />
     <orderEntry type="module-library" exported="">

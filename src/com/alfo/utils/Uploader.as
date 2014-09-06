@@ -18,19 +18,29 @@ import flash.net.URLRequestMethod;
 import com.alfo.utils.SQLConnectionWrapper;
 
 import flash.net.URLVariables;
+import flash.utils.setTimeout;
 
 public class Uploader extends EventDispatcher
     {
 
         private static var _totalFiles:Number;
+        private static var _queuedFiles:Number;
+        private static var _completedFiles:Number;
+        private static var _failedFiles:Number;
+
         private static var isRunning:Boolean;
         private static var _currentID:Number;
         private static var _status:String;
+
+        public var maxRetry:Number=5;
+        private var retryCount:Number=0;
+
         private var files:Array;
         private var totalSize:uint;
         private var uploadedSoFar:uint;
         private var currentFile:File;
-
+    //this will control wither the Singleton is really to be accessed
+    private var _initialized:Boolean = false;
 
         private static const SINGLETON_INSTANCE:Uploader = new Uploader(SingletonLock);
 
@@ -39,31 +49,45 @@ public class Uploader extends EventDispatcher
             return SINGLETON_INSTANCE;
         }
 
-
+    public function get initialized() : Boolean {
+        return _initialized;
+    }
         public function Uploader(lock:Class):void
         {
             trace("initialization of uploader");
 
 
-            trace("files content:");
+
             if(lock != SingletonLock){
                 throw new Error("Class Cannot Be Instantiated: Use SQLConnectionWrapper.instance");
             }
-            SQLConnectionWrapper.instance.connection.addEventListener(SQLEvent.OPEN,countRecords);
-            SQLConnectionWrapper.instance.connection.open();
-            _totalFiles=0;
-            totalSize = 0;
 
+            initialize();
 
-        }
-        public function init():void {
-            trace("uploader initialized");
-        }
-        private function countRecords(e:SQLEvent=null):void {
+       }
+
+        private function countRecords(e:Object=null):void {
             trace("sending count records");
             var statement:SQLStatement = SQLConnectionWrapper.instance.totalRecords("userdata");
             statement.execute(-1,new Responder(handleRecordCount,handleFailure));
         }
+
+
+    private function initialize() : void {
+        trace("initializa");
+        //we only need to initialize once.
+        if(_initialized) {
+            return;
+        }
+
+
+        _initialized = true;
+
+        SQLConnectionWrapper.instance.connection.addEventListener(SQLEvent.OPEN,countRecords);
+        SQLConnectionWrapper.instance.connection.open();
+        _totalFiles=0;
+        totalSize = 0;
+    }
         /*
          * This function starts the uploading process of all files that were not uploaded yet
          */
@@ -73,16 +97,41 @@ public class Uploader extends EventDispatcher
             var statement:SQLStatement = SQLConnectionWrapper.instance.insertRecord(vars,url,file);
             statement.execute(-1,new Responder(handleInsert,handleFailure));
         }
+
        private function handleInsert(result:SQLResult):void {
 
         trace("insert ok!"+result);
-           _totalFiles+=result.rowsAffected;
+           start();
          }
+
+
         private function handleRecordCount(result:SQLResult):void {
-            _totalFiles=result.data[0].totalrows;
+            trace("got new records");
+            _totalFiles=0;
+            _failedFiles=0; // failed count sums everything that is not QUEUED os Succsess
+            _queuedFiles=0;
+            if(result.data!=null) {
+                for (var i:int=0;i<result.data.length;i++) {
+                    _totalFiles+=result.data[i].totalrows;
+                    switch (result.data[i].status) {
+                            case "QUEUED":
+                            _queuedFiles=result.data[i].totalrows;
+                            break;
+                        case "Succsess":
+                            _completedFiles=result.data[i].totalrows;
+                            break;
+                        default:
+                            _failedFiles+=result.data[i].totalrows;
+                            break;
+
+                        }
+                }
+            }
+
             trace("result count!"+_totalFiles);
-            if(_totalFiles>0) {
-                start();
+            if(_queuedFiles>0) {
+                setTimeout(function() {                start();},3000)
+
             }
         }
         private function handleFailure(error:SQLError):void
@@ -116,6 +165,7 @@ public class Uploader extends EventDispatcher
             } else {
                 _totalFiles=0;
                 dispatchEvent(new Event(Event.COMPLETE));
+                return;
             }
 
             if (result.data.length>0)
@@ -128,16 +178,25 @@ public class Uploader extends EventDispatcher
                 dispatchEvent(new Event(Event.COMPLETE));
             }
         }
+        public function close():void {
+            SQLConnectionWrapper.instance.connection.close(new Responder(onCloseDB,handleFailure));
+        }
+        private function onCloseDB(e:Object=null):void {
+            trace("database closed");
+            dispatchEvent(new Event(Event.EXITING));
+        }
         /*
          * Calls the upload() method for one File object
          */
         private function uploadFile(nativePath:String,jsonData:String,url:String):void
         {
+            trace("start upload"+nativePath);
             var file:File=File.documentsDirectory.resolvePath("specsavers_print"+File.separator+nativePath);
 
             if(file.exists) {
                 trace("the file is here!");
             } else {
+                trace("no file found!!!"+file.nativePath);
                 trace("no file found!!!"+file.nativePath);
             }
 
@@ -147,15 +206,27 @@ public class Uploader extends EventDispatcher
             var urlRequest:URLRequest = new URLRequest(url);
             urlRequest.method = URLRequestMethod.POST;
             urlRequest.data=vars;
+            urlRequest.idleTimeout=5000;
             file.addEventListener(ProgressEvent.PROGRESS, uploadProgress);
             file.addEventListener(Event.COMPLETE, uploadComplete);
             file.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA , uploadServerData);
-            file.addEventListener(SecurityErrorEvent.SECURITY_ERROR, uploadError);
-            file.addEventListener(HTTPStatusEvent.HTTP_STATUS, uploadError);
+            file.addEventListener(SecurityErrorEvent.SECURITY_ERROR, uploadSecError);
+            //file.addEventListener(HTTPStatusEvent.HTTP_STATUS, onStatus);
+            file.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, onResponseStatus);
             file.addEventListener(IOErrorEvent.IO_ERROR, uploadError);
-            file.upload(urlRequest, "file");
-        }
+            file.addEventListener(IOErrorEvent.NETWORK_ERROR, uploadError);
+            try { file.upload(urlRequest, "file");} catch (error:Error) {
+                trace("TRYCACHMOFO"+error.message);
+            }
 
+        }
+    private function onStatus(e:HTTPStatusEvent) {
+        trace("MADONA PUTTANA onStatus");
+    }
+
+        private function onResponseStatus(e:HTTPStatusEvent) {
+            trace("MADONA PUTTANA onResponseStatus");
+        }
         /*
          * ProgressEvent callback.
          */
@@ -177,9 +248,16 @@ public class Uploader extends EventDispatcher
             isRunning=false;
             trace("server data callback");
             trace(event.data);
-            var returnData:Object=JSON.parse(event.data.toString());
+            try {
+                var returnData:Object=JSON.parse(event.data.toString());
+            } catch (e:Error) {
+                var returnData:Object=new Object();
+                returnData.status="Json perse error";
+                returnData.message=event.data.toString();
+            }
+
             var statement:SQLStatement = SQLConnectionWrapper.instance.updateRecord(returnData.status,returnData.message,_currentID.toString());
-            statement.execute(-1,new Responder(queryNextRecord,handleFailure));
+            statement.execute(-1,new Responder(countRecords,handleFailure));
 
         }
 
@@ -189,18 +267,32 @@ public class Uploader extends EventDispatcher
     private function uploadComplete(event:Event):void
         {
             trace("current file uploaded");
-
+            isRunning=false;
 
             // UPDATE THE CURRENT RECORD
         }
+    private function uploadSecError(event:IOErrorEvent):void
+    {
+        isRunning=false;
+        var statement:SQLStatement = SQLConnectionWrapper.instance.updateRecord("QUEUED",event.text,_currentID.toString());
+        statement.execute(-1,new Responder(countRecords,handleFailure));
+        trace("upload errro!");
+        var errorStr:String = event.toString();
+        trace("Error uploading   Message: " + errorStr);
+        dispatchEvent(event);
+    }
         /*
          * Upload error callback.
          */
-        private function uploadError(event:SecurityErrorEvent):void
+        private function uploadError(event:IOErrorEvent):void
         {
+            isRunning=false;
+            var statement:SQLStatement = SQLConnectionWrapper.instance.updateRecord("QUEUED",event.text,_currentID.toString());
+            statement.execute(-1,new Responder(countRecords,handleFailure));
+            trace("upload errro!");
             var errorStr:String = event.toString();
-            trace("Error uploading: " + currentFile.nativePath + "\n  Message: " + errorStr);
-            dispatchEvent(event);
+            trace("Error uploading   Message: " + errorStr);
+            //dispatchEvent(event);
         }
 
     }

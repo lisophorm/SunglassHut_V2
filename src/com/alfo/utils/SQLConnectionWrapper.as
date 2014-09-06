@@ -37,7 +37,6 @@ public class SQLConnectionWrapper extends EventDispatcher
     }
 
 
-
     private function createDatabase():void
     {
         // This creates an SQLConnection object , which can be accessed publicly so that event listeners can be defined for it
@@ -45,7 +44,7 @@ public class SQLConnectionWrapper extends EventDispatcher
         connection.addEventListener( SQLEvent.OPEN, onSqlOpen );
 
 
-        var databaseFile:File = File.applicationStorageDirectory.resolvePath("database.db");
+        var databaseFile:File = File.documentsDirectory.resolvePath("database.db");
         trace("database file:"+databaseFile.nativePath);
         connection.openAsync(databaseFile);
     }
@@ -78,7 +77,7 @@ public class SQLConnectionWrapper extends EventDispatcher
     public function totalRecords(tblName:String):SQLStatement {
         var totalRecordQuery:SQLStatement = new SQLStatement();
         totalRecordQuery.sqlConnection=connection;
-        totalRecordQuery.text = "SELECT count(*) as totalrows from "+tblName;
+        totalRecordQuery.text = "SELECT count(*) as totalrows,status from "+tblName+ " group by status";
         return totalRecordQuery;
     }
 
@@ -128,16 +127,16 @@ public class SQLConnectionWrapper extends EventDispatcher
         // If selectRecord has not been instantiated, then create the instance with all the data that it needs
         // If it has been instantiated, then we can skip over this part and take advantage of the fact that it has now been cached
 
-        var selectRecord:SQLStatement= new SQLStatement();
-        selectRecord.sqlConnection = connection;
-        selectRecord.text =
+        var getAllRecords:SQLStatement= new SQLStatement();
+        getAllRecords.sqlConnection = connection;
+        getAllRecords.text =
                 "select * from userdata order by modified";
 
         // This simply changes the one parameter that needs to be changed
         // Because recordId has already been declared as an int, this will be converted into an SQLite recognized integer
 
 
-        return selectRecord;
+        return getAllRecords;
     }
 }
 }

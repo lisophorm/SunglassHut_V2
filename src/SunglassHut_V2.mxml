@@ -2,8 +2,8 @@
 <s:ViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
 							xmlns:s="library://ns.adobe.com/flex/spark" firstView="views.ScanWristband" 
 							splashScreenImage="@Embed('assets/images/splashimage.png')"
-							applicationComplete="onApplicationComplete()" backgroundColor="0x000000"
-							resizeForSoftKeyboard="true" applicationDPI="160" >
+                            applicationComplete="onApplicationComplete()" backgroundColor="0x000000"
+                            resizeForSoftKeyboard="true" applicationDPI="160" >
 	<fx:Script>
 		<![CDATA[
         import com.alfo.CleverUrlMonitor;
@@ -120,7 +120,15 @@
             }
         }
 
+        protected  function onExit(e:Event) {
+            trace("************ exit");
+            e.preventDefault();
+            SQLConnectionWrapper.instance.connection.close();
+            trace("************ exit");
+        }
         protected function onApplicationComplete(e:Event = null):void {
+
+            NativeApplication.nativeApplication.addEventListener(Event.EXITING, onExit)
 
             Uploader.instance.toString();
 
@@ -512,7 +520,8 @@
         }
 
         protected function exit(event:MouseEvent = null):void {
-            NativeApplication.nativeApplication.exit();
+            Uploader.instance.close();
+            //NativeApplication.nativeApplication.exit();
         }
 
         protected function setBarCode(e:UserEvent):void {
