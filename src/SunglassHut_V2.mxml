@@ -279,7 +279,9 @@
 
             switch (e.location) {
                 case ViewEvent.LOCATION_RESTART:
-                    this.navigator.popToFirstView(fadeTrans);
+                    //this.navigator.popAll();
+					this.navigator.popToFirstView();
+                    //this.navigator.popToFirstView(fadeTrans);
                     break;
                 case ViewEvent.LOCATION_CONFIG:
                     this.navigator.pushView(views.ApplicationType, { xml: pref.prefsXML });
