@@ -27,7 +27,7 @@
         private var currentUrn:String;
 
         private var restartInterval:Number;
-        private var pref:Config;
+
 
         private var currentURN:String;
         private var checking:Boolean = false;
@@ -64,12 +64,12 @@
 
 
         public function init(event:Event = null):void {
-            pref = new Config();
+
             theUser = UserObject.getInstance();
             var tempo:Boolean = theUser.isConnected;
             trace("enter welcome screen");
             theUser.init();
-            theUser.current_location = pref.getLocationLabel();
+
             theUser.isConnected = tempo;
 
             StageDisplayState.FULL_SCREEN_INTERACTIVE;

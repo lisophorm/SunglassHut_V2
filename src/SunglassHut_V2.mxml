@@ -46,9 +46,9 @@
         import views.components.ProgressPopUp;
         import views.components.tandcWindow;
 
-        public var baseURL:String = "";
-        public var localURL:String = "";
-        public var facebookAppID:String = "";
+
+
+
         public var urn:int = 0;
         public var scoreFormat:String = "99:99"
 
@@ -138,18 +138,14 @@
             theUser.addEventListener(UserObjectEvent.ERROR, handleOfflineError);
 
             
+            // first time initialization of preferences
+            Config.instance.initialized;
+            Config.instance.applicationType=Config.instance.applicationType.toUpperCase();
 
-            pref = new Config();
+            trace("Submit");
 
-            trace("Submit")
-            baseURL = "http://" + pref.prefsXML..serverIP + "/";
-            localURL = "http://" + pref.prefsXML..localIP + "/";
-            facebookAppID = pref.prefsXML..facebookAppID;
-            ApplicationType = pref.prefsXML..applicationtype.toUpperCase();
-            urn = int(pref.prefsXML..urnLength);
-            scoreFormat = pref.prefsXML..scoreFormat;
 
-            cleverUrlMonitor = new CleverUrlMonitor(baseURL + "ping.php");
+            cleverUrlMonitor = new CleverUrlMonitor("http://"+Config.instance.serverIP + "ping.php");
             cleverUrlMonitor.addEventListener(StatusEvent.STATUS, announceStatus);
             cleverUrlMonitor.start();
 
@@ -158,8 +154,6 @@
             blinkTimer = new Timer(1000, 0);
             blinkTimer.addEventListener("timer", toggleConnectIcon);
             blinkTimer.start();
-
-            this.navigator.addEventListener(ApplicationEvent.SAVE_TYPE, notifyApplicationTypeUpdate);
 
             this.navigator.addEventListener(KioskError.ERROR, error);
             this.navigator.addEventListener(KioskError.MODAL, modal);
@@ -181,27 +175,8 @@
             showError("Please check if the device memory is full:\r\n" + e.errorMsg, "Error writing on device");
         }
 
-        private function updateLocation(e:GeoUtilEvent):void {
-            
-            theUser.current_location = e.address;
-            pref.setLocationLabel(e.address);
-            pref.setPosition(e.latitude, e.longitude);
-            pref.writeXMLData();
-        }
 
-        protected function notifyApplicationTypeUpdate(e:ApplicationEvent):void {
 
-            pref.saveApplicationVariables(e.value);
-            
-            baseURL = "http://" + pref.prefsXML..serverIP + "/";
-            localURL = "http://" + pref.prefsXML..localIP + "/";
-            facebookAppID = pref.prefsXML..facebookAppID;
-            ApplicationType = pref.prefsXML..applicationtype.toString().toUpperCase();
-            urn = int(pref.prefsXML..urnLength);
-            scoreFormat = pref.prefsXML..scoreFormat;
-
-            this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_RESTART));
-        }
 
         protected function clearPopups(e:Event = null):void {
             try {
@@ -276,7 +251,7 @@
             cleverUrlMonitor.checkIt();
             clearPopups();
 
-
+            trace("************* application type:"+Config.instance.applicationType+ "current event:"+e.location);
             switch (e.location) {
                 case ViewEvent.LOCATION_RESTART:
                     //this.navigator.popAll();
@@ -284,11 +259,11 @@
                     //this.navigator.popToFirstView(fadeTrans);
                     break;
                 case ViewEvent.LOCATION_CONFIG:
-                    this.navigator.pushView(views.ApplicationType, { xml: pref.prefsXML });
+                    this.navigator.pushView(views.ApplicationType);
                     break;
                 case ViewEvent.LOCATION_SELECT_USER_TYPE:
                     if (this.isRegistered) {
-                        if (this.ApplicationType == APPLICATION_TYPE_REGISTRATION) {
+                        if (Config.instance.applicationType == APPLICATION_TYPE_REGISTRATION) {
                             ScanWristband(this.navigator.activeView).init();
                             showError("YOU HAVE ALREADY REGISTERED.", "USER REGISTERED");
 
@@ -337,7 +312,7 @@
                      *
                      */
 
-                    if (this.ApplicationType == APPLICATION_TYPE_REGISTRATION) {
+                    if (Config.instance.applicationType == APPLICATION_TYPE_REGISTRATION) {
 
                         this.navigator.pushView(Thankyou, {urn: barcode});
                     } else {
@@ -365,9 +340,9 @@
 
                 case ViewEvent.LOCATION_GAME:
 
-
+                trace("****** into the game"+Config.instance.applicationType+" type: "+APPLICATION_TYPE_PHOTO);
                     
-                    if (ApplicationType == APPLICATION_TYPE_PHOTO) {
+                    if (Config.instance.applicationType == APPLICATION_TYPE_PHOTO) {
                         this.navigator.pushView(CameraCapture, {urn: barcode, type: ApplicationTypeNumber, facebook: this.isFacebookRegistered});
                         /*if (this.isFacebookRegistered)
                          {
@@ -378,15 +353,15 @@
                          this.navigator.pushView( views.ScanWristband, null, null, fadeTrans );
                          showError("USER NOT REGISTERED WITH FACEBOOK ACCOUNT", "FACEBOOK ACCOUNT REQUIRED", this.defaultView);
                          }*/
-                    } else if (ApplicationType == APPLICATION_TYPE_PITSTOP || ApplicationType == APPLICATION_TYPE_SIMULATOR
-                            || ApplicationType == APPLICATION_TYPE_RACECAR || ApplicationType == APPLICATION_TYPE_WATERPOOL || ApplicationType == APPLICATION_TYPE_DJ) {
+                    } else if (Config.instance.applicationType == APPLICATION_TYPE_PITSTOP || Config.instance.applicationType == APPLICATION_TYPE_SIMULATOR
+                            || Config.instance.applicationType == APPLICATION_TYPE_RACECAR || Config.instance.applicationType == APPLICATION_TYPE_WATERPOOL || Config.instance.applicationType == APPLICATION_TYPE_DJ) {
                         this.navigator.pushView(ScoreCapture, {urn: barcode, type: ApplicationTypeNumber, facebook: this.isFacebookRegistered, activityTitle: this.activityTitle, scoreFormat: this.scoreFormat});
-                    } else if (ApplicationType == APPLICATION_TYPE_GREENSCREEN) {
+                    } else if (Config.instance.applicationType == APPLICATION_TYPE_GREENSCREEN) {
 
                         showError("GREEN SCREEN ACTIVTIY", "NOT IMPLEMENTED ON TABLETS");
                         //							this.navigator.pushView(views.GreenscreenCapture, {urn: barcode, type: ApplicationTypeNumber, facebook: this.isFacebookRegistered});
 
-                    } else if (ApplicationType == APPLICATION_TYPE_HELMET || ApplicationType == APPLICATION_TYPE_COOKING) {
+                    } else if (Config.instance.applicationType == APPLICATION_TYPE_HELMET || Config.instance.applicationType == APPLICATION_TYPE_COOKING) {
 
 
                         //showError("GAME: BRAND AMBASSADOR TAKES NOTES DOWN WHEN USER COMPLETES AN ACTIVITY", "NOT IMPLEMENTED");
@@ -550,7 +525,7 @@
         }
 
         public function get activityTitle():String {
-            switch (this.ApplicationType) {
+            switch (Config.instance.applicationType) {
                 case APPLICATION_TYPE_PITSTOP:
                     return "Pit Stop Challenge";
                     break;
@@ -579,7 +554,7 @@
         }
 
         protected function get ApplicationTypeNumber():int {
-            switch (this.ApplicationType) {
+            switch (Config.instance.applicationType) {
                 case APPLICATION_TYPE_PITSTOP:
                     return 2;
                     break;

@@ -60,13 +60,9 @@
 
         protected function view1_creationCompleteHandler(event:FlexEvent):void {
 
-            pref = new Config();
-
             stageweb.addEventListener(ErrorEvent.ERROR, onURLError);
-            stageweb.loadURL("http://" + pref.prefsXML..serverIP + "/likelink.php?random=" + String(Math.random()));
+            stageweb.loadURL("https://" + Config.instance.serverIP + "/likelink.php?random=" + String(Math.random()));
             stageweb.addEventListener(LocationChangeEvent.LOCATION_CHANGE, onURLChange);
-
-
         }
 
         protected function onURLError(event:ErrorEvent):void {

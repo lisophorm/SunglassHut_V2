@@ -1,165 +1,206 @@
 package model
 {
-import flash.filesystem.*;
+import flash.filesystem.File;
+import flash.filesystem.FileMode;
+import flash.filesystem.FileStream;
 
 public class Config
-	{
-        private static const PI_OVER_180 : Number = Math.PI / 180.0;
-		
-		public var prefsFile:File; // The preferences prefsFile
-		[Bindable] public var prefsXML:XML; // The XML data
-		public var stream:FileStream; // The FileStream object used to read and write prefsFile data.
-		
-		public var serverIP:String="";
-		public var urnLength:Number=0;
-		public var applicationType:String = "";
-		
-		public var latitide:Number;
-		public var longitude:Number;
-		
-		public static var access_token:String;
-		public static var logout:String;
-		
-		public function Config()
-		{
-			prefsFile = File.applicationStorageDirectory;
-			prefsFile = prefsFile.resolvePath("assets/xml/preferences.xml");
-            if(!prefsFile.exists) {
-                trace("preferences file does not exists");
-            }
-			trace("preferences: "+prefsFile.nativePath);
-			readXML();
-		}
-		
-		private function readXML():void 
-		{
-			stream = new FileStream();
-			// If it exists read it 
-			if (prefsFile.exists) {
-				trace("preference file exists");
-				stream.open(prefsFile, FileMode.READ);
-				processXMLData();
-			}
-			else //Otherwise make a file and save it
-			{
-				var tempFile:File = File.applicationDirectory;
-				tempFile = tempFile.resolvePath("assets/xml/preferences.xml"); 
-				try {
-					tempFile.copyTo(prefsFile,true);
-				} catch (error:Error)
-				{
-					trace("error saving xml for the first time:"+error.message);
-				} 
-				stream.open(prefsFile, FileMode.READ);
-				processXMLData();
-			}
-			
-		}
-		
-		private function saveData():void
-		{
-			createXMLData(); 
-			writeXMLData();
-		}
-		
-		private function processXMLData():void 
-		{
-			trace("file size:"+stream.bytesAvailable);
-			prefsXML = XML(stream.readUTFBytes(stream.bytesAvailable));
-			stream.close();
-			
-			//Set local variable equal to XML values
-			serverIP		= prefsXML.serverIP;
-			urnLength		= prefsXML.urnLength;
-			applicationType = prefsXML.applicationtype;
-			
-			trace("Preferences: (serverIP: '"+ serverIP + "' , urnLength: '"+urnLength+"' , applicationType: '"+applicationType+"')");
-		}
-		
-		public function saveApplicationVariables(values:Object):void
-		{
-			trace("save prefs");
-			if (prefsFile.exists) {
-				
-				prefsXML.serverIP 		= values.serverIP;
-				prefsXML.facebookAppID  = values.facebookAppID;
-				prefsXML.urnLength 		= values.urnLength;
-				prefsXML.applicationtype = values.applicationtype;
-				prefsXML.scoreFormat	 = values.scoreFormat;
-				prefsXML.localIP	 = values.localIP;
-				
-				
-				writeXMLData();
-				
-				//var xml = XML(stream.readUTFBytes(fileStream.bytesAvailable));
-				/*
-				prefsXML.applicationType = type;
-				var outputString:String = '<?xml version="1.0" encoding="utf-8"?>\n';
-				outputString += prefsXML.toXMLString();
-				outputString = outputString.replace(/\n/g, File.lineEnding);
-				
-				fileStream.writeUTFBytes(outputString);
-				fileStream.close();
-				*/
-			}
-			else
-			{
-				trace("no file");
-			}
-		}
-		public function setLocationLabel(theLabel:String):void {
-			prefsXML.locationlabel=theLabel;
+{
 
-		}
-		public function getLocationLabel():String {
-			return prefsXML.locationlabel;
-		}
-		/**
-		 * Creates the XML object with data based on the window state 
-		 * and the current time.
-		 */
-		private function createXMLData():void 
-		{
-			prefsXML = <preferences/>;
-			prefsXML.serverIP="0.0.0.0";
-			prefsXML.urnLength="10";
-			
-		}
-		
-		/**
-		 * Called when the NativeWindow closing event is dispatched. The method 
-		 * converts the XML data to a string, adds the XML declaration to the beginning 
-		 * of the string, and replaces line ending characters with the platform-
-		 * specific line ending character. Then sets up and uses the stream object to
-		 * write the data.
-		 */
-		public function writeXMLData():void 
-		{
-			trace("saving xml:");
-			var outputString:String = '<?xml version="1.0" encoding="utf-8"?>\n';
-			outputString += prefsXML.toXMLString();
-			outputString = outputString.replace(/\n/g, File.lineEnding);
-			trace("*********"+outputString+"***********");
-			try
-			{
-				var f:File = new File( prefsFile.nativePath );
-				stream = new FileStream();
-				stream.open(f, FileMode.WRITE);
-				stream.writeUTFBytes(outputString);
-				stream.close();
-			} catch (error:Error)
-			{
-				trace("error saving xml:"+error.message);
-			} 
-			
-		}
-		
-		public function setPosition(lat:Number,lon:Number):void {
-				prefsXML.latitude=lat.toString();
-				prefsXML.longitude=lon.toString();
-		}
-		
-		
-	}
+    private static const PI_OVER_180 : Number = Math.PI / 180.0;
+    private static const _instance:Config = new Config(SingletonLock); // The preferences prefsFile
+        public static var access_token:String; // The XML data
+        public static var logout:String; // The FileStream object used to read and write prefsFile data.
+
+    /**
+     * Use this to return an instance of the singleton
+     * @return
+     *
+     */
+    public static function get instance() : Config {
+        return _instance;
+    }
+
+    /**
+     * This will initialize the Singleton. It's never publicly called. Use Config.instance instead
+     * @param lock
+     *
+     */
+    public function Config(lock:Class) {
+        if(lock != SingletonLock) {
+            throw new Error("Invalid Config access. Use Config.instance");
+        }
+
+        initialize();
+    }
+
+    //this is the only instance of the class
+public var prefsFile:File;
+
+
+    //this will control wither the Singleton is really to be accessed
+[Bindable] public var prefsXML:XML;
+public var stream:FileStream;
+
+    private var _initialized:Boolean = false;
+
+    /**
+     * Return the current flag
+     * @return String
+     *
+     */
+
+    /**
+     * Query the Singleton to see if it's ready to be accessed
+     * @return
+     *
+     */
+    public function get initialized() : Boolean {
+        return _initialized;
+    }
+
+    public function  get serverIP():String {
+        return prefsXML.serverIP;
+    }
+
+    public function set serverIP(val:String):void {
+        prefsXML.serverIP=val;
+    }
+
+    public function  get localIP():String {
+        return prefsXML.localIP;
+    }
+
+    public function set localIP(val:String):void {
+        prefsXML.localIP=val;
+    }
+
+    public function  get facebookAppID():String {
+        return prefsXML.facebookAppID;
+    }
+
+    public function set facebookAppID(val:String):void {
+        prefsXML.facebookAppID=val;
+    }
+
+    public function  get urnLength():String {
+        return prefsXML.urnLength;
+    }
+
+    public function set urnLength(val:String):void {
+        prefsXML.urnLength=val;
+    }
+
+    public function  get scoreFormat():String {
+        return prefsXML.scoreFormat;
+    }
+
+    public function set scoreFormat(val:String):void {
+        prefsXML.scoreFormat=val;
+    }
+
+    public function  get applicationType():String {
+        return prefsXML.applicationtype;
+    }
+
+    public function set applicationType(val:String):void {
+        prefsXML.applicationtype=val;
+    }
+
+    public function writeXMLData():void
+    {
+        trace("saving xml:");
+        var outputString:String = '<?xml version="1.0" encoding="utf-8"?>\n';
+        outputString += prefsXML.toXMLString();
+        outputString = outputString.replace(/\n/g, File.lineEnding);
+        trace("*********"+outputString+"***********");
+        try
+        {
+            var f:File = new File( prefsFile.nativePath );
+            stream = new FileStream();
+            stream.open(f, FileMode.WRITE);
+            stream.writeUTFBytes(outputString);
+            stream.close();
+        } catch (error:Error)
+        {
+            trace("error saving xml:"+error.message);
+        }
+
+    }
+
+    /**
+     * This is where you would set up anything the Singleton needed before it should be accessible to the public
+     *
+     */
+    private function initialize() : void {
+        //we only need to initialize once.
+        if(_initialized) {
+            trace("CONFIG SINGLETON IS ALREADY INITIALIZED");
+            return;
+        }
+        prefsFile = File.applicationStorageDirectory;
+        prefsFile = prefsFile.resolvePath("assets/xml/preferences.xml");
+        if(!prefsFile.exists) {
+            trace("preferences file does not exists");
+        }
+        trace("preferences: "+prefsFile.nativePath);
+        readXML();
+
+        _initialized = true;
+    }
+
+    private function readXML():void
+    {
+        stream = new FileStream();
+        // If it exists read it
+        if (prefsFile.exists) {
+            trace("preference file exists");
+            stream.open(prefsFile, FileMode.READ);
+            processXMLData();
+        }
+        else //Otherwise make a file and save it
+        {
+            var tempFile:File = File.applicationDirectory;
+            tempFile = tempFile.resolvePath("assets/xml/preferences.xml");
+            try {
+                tempFile.copyTo(prefsFile,true);
+            } catch (error:Error)
+            {
+                trace("error saving xml for the first time:"+error.message);
+            }
+            stream.open(prefsFile, FileMode.READ);
+            processXMLData();
+        }
+
+    }
+
+    private function createXMLData():void
+    {
+        prefsXML = <preferences/>;
+        prefsXML.serverIP="0.0.0.0";
+        prefsXML.urnLength="10";
+
+    }
+
+    private function saveData():void
+    {
+        createXMLData();
+        writeXMLData();
+    }
+
+    private function processXMLData():void
+    {
+        trace("file size:"+stream.bytesAvailable);
+        prefsXML = XML(stream.readUTFBytes(stream.bytesAvailable));
+        stream.close();
+
+        trace("Preferences: (serverIP: '"+ serverIP + "' , urnLength: '"+urnLength+"' , applicationType: '"+applicationType+"')");
+    }
+}
 }
 
+
+
+
+//this is used to lock the Singleton
+class SingletonLock{}

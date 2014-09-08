@@ -13,6 +13,10 @@
 
         import model.Config;
 
+        import mx.core.DPIClassification;
+
+        import mx.core.FlexGlobals;
+
         import mx.events.FlexEvent;
         import mx.rpc.events.FaultEvent;
         import mx.rpc.events.ResultEvent;
@@ -46,15 +50,15 @@
 
             userVar = UserObject.getInstance();
 
-            pref = new Config();
-            var facebookAppID:String = pref.prefsXML..facebookAppID;
-            var redirect_uri:String = pref.prefsXML..serverIP;
+
+            var facebookAppID:String = Config.instance.facebookAppID;
+            var redirect_uri:String = Config.instance.serverIP;
 
 
-            fbRedir = (this.parentApplication).baseURL + "php-sdk/examples/landed.php";
-            fbLogout = (this.parentApplication).baseURL + "php-sdk/examples/logout.php"; // &display=touch publish_checkins ,offline_access
+            fbRedir = Config.instance.serverIP + "php-sdk/examples/landed.php";
+            fbLogout = Config.instance.serverIP + "php-sdk/examples/logout.php"; // &display=touch publish_checkins ,offline_access
             //fbAuthURL = "https://graph.facebook.com/oauth/authorize?type=user_agent&scope=email,user_photos,publish_stream,publish_checkins&client_id="+fbAppID+"&display=touch&redirect_uri=http://www.ignitesocial.co.uk/edfenergy/php-sdk/examples/landed.php&response_type=token";
-            fbAuthURL = "https://graph.facebook.com/oauth/authorize?type=user_agent&scope=email,publish_actions,user_photos&client_id=" + facebookAppID + "&display=touch&redirect_uri=http://" + redirect_uri + "/php-sdk/examples/landed.php&response_type=token"; //&auth_type=reauthenticate
+            fbAuthURL = "https://graph.facebook.com/oauth/authorize?type=user_agent&scope=email,publish_actions,user_photos&client_id=" + facebookAppID + "&display=touch&redirect_uri=https://" + redirect_uri + "/php-sdk/examples/landed.php&response_type=token"; //&auth_type=reauthenticate
             //var tempo:DelayedExecution=new DelayedExecution(2000,this,createBrowser);
             trace("auth url:" + fbAuthURL);
             createBrowser();
@@ -87,7 +91,7 @@
             trace("URL changing: " + event.location);
             //webView.viewPort = new Rectangle(0,0,0,0);
             status_label.text = "URL CHANGING " + event.location;
-            webView.stage = null;
+           // webView.stage = null;
             // Uncomment the following line to load in the default browser instead...
             //navigateToURL(new URLRequest(event.location));
         }
@@ -100,7 +104,7 @@
             trace("URL change: " + event.location);
             var punto:Point = container.localToGlobal(new Point());
             status_label.text = "URL CHANGED " + event.location;
-            webView.stage = null;
+            //webView.stage = null;
 
             //webView.stage=stage;
             //webView.viewPort = new Rectangle(punto.x, punto.y, container.width, container.height);
@@ -152,7 +156,7 @@
                 webView.removeEventListener(Event.COMPLETE, onURLCompleted);
                 webView.removeEventListener(LocationChangeEvent.LOCATION_CHANGE, onURLChange);
                 webView.removeEventListener(LocationChangeEvent.LOCATION_CHANGING, onURLChanging);
-                webView.stage = null;
+                //webView.stage = null;
                 this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, "You have to install the app and accept the permissions.", "ERROR", ricomincia));
 
             }
@@ -201,8 +205,10 @@
             //URLRequestDefaults.manageCookies=false;
             var punto:Point = container.localToGlobal(new Point(0, 0));
 
+            var t:Number = 1;
 
-            webView.viewPort = new Rectangle(punto.x, punto.y, container.width, container.height);
+            if(FlexGlobals.topLevelApplication.runtimeDPI == DPIClassification.DPI_320){   t = 2; }
+            webView.viewPort = new Rectangle(punto.x, punto.y, container.width*t, container.height*t);
             busone.x = container.width / 2 - 50;
             busone.y = container.height / 2 - 50;
             webView.addEventListener(ErrorEvent.ERROR, onURLError);
@@ -210,7 +216,7 @@
             webView.addEventListener(LocationChangeEvent.LOCATION_CHANGE, onURLChange);	// NOT ALWAYS FIRING
             webView.addEventListener(LocationChangeEvent.LOCATION_CHANGING, onURLChanging);
             //webView.loadURL(fbAuthURL);
-            webView.loadURL("http://" + pref.prefsXML..serverIP + "/forceloggaout.php");
+            webView.loadURL("http://" + Config.instance.serverIP + "/forceloggaout.php");
             this.addEventListener(ViewNavigatorEvent.REMOVING, onRemove);
 
         }
@@ -264,13 +270,13 @@
 	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
-		<s:HTTPService id="setToken" resultFormat="flashvars" method="POST" url="{(this.parentApplication).baseURL+'setuser.php'}" result="httpservice1_resultHandler(event)" fault="httpservice1_faultHandler(event)" />
+		<s:HTTPService id="setToken" resultFormat="flashvars" method="POST" url="{Config.instance.serverIP+'setuser.php'}" result="httpservice1_resultHandler(event)" fault="httpservice1_faultHandler(event)" />
 	</fx:Declarations>
 	
 
 	<s:VGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
 		<s:Label id="status_label" includeInLayout="false" text="status" color="0x000000" />
-		<s:BorderContainer width="100%" height="100%" id="container">
+		<s:BorderContainer width="100%" height="100%" id="container" backgroundColor="#cc0000" >
 			<s:BusyIndicator horizontalCenter="0" verticalCenter="0" width="100" height="100" rotationInterval="200" symbolColor="#ED1C24" id="busone" />
 		</s:BorderContainer>
 	</s:VGroup>

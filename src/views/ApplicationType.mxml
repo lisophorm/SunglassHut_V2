@@ -15,6 +15,8 @@
         import events.KioskError;
         import events.ViewEvent;
 
+        import model.Config;
+
         import mx.collections.ArrayCollection;
 
         import mx.events.FlexEvent;
@@ -28,21 +30,19 @@
 
         protected function onCreationCompleteHandler(event:FlexEvent):void {
             theUser = UserObject.getInstance();
-            var tempo:DelayedExecution = new DelayedExecution(1000, this, refresh);
-            var tempo1:DelayedExecution = new DelayedExecution(1001, this, refresh1);
+
 
             var statement:SQLStatement = SQLConnectionWrapper.instance.getAllRecords();
             statement.execute(-1,new Responder(handleRecordCount,handleFailure));
 
-            if (data != null) {
-                this.localserver.text = data.xml.localIP;
-                this.server.text = data.xml.serverIP;
-                this.facebookAPI_ID.text = data.xml.facebookAppID;
-                this.urnLength.text = data.xml.urnLength;
-                this.scoreFormat.text = data.xml.scoreFormat;
-                this.radioGroup.selectedValue = data.xml.applicationtype;
 
-            }
+                this.localserver.text = Config.instance.localIP;
+                this.server.text = Config.instance.serverIP;
+                this.facebookAPI_ID.text = Config.instance.facebookAppID;
+                this.urnLength.text = Config.instance.urnLength;
+                this.scoreFormat.text = Config.instance.scoreFormat;
+
+
 
         }
 
@@ -57,30 +57,20 @@
             trace("Epic Fail from ApplicationType: " + error.message);
         }
 
-        protected function refresh() {
-            trace("invalidaaaaaaa");
-            scoreFormat.invalidateDisplayList();
-            urnLength.invalidateDisplayList();
-            urnLength.setFocus();
 
-        }
-
-        protected function refresh1() {
-            trace("invalidaaaaaaa2");
-            scoreFormat.invalidateDisplayList();
-            urnLength.invalidateDisplayList();
-            submitButton.setFocus();
-
-        }
 
 
         protected function submit(e:MouseEvent):void {
 
-            this.navigator.dispatchEvent(new ApplicationEvent(ApplicationEvent.SAVE_TYPE, { serverIP: server.text.toString(),
-                facebookAppID: facebookAPI_ID.text.toString(),
-                urnLength: urnLength.text.toString(),
-                applicationtype: radioGroup.selectedValue.toString(),
-                scoreFormat: scoreFormat.text.toString(), localIP: localserver.text.toString()}));
+            Config.instance.localIP=this.localserver.text;
+            Config.instance.serverIP=this.server.text;
+            Config.instance.facebookAppID=this.facebookAPI_ID.text;
+            Config.instance.urnLength=this.urnLength.text;
+            Config.instance.scoreFormat=this.scoreFormat.text;
+
+            Config.instance.writeXMLData();
+
+            this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_RESTART));
 
         }
 
