@@ -8,28 +8,39 @@ import flash.filesystem.FileStream;
 public class UserObject extends Sprite
 	{
 		
-		private var _photo1:String;
-		private var _photo2:String;
-		private var _photo3:String;
-
-		private static var _instance:UserObject=null;
-		//public var urn:String;
-		
-		
+        private static const SINGLETON_INSTANCE:UserObject = new UserObject(SingletonLock);
 		public static var userDataObj:Object;
-		
+
+        public static function get instance():UserObject
+        {
+            return SINGLETON_INSTANCE;
+        }
+
+    public function UserObject(lock:Class) {
+        if(lock != SingletonLock) {
+            throw new Error("Invalid Config access. Use Config.instance");
+        }
+
+
+    }
 		public var batchPath:String="specsavers_jpg_xml/";
-		
 		public var spoolerPath:String="specsavers_print/"
-			
 		public var tempPath:String="specsavers_temp_jpg/";
 		
+		private var _photo1:String;
 		
-		public function UserObject()
+		public function get photo1():String
 		{
-			trace("inizializza userObject");
+            return userDataObj.photo1;
+		}
+			
+		public function set photo1(value:String):void
+		{
+			userDataObj.photo1 = value;
 		}
 		
+		private var _photo2:String;
+
 		public function get photo2():String
 		{
 			return userDataObj.photo2;
@@ -39,30 +50,27 @@ public class UserObject extends Sprite
 		{
 			userDataObj.photo2 = value;
 		}
-
-		public function get photo1():String
+		
+		private var _photo3:String;
+		
+		public function get photo3():String
 		{
-            return userDataObj.photo1;
+			return userDataObj.photo3;
+		}
+		
+		public function set photo3(value:String):void
+		{
+            userDataObj.photo3 = value;
 		}
 		
 		public function get hometown():String {
 			return userDataObj.hometown;
 		}
-		
+
 		public function set hometown(town:String):void {
 			userDataObj.hometown=town;
 		}
-		
-		public function set extraterms(value:Boolean):void
-		{
-			if(value) {
-				userDataObj.extraterms = "1";
-			} else {
-				userDataObj.extraterms = "0";
-			}
-			
-		}
-		
+
 		public function get extraterms():Boolean
 		{
 			if(userDataObj.extraterms=="1") {
@@ -72,19 +80,14 @@ public class UserObject extends Sprite
 			}
 		}
 
-		public function set photo1(value:String):void
+		public function set extraterms(value:Boolean):void
 		{
-			userDataObj.photo1 = value;
-		}
+			if(value) {
+				userDataObj.extraterms = "1";
+			} else {
+				userDataObj.extraterms = "0";
+			}
 
-		public function get photo3():String
-		{
-			return userDataObj.photo3;
-		}
-
-		public function set photo3(value:String):void
-		{
-            userDataObj.photo3 = value;
 		}
 
 		public function get current_location():String
@@ -92,9 +95,9 @@ public class UserObject extends Sprite
 			return userDataObj.current_location;
 		}
 		
-		public function set location(value:String):void
+		public function set current_location(value:String):void
 		{
-			userDataObj.location = value;
+			userDataObj.current_location = value;
 		}
 		
 		public function get location():String
@@ -102,25 +105,89 @@ public class UserObject extends Sprite
 			return userDataObj.location;
 		}
 		
-		public function set current_location(value:String):void
+		public function set location(value:String):void
 		{
-			userDataObj.current_location = value;
+			userDataObj.location = value;
 		}
 		
+		public function get urn():String {
+			return userDataObj.uuid;
+		}
 		
-		public static function getInstance():UserObject {
-			if(_instance==null) {
-				trace("******* singleton first instance");
-				_instance=new UserObject();
-				_instance.init();
+		public function set urn(theURN:String):void {
+			userDataObj.uuid=theURN;
+		}
+		
+		public function get token():String {
+			return userDataObj.token;
+		}
+
+		public function set token(thetoken:String):void {
+			userDataObj.token=thetoken;
+		}
+
+		public function get firstname():String {
+			return userDataObj.firstName;
+		}
+
+		public function set firstname(thefirstname:String):void {
+			userDataObj.firstName=thefirstname;
+		}
+
+		public function set lastname(thelastname:String):void {
+			userDataObj.lastName=thelastname;
+		}
+
+		public function set mobile(themobile:String):void {
+			userDataObj.postcode=themobile;
+		}
+
+		public function set email(theemail:String):void {
+			userDataObj.emailAddress=theemail;
+		}
+
+		public function set fb_id(thefb_id:String):void {
+			userDataObj.fb_id=thefb_id;
+		}
+
+		public function set data_saved(thedata_saved:Boolean):void {
+			userDataObj.data_saved=thedata_saved?"1":"0";
+		}
+
+		public function set facebook(thefacebook:Boolean):void {
+			userDataObj.facebook=thefacebook?"1":"0";
+		}
+
+		public function set hasphoto(thehasphoto:Boolean):void {
+			userDataObj.hasphoto=thehasphoto?"1":"0";
+		}
+
+		public function get isConnected():Boolean {
+			if(userDataObj.isConnected=="1") {
+				return true;
 			} else {
-				trace("**************old instance");
-				trace(userDataObj.toString());
-				trace("first name:"+userDataObj.firstname);
+				return false;
 			}
-			return _instance;
+            return false;
 		}
-		
+
+		public function set isConnected(theconnection:Boolean):void {
+			userDataObj.isConnected=theconnection?"1":"0";
+		}
+
+		public function get destFileName():String {
+			return userDataObj.destFileName;
+		}
+
+		public function set destFileName(thedestFileName:String):void {
+			userDataObj.destFileName=thedestFileName;
+		}
+
+        public function get JSONobject():String {
+            trace("current jsonobject:"+JSON.stringify(userDataObj));
+            return JSON.stringify(userDataObj);
+        }
+
 		public function init():void {
 			trace("***** init userobject");
 			userDataObj =new Object();
@@ -146,98 +213,10 @@ public class UserObject extends Sprite
 				trace("work dir exists");
 			}
 		}
-		
+
 		public function eject():void {
 			trace("XML:");
 			trace(userDataObj.toXMLString());
-		}
-		
-		public function set urn(theURN:String):void {
-			userDataObj.uuid=theURN;
-		}
-		public function get urn():String {
-			return userDataObj.uuid;
-		}
-		public function set token(thetoken:String):void {
-			userDataObj.token=thetoken;
-		}
-		public function get token():String {
-			return userDataObj.token;
-		}
-		public function set firstname(thefirstname:String):void {
-			userDataObj.firstName=thefirstname;
-		}
-		public function get firstname():String {
-			return userDataObj.firstName;
-		}
-		public function set lastname(thelastname:String):void {
-			userDataObj.lastName=thelastname;
-		}
-		public function set mobile(themobile:String):void {
-			userDataObj.postcode=themobile;
-		}
-		public function set email(theemail:String):void {
-			userDataObj.emailAddress=theemail;
-		}
-		public function set fb_id(thefb_id:String):void {
-			userDataObj.fb_id=thefb_id;
-		}
-		public function set data_saved(thedata_saved:Boolean):void {
-			userDataObj.data_saved=thedata_saved?"1":"0";
-		}
-		public function set facebook(thefacebook:Boolean):void {
-			userDataObj.facebook=thefacebook?"1":"0";
-		}
-		public function set hasphoto(thehasphoto:Boolean):void {
-			userDataObj.hasphoto=thehasphoto?"1":"0";
-		}
-		public function set isConnected(theconnection:Boolean):void {
-			userDataObj.isConnected=theconnection?"1":"0";
-		}
-
-		public function get isConnected():Boolean {
-			if(userDataObj.isConnected=="1") {
-				return true;
-			} else {
-				return false;
-			}
-            return false;
-		}
-
-
-
-		public function set destFileName(thedestFileName:String):void {
-			userDataObj.destFileName=thedestFileName;
-		}
-		public function get destFileName():String {
-			return userDataObj.destFileName;
-		}
-
-        public function get JSONobject():String {
-            trace("current jsonobject:"+JSON.stringify(userDataObj));
-            return JSON.stringify(userDataObj);
-        }
-		
-		public function saveXML():String {
-			var f:File = File.documentsDirectory.resolvePath(batchPath+userDataObj.urn+".xml");
-			trace("save xml");
-			trace("file:"+userDataObj.urn);
-			trace("path:"+f.url);
-			var message:String;
-			var s:FileStream = new FileStream();
-			try
-			{
-				s.open(f,FileMode.WRITE);
-				s.writeUTFBytes(userDataObj.toXMLString());
-				message="OK";
-			} catch(e:Error) {
-				trace("error saving xml"+e.message);
-				message= (e.message as String);
-			} finally {
-				s.close();
-			}
-			trace("saveXML result:"+message);
-			return message;
 		}
 		
 		private function convertASDateToMySQLTimestamp( d:Date ):String {
@@ -259,3 +238,7 @@ public class UserObject extends Sprite
 		
 	}
 }
+
+
+//this is used to lock the Singleton
+class SingletonLock{}

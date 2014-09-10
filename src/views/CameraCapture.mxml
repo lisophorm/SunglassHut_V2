@@ -21,8 +21,10 @@
 
         import mx.core.BitmapAsset;
         import mx.events.FlexEvent;
+        import mx.events.ResizeEvent;
         import mx.rpc.events.FaultEvent;
         import mx.rpc.events.ResultEvent;
+        import model.Config;
 
         import ru.inspirit.image.encoder.JPGAsyncEncoder;
 
@@ -76,8 +78,6 @@
         private var destHeight:Number;
 
         private var tempPhotoDisplay:DisplayObject;
-
-        public var theUser:UserObject;
 
         private var currentPhoto:Number = 1;
 
@@ -152,19 +152,21 @@
             photoLoader = new Loader();
             photoLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, onCompletePhoto);
 
-            theUser = UserObject.getInstance();
-            trace("added photo " + theUser.firstname);
 
-            trace("ci sto dentro" + data.facebook);
+            trace("added photo " + UserObject.instance.firstname);
 
-            theUser.destFileName = theUser.urn + "-" + StringUtils.generateRandomString(4) + ".jpg";
-            trace("new filename: " + theUser.firstname);
+                        photoBitmaps[0]=new BitmapData(400,400,0xcc);
+                        photoBitmaps[1]=new BitmapData(400,400,0xcc);
+                        photoBitmaps[2]=new BitmapData(400,400,0xcc);
+
+            UserObject.instance.destFileName = UserObject.instance.urn + "-" + StringUtils.generateRandomString(4) + ".jpg";
+            trace("new filename: " + UserObject.instance.firstname);
 
             if (data.facebook) {
-                theUser.facebook=true;
+                UserObject.instance.facebook = true;
 
             } else {
-                theUser.facebook=false;
+                UserObject.instance.facebook = false;
             }
             /*
              *
@@ -187,7 +189,7 @@
                 this.currentState = data.facebook ? "facebook" : "default";
 
 
-                userName = theUser.firstname + " get ready to share";
+                userName = UserObject.instance.firstname + " get ready to share";
 
 
                 trace("---------------------------------------------------------------------------- getUser_resultHandler: " + userName);
@@ -216,9 +218,6 @@
         }
 
 
-
-
-
         // CAMERA HANDLING
 
         //take a new picture with the camera
@@ -242,9 +241,6 @@
 
             }
         }
-
-
-
 
 
         //when the selection is complete upload it
@@ -281,16 +277,16 @@
         protected function onEncodeComplete(e:Event) {
 
 
-            //theUser.destFileName=theUser.urn+"-"+StringUtils.generateRandomString(4)+".jpg";
+            //UserObject.instance.destFileName=UserObject.instance.urn+"-"+StringUtils.generateRandomString(4)+".jpg";
 
             var writeSuccess:Boolean = true;
 
-            var fileParts:Array = theUser.destFileName.split(".");
+            var fileParts:Array = UserObject.instance.destFileName.split(".");
 
-            theUser.destFileName = fileParts[0] + "-" + numPhotos.value.toString() + ".jpg";
+            UserObject.instance.destFileName = fileParts[0] + "-" + numPhotos.value.toString() + ".jpg";
 
-            destFile = File.documentsDirectory.resolvePath(theUser.spoolerPath + File.separator + theUser.destFileName);
-            trace("destFileName " + theUser.destFileName);
+            destFile = File.documentsDirectory.resolvePath(UserObject.instance.spoolerPath + File.separator + UserObject.instance.destFileName);
+            trace("destFileName " + UserObject.instance.destFileName);
             trace("destFile " + destFile.nativePath);
 
             //Use a FileStream to save the bytearray as bytes to the new file
@@ -310,7 +306,7 @@
                 fs.close();
             }
             if (writeSuccess) {
-                Uploader.instance.addFile(theUser.destFileName, UserObject.getInstance().JSONobject, this.parentApplication.baseURL + "photoboothUpload.php");
+                Uploader.instance.addFile(UserObject.instance.destFileName, UserObject.instance.JSONobject, "http://"+Config.instance.serverIP  + "photoboothUpload.php");
                 //ftpCopy = new FTPCopy(destFile, this.parentApplication.localURL + "upload.php");/*
                 this.stage.setAspectRatio(StageAspectRatio.LANDSCAPE);
                 this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_GAME_COMPLETE));
@@ -318,22 +314,11 @@
         }
 
 
-
-
-
-
-
-
-
-
-
         protected function updateProgress(event:ProgressEvent):void {
             var perc:Number = Math.round(event.bytesLoaded * 100 / event.bytesTotal);
             this.navigator.dispatchEvent(new KioskProgressEvent(KioskProgressEvent.UPDATE, String(perc) + "% complete"));
             trace("progress:" + event.bytesLoaded + "of:" + event.bytesTotal);
         }
-
-
 
 
         protected function openUploadHandler(event:Event):void {
@@ -349,7 +334,6 @@
             }
             return path;
         }
-
 
 
         protected function complete(stringa:* = null):void {
@@ -388,16 +372,19 @@
             theJPG.removeEventListener(ProgressEvent.PROGRESS, onEncodingProgress);
             theJPG.removeEventListener(Event.COMPLETE, onEncodeComplete);
             theJPG = null;
-            theBitmapAsset.bitmapData.dispose();
-            theBitmapAsset=null;
+            if(theBitmapAsset.bitmapData){
+                theBitmapAsset.bitmapData.dispose();
+            }
+
+            theBitmapAsset = null;
             photoBitmaps[0].dispose();
             photoBitmaps[1].dispose();
             photoBitmaps[2].dispose();
 
 
-                if (logOutView != null) {
-                    logOutView.dispose();
-                }
+            if (logOutView != null) {
+                logOutView.dispose();
+            }
 
 
         }
@@ -477,6 +464,10 @@
             trace("photo group updated width is:" + event.currentTarget.width)
 
         }
+
+        private function hGroup1_resizeHandler(event:ResizeEvent):void {
+            trace("********** box resized"+event.currentTarget.width);
+        }
         ]]>
 	</fx:Script>
 	
@@ -514,7 +505,7 @@
 		<s:VGroup styleName="Game" horizontalAlign="center" verticalAlign="middle" width="100%" height="592" includeIn="default,facebook">
 			<s:VGroup horizontalAlign="center" width="100%" height="100%">
 				<s:Label id="statusText" color="#009BD7" />
-				<s:HGroup horizontalAlign="center" verticalAlign="middle" updateComplete="hGroup1_updateCompleteHandler(event)">
+				<s:HGroup horizontalAlign="center" verticalAlign="middle" updateComplete="hGroup1_updateCompleteHandler(event)" resize="hGroup1_resizeHandler(event)">
 					<s:VGroup width="33%" height="100%" horizontalAlign="center">
 						<s:BitmapImage id="photo1Preview" width="100%"   source="{Resource.NO_PHOTO}" ready="photo1Preview_readyHandler(event)"    complete="photo1Preview_completeHandler(event)" fillMode="scale" scaleMode="zoom" smooth="true" />
 						<s:Button id="takePhotoButton" horizontalCenter="0" label="TAKE PHOTO 1"  click="takePhoto(0)"/>
@@ -531,7 +522,7 @@
 					</s:VGroup>
 				</s:HGroup>
 			</s:VGroup>
-			<s:Button label="GENERATE PREVIEW" skinClass="skins.CustomButtonWhite" id="previewButton" enabled="false" click="previewButton_clickHandler(event)" />
+			<s:Button label="GENERATE PREVIEW" skinClass="skins.CustomButtonWhite" id="previewButton" click="previewButton_clickHandler(event)" />
 		</s:VGroup>
 		
 	</s:BorderContainer>

@@ -21,6 +21,8 @@
         import mx.rpc.events.FaultEvent;
         import mx.rpc.events.ResultEvent;
 
+
+
         import spark.events.ViewNavigatorEvent;
 
         protected var webView:StageWebView = new StageWebView();
@@ -39,7 +41,7 @@
         public var optin_marketing:Boolean;
         public var optin_terms:Boolean;
 
-        public var userVar:UserObject;
+
 
         protected var intervallo:Number;
 
@@ -48,7 +50,7 @@
 
         protected function view1_creationCompleteHandler(event:FlexEvent):void {
 
-            userVar = UserObject.getInstance();
+            
 
 
             var facebookAppID:String = Config.instance.facebookAppID;
@@ -58,7 +60,8 @@
             fbRedir = Config.instance.serverIP + "php-sdk/examples/landed.php";
             fbLogout = Config.instance.serverIP + "php-sdk/examples/logout.php"; // &display=touch publish_checkins ,offline_access
             //fbAuthURL = "https://graph.facebook.com/oauth/authorize?type=user_agent&scope=email,user_photos,publish_stream,publish_checkins&client_id="+fbAppID+"&display=touch&redirect_uri=http://www.ignitesocial.co.uk/edfenergy/php-sdk/examples/landed.php&response_type=token";
-            fbAuthURL = "https://graph.facebook.com/oauth/authorize?type=user_agent&scope=email,publish_actions,user_photos&client_id=" + facebookAppID + "&display=touch&redirect_uri=https://" + redirect_uri + "/php-sdk/examples/landed.php&response_type=token"; //&auth_type=reauthenticate
+            fbAuthURL="https://www.facebook.com/dialog/oauth?client_id=" + facebookAppID + "&scope=publish_actions&redirect_uri=https://" + redirect_uri + "/php-sdk/examples/landed.php&response_type=token";
+            //fbAuthURL = "https://graph.facebook.com/oauth/authorize?type=user_agent&scope=email,publish_actions,user_photos&client_id=" + facebookAppID + "&display=touch&redirect_uri=https://" + redirect_uri + "/php-sdk/examples/landed.php&response_type=token"; //&auth_type=reauthenticate
             //var tempo:DelayedExecution=new DelayedExecution(2000,this,createBrowser);
             trace("auth url:" + fbAuthURL);
             createBrowser();
@@ -97,11 +100,12 @@
         }
 
         protected function onURLChange(event:LocationChangeEvent):void {
+            trace("URL change: " + event.location);
             if (event.location.indexOf("https://www.facebook.com/login.php") != -1) {
                 trace("activating cookies");
                 //URLRequestDefaults.manageCookies=true;
             }
-            trace("URL change: " + event.location);
+
             var punto:Point = container.localToGlobal(new Point());
             status_label.text = "URL CHANGED " + event.location;
             //webView.stage = null;
@@ -137,17 +141,15 @@
                 var vars:URLVariables = new URLVariables();
                 vars.decode(URI);
                 access_token = vars.access_token;
-                userVar.token = vars.access_token;
-                trace("Access token:" + userVar.token);
+                UserObject.instance.token = vars.access_token;
+                trace("Access token:" + UserObject.instance.token);
                 webView.removeEventListener(Event.COMPLETE, onURLCompleted);
 
 
                 Config.access_token = access_token;
                 Config.logout = fbLogout;
 
-                logoutCompleted();
-                //webView.addEventListener( Event.COMPLETE, logoutCompleted);
-                //webView.loadURL("https://www.facebook.com/logout.php?access_token="+access_token+"&confirm=1&next="+fbLogout);
+                this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_FACEBOOK_REGISTERED));
             }
 
             // error
@@ -173,8 +175,8 @@
             passVars.urn = EncryptWrapper.Wrap(currentURN);
             passVars.optInTerms = optin_terms ? 1 : 0;
             passVars.optInMarketing = optin_marketing ? 1 : 0;
-            passVars.current_location = userVar.current_location;
-            passVars.extraterms = userVar.extraterms ? 1 : 0;
+            passVars.current_location = UserObject.instance.current_location;
+            passVars.extraterms = UserObject.instance.extraterms ? 1 : 0;
             setToken.send(passVars);
 
 
@@ -217,6 +219,7 @@
             webView.addEventListener(LocationChangeEvent.LOCATION_CHANGING, onURLChanging);
             //webView.loadURL(fbAuthURL);
             webView.loadURL("http://" + Config.instance.serverIP + "/forceloggaout.php");
+            //webView.loadURL(fbAuthURL);
             this.addEventListener(ViewNavigatorEvent.REMOVING, onRemove);
 
         }
@@ -231,13 +234,13 @@
                     this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_FACEBOOK));
                     break;
                 case "OK":// Token save
-                    userVar.facebook = true;
-                    userVar.firstname = unescape(setToken.lastResult.first_name);
-                    userVar.lastname = unescape(setToken.lastResult.last_name);
-                    userVar.email = unescape(setToken.lastResult.email);
-                    userVar.fb_id = unescape(setToken.lastResult.id);
-                    userVar.location = unescape(setToken.lastResult.location);
-                    userVar.hometown = unescape(setToken.lastResult.hometown);
+                    UserObject.instance.facebook = true;
+                    UserObject.instance.firstname = unescape(setToken.lastResult.first_name);
+                    UserObject.instance.lastname = unescape(setToken.lastResult.last_name);
+                    UserObject.instance.email = unescape(setToken.lastResult.email);
+                    UserObject.instance.fb_id = unescape(setToken.lastResult.id);
+                    UserObject.instance.location = unescape(setToken.lastResult.location);
+                    UserObject.instance.hometown = unescape(setToken.lastResult.hometown);
                     this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_FACEBOOK_REGISTERED));
                     break;
                 case "ERROR":

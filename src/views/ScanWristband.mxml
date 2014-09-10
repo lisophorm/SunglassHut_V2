@@ -38,9 +38,6 @@
         [Bindable]
         public var gameNumber:String = "1";
 
-        private var theUser:UserObject;
-
-
         protected function urn_changeHandler(event:TextOperationEvent):void {
             trace("check urn");
 
@@ -65,12 +62,7 @@
 
         public function init(event:Event = null):void {
 
-            theUser = UserObject.getInstance();
-            var tempo:Boolean = theUser.isConnected;
-            trace("enter welcome screen");
-            theUser.init();
-
-            theUser.isConnected = tempo;
+            UserObject.instance.init();
 
             StageDisplayState.FULL_SCREEN_INTERACTIVE;
             //	trace("init barcode reader "+systemManager.stage.hasEventListener(KeyboardEvent.KEY_DOWN).toString());
@@ -131,8 +123,8 @@
 
         protected function generate_urn(event:MouseEvent):void {
             barcode = StringUtils.generateRandomString(10);
-            theUser.urn = barcode;
-            trace("current urn:" + theUser.urn);
+             UserObject.instance.urn = barcode;
+            trace("current urn:" +  UserObject.instance.urn);
             this.navigator.dispatchEvent(new UserEvent(UserEvent.URN, barcode));
             this.navigator.dispatchEvent(new UserEvent(UserEvent.REGISTERED));
             this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_SELECT_USER_TYPE));

@@ -9,15 +9,10 @@
         import com.alfo.DelayedExecution;
         import com.alfo.UserObject;
         import com.alfo.res.Resource;
-        import com.alfo.utils.SQLConnectionWrapper;
 
-        import events.KioskError;
         import events.UserEvent;
-        import events.UserObjectEvent;
         import events.ViewEvent;
 
-        import mx.rpc.events.FaultEvent;
-        import mx.rpc.events.ResultEvent;
         import mx.validators.Validator;
 
         [Bindable]
@@ -27,12 +22,10 @@
         public var optin_marketing:Boolean;
         public var optin_terms:Boolean;
 
-        private var theUser:UserObject;
 
         protected function onAddedToStage(e:Event = null):void {
-            theUser = UserObject.getInstance();
 
-            theUser.facebook = false;
+            UserObject.instance.facebook = false;
 
             if (data != null) {
                 this.currentURN = data.urn;
@@ -59,10 +52,10 @@
             var isValidForm:Boolean = validatorErrorArray.length == 0;
             var outputString:String;
             if (isValidForm) {
-                theUser.firstname = userFirstName.text;
-                theUser.lastname = userLastName.text;
-                theUser.email = userEmail.text;
-                theUser.mobile = userMobile.text;
+                UserObject.instance.firstname = userFirstName.text;
+                UserObject.instance.lastname = userLastName.text;
+                UserObject.instance.email = userEmail.text;
+                UserObject.instance.mobile = userMobile.text;
                 trace("hello");
                 trace(outputString);
                 this.navigator.dispatchEvent(new UserEvent(UserEvent.REGISTERED, "classic"));

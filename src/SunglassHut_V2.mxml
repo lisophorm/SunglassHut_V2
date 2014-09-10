@@ -92,7 +92,7 @@
 
         protected var fadeTrans:CrossFadeViewTransition = new CrossFadeViewTransition();
 
-        private var theUser:UserObject;
+
 
         private var geo:Geolocation;
 
@@ -132,10 +132,7 @@
 
             Uploader.instance.toString();
 
-            
-
-            theUser = UserObject.getInstance();
-            theUser.addEventListener(UserObjectEvent.ERROR, handleOfflineError);
+            NativeApplication.nativeApplication.executeInBackground = true;
 
             
             // first time initialization of preferences
@@ -171,9 +168,7 @@
 
         }
 
-        protected function handleOfflineError(e:UserObjectEvent):void {
-            showError("Please check if the device memory is full:\r\n" + e.errorMsg, "Error writing on device");
-        }
+
 
 
 
@@ -411,7 +406,7 @@
 
         protected function announceStatus(e:StatusEvent):void {
             
-            theUser.isConnected = cleverUrlMonitor.available;
+
             var gino:UserObjectEvent;
             gino = new UserObjectEvent(UserObjectEvent.STATUS_CHANGE, cleverUrlMonitor.available);
             this.navigator.dispatchEvent(gino);

@@ -8,6 +8,9 @@
             <entry library-id="06e6f26a-aeb5-4a4a-845f-c6b13149cd71">
               <dependency linkage="Merged" />
             </entry>
+            <entry library-id="dec4da1a-0ec3-4af3-bdf4-25735f76c99b">
+              <dependency linkage="Merged" />
+            </entry>
           </entries>
           <sdk name="AIR FLEX 14" />
         </dependencies>
@@ -45,6 +48,16 @@
         <JAVADOC />
         <SOURCES />
         <jarDirectory url="file://$MODULE_DIR$/libs" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="dec4da1a-0ec3-4af3-bdf4-25735f76c99b" />
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Shared DEV/facebookapi/lib/com.distriqt.FacebookAPI.ane!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
       </library>
     </orderEntry>
   </component>

@@ -23,13 +23,13 @@
 
         private var ftpCopy:FTPCopy;
         private var file:File;
-        private var theUser:UserObject;
+
 
         [Bindable]
         private var uploadDP:ArrayCollection=new ArrayCollection();
 
         protected function onCreationCompleteHandler(event:FlexEvent):void {
-            theUser = UserObject.getInstance();
+
 
 
             var statement:SQLStatement = SQLConnectionWrapper.instance.getAllRecords();
@@ -86,7 +86,7 @@
             file = File.applicationDirectory.resolvePath("assets/images/blankshot.jpg");
             if (file.exists) {
                 trace("file exists!");
-                var destFile:File = File.documentsDirectory.resolvePath(theUser.tempPath + File.separator + "blank_" + StringUtils.generateRandomString(4) + ".jpg");
+                var destFile:File = File.documentsDirectory.resolvePath(UserObject.instance.tempPath + File.separator + "blank_" + StringUtils.generateRandomString(4) + ".jpg");
                 try {
                     file.copyTo(destFile, true);
                 } catch (e:Error) {
