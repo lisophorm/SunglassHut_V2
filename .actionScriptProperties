@@ -28,6 +28,7 @@
         </excludedEntries>
       </libraryPathEntry>
       <libraryPathEntry kind="1" linkType="1" path="libs"/>
+      <libraryPathEntry kind="5" linkType="2" path="/Users/gino/Shared DEV/facebookapi/lib/com.distriqt.FacebookAPI.ane"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>

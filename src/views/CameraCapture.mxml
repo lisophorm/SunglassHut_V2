@@ -103,8 +103,6 @@
         private var iosLoader:Loader;
 
 
-        private var ftpCopy:FTPCopy;
-
         function onCompletePhoto(event:Event):void {
             trace("i am here!");
             photoBitmaps[currentPhoto] = DisplayUtils.createThumb(Bitmap(LoaderInfo(event.target).content).bitmapData, 620, 616, Alignment.MIDDLE, true).bitmapData;
@@ -467,6 +465,9 @@
 
         private function hGroup1_resizeHandler(event:ResizeEvent):void {
             trace("********** box resized"+event.currentTarget.width);
+
+
+
         }
         ]]>
 	</fx:Script>
@@ -507,17 +508,17 @@
 				<s:Label id="statusText" color="#009BD7" />
 				<s:HGroup horizontalAlign="center" verticalAlign="middle" updateComplete="hGroup1_updateCompleteHandler(event)" resize="hGroup1_resizeHandler(event)">
 					<s:VGroup width="33%" height="100%" horizontalAlign="center">
-						<s:BitmapImage id="photo1Preview" width="100%"   source="{Resource.NO_PHOTO}" ready="photo1Preview_readyHandler(event)"    complete="photo1Preview_completeHandler(event)" fillMode="scale" scaleMode="zoom" smooth="true" />
+						<s:BitmapImage id="photo1Preview" percentWidth="33"   source="{Resource.NO_PHOTO}" ready="photo1Preview_readyHandler(event)"    complete="photo1Preview_completeHandler(event)" fillMode="scale" scaleMode="zoom" smooth="true" />
 						<s:Button id="takePhotoButton" horizontalCenter="0" label="TAKE PHOTO 1"  click="takePhoto(0)"/>
 					</s:VGroup>
 					<s:Spacer width="10" />
 					<s:VGroup width="33%" height="100%" horizontalAlign="center" >
-						<s:BitmapImage id="photo2Preview" width="100%" source="{Resource.NO_PHOTO}"  ready="photo1Preview_readyHandler(event)" complete="photo1Preview_completeHandler(event)" scaleMode="zoom" smooth="true" />
+						<s:BitmapImage id="photo2Preview" width="70%" source="{Resource.NO_PHOTO}"  ready="photo1Preview_readyHandler(event)" complete="photo1Preview_completeHandler(event)" scaleMode="zoom" smooth="true" />
 						<s:Button  horizontalCenter="0" label="TAKE PHOTO 2"  click="takePhoto(1)"/>
 					</s:VGroup>
 					<s:Spacer width="10" />
 					<s:VGroup width="33%" height="100%" horizontalAlign="center">
-						<s:BitmapImage id="photo3Preview" width="100%"  source="{Resource.NO_PHOTO}"  ready="photo1Preview_readyHandler(event)" complete="photo1Preview_completeHandler(event)" scaleMode="zoom" smooth="true" />
+						<s:BitmapImage id="photo3Preview" width="70%"  source="{Resource.NO_PHOTO}"  ready="photo1Preview_readyHandler(event)" complete="photo1Preview_completeHandler(event)" scaleMode="zoom" smooth="true" />
 						<s:Button  horizontalCenter="0" label="TAKE PHOTO 3"  click="takePhoto(2)"/>
 					</s:VGroup>
 				</s:HGroup>

@@ -8,7 +8,7 @@
             <entry library-id="06e6f26a-aeb5-4a4a-845f-c6b13149cd71">
               <dependency linkage="Merged" />
             </entry>
-            <entry library-id="dec4da1a-0ec3-4af3-bdf4-25735f76c99b">
+            <entry library-id="164ff418-7537-4b93-9fdf-1f98efd38e04">
               <dependency linkage="Merged" />
             </entry>
           </entries>
@@ -52,9 +52,9 @@
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library type="flex">
-        <properties id="dec4da1a-0ec3-4af3-bdf4-25735f76c99b" />
+        <properties id="164ff418-7537-4b93-9fdf-1f98efd38e04" />
         <CLASSES>
-          <root url="jar://$USER_HOME$/Shared DEV/facebookapi/lib/com.distriqt.FacebookAPI.ane!/" />
+          <root url="jar://$USER_HOME$/Downloads/airnativeextensions-master/facebookapi/lib/com.distriqt.FacebookAPI.ane!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

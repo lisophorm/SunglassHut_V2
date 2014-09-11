@@ -47,8 +47,6 @@
         import views.components.tandcWindow;
 
 
-
-
         public var urn:int = 0;
         public var scoreFormat:String = "99:99"
 
@@ -93,7 +91,6 @@
         protected var fadeTrans:CrossFadeViewTransition = new CrossFadeViewTransition();
 
 
-
         private var geo:Geolocation;
 
         private var geoUtil:GeoUtils;
@@ -110,9 +107,9 @@
             var child:DisplayObject;
             for (var i:uint = 0; i < container.numChildren; i++) {
                 child = container.getChildAt(i);
-                
+
                 if (container.getChildAt(i) is Button) {
-                    
+
                 }
                 if (container.getChildAt(i) is DisplayObjectContainer) {
                     traceDisplayList(DisplayObjectContainer(child), indentString + "    ");
@@ -120,29 +117,33 @@
             }
         }
 
-        protected  function onExit(e:Event) {
+        protected function onExit(e:Event) {
             trace("************ exit");
-            e.preventDefault();
+            //e.preventDefault();
+            //e.preventDefault();
             SQLConnectionWrapper.instance.connection.close();
             trace("************ exit");
         }
+
         protected function onApplicationComplete(e:Event = null):void {
 
+
+            NativeApplication.nativeApplication.addEventListener(Event.DEACTIVATE, onDeactivate);
             NativeApplication.nativeApplication.addEventListener(Event.EXITING, onExit)
 
             Uploader.instance.toString();
 
             NativeApplication.nativeApplication.executeInBackground = true;
 
-            
+
             // first time initialization of preferences
             Config.instance.initialized;
-            Config.instance.applicationType=Config.instance.applicationType.toUpperCase();
+            Config.instance.applicationType = Config.instance.applicationType.toUpperCase();
 
             trace("Submit");
 
 
-            cleverUrlMonitor = new CleverUrlMonitor("http://"+Config.instance.serverIP + "ping.php");
+            cleverUrlMonitor = new CleverUrlMonitor("http://" + Config.instance.serverIP + "ping.php");
             cleverUrlMonitor.addEventListener(StatusEvent.STATUS, announceStatus);
             cleverUrlMonitor.start();
 
@@ -169,13 +170,9 @@
         }
 
 
-
-
-
-
         protected function clearPopups(e:Event = null):void {
             try {
-                
+
                 if (alertbox != null) {
                     if (!alertbox.isRemoving)
                         PopUpManager.removePopUp(alertbox);
@@ -231,7 +228,7 @@
         }
 
         protected function openTermsAndCondtions(e:KioskEvent = null):void {
-            
+
 
             clearPopups();
             tcWindow = new tandcWindow();
@@ -242,15 +239,15 @@
 
         //NAVIGATION HANDLING BETWEEN VIEWS
         protected function doNavigation(e:ViewEvent):void {
-            
+
             cleverUrlMonitor.checkIt();
             clearPopups();
 
-            trace("************* application type:"+Config.instance.applicationType+ "current event:"+e.location);
+            trace("************* application type:" + Config.instance.applicationType + "current event:" + e.location);
             switch (e.location) {
                 case ViewEvent.LOCATION_RESTART:
                     //this.navigator.popAll();
-					this.navigator.popToFirstView();
+                    this.navigator.popToFirstView();
                     //this.navigator.popToFirstView(fadeTrans);
                     break;
                 case ViewEvent.LOCATION_CONFIG:
@@ -286,21 +283,21 @@
                     }
                     break;
                 case ViewEvent.LOCATION_FACEBOOK_REGISTERED:
-                    
+
                     this.navigator.dispatchEvent(new UserEvent(UserEvent.REGISTERED, "facebook"));
                     this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_REGISTRATION_COMPLETE));
 
                     //	this.navigator.pushView(views.ExtraInfo, {urn: barcode});
                     break;
                 case ViewEvent.LOCATION_TEAM_SELECTED:
-                    
+
                     this.navigator.popView();
 
                     break;
 
 
                 case ViewEvent.LOCATION_REGISTRATION_COMPLETE:
-                    
+
                     /*
                      *
                      *  redirect to 'like' page
@@ -318,7 +315,7 @@
                     break;
 
                 case ViewEvent.LOCATION_NON_FACEBOOK_REGISTERED:
-                    
+
                     this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_GAME));
 
                     break;
@@ -335,8 +332,8 @@
 
                 case ViewEvent.LOCATION_GAME:
 
-                trace("****** into the game"+Config.instance.applicationType+" type: "+APPLICATION_TYPE_PHOTO);
-                    
+                    trace("****** into the game" + Config.instance.applicationType + " type: " + APPLICATION_TYPE_PHOTO);
+
                     if (Config.instance.applicationType == APPLICATION_TYPE_PHOTO) {
                         this.navigator.pushView(CameraCapture, {urn: barcode, type: ApplicationTypeNumber, facebook: this.isFacebookRegistered});
                         /*if (this.isFacebookRegistered)
@@ -381,12 +378,12 @@
         }
 
         protected function error(e:KioskError = null):void {
-            
+
             showError(e.message, e.title, e.exitFunction);
         }
 
         protected function modal(e:KioskError = null):void {
-            
+
             showModal(e.message, e.title, e.exitFunction, e.retryFunction);
         }
 
@@ -401,11 +398,11 @@
         protected function notifyIdle(e:Event):void {
             //defaultState();
             defaultView();
-            
+
         }
 
         protected function announceStatus(e:StatusEvent):void {
-            
+
 
             var gino:UserObjectEvent;
             gino = new UserObjectEvent(UserObjectEvent.STATUS_CHANGE, cleverUrlMonitor.available);
@@ -414,11 +411,11 @@
 
         protected function checkInternet(e:Event):void {
             var gino:MonitorConnection = e as MonitorConnection;
-            
+
         }
 
         protected function notifyNoInternet(e:Event):void {
-            
+
             //defaultState();
             defaultView();
             cleverUrlMonitor.removeEventListener(MonitorConnection.EVENT_INTERNET_NOT_AVAILABLE, notifyNoInternet);
@@ -498,7 +495,7 @@
 
         protected function setBarCode(e:UserEvent):void {
             barcode = e.urn;
-            
+
         }
 
         protected function setScore(e:UserEvent):void {
@@ -508,7 +505,7 @@
         protected function setIsRegistered(e:UserEvent):void {
             this.isRegistered = (e.userType)
 
-            
+
         }
 
         public function get isFacebookRegistered():Boolean {
@@ -593,19 +590,23 @@
 
         protected function takephoto_clickHandler(event:MouseEvent):void {
             if (CameraUI.isSupported) {
-                
+
                 var myCam:CameraUI = new CameraUI();
                 myCam.launch(MediaType.IMAGE);
                 //myCam.addEventListener(MediaEvent.COMPLETE,takePhotoCompleteHandler);
 
             }
             else {
-                
+
 
                 this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, "CAMERA NOT SUPPORTED", "DEVICE ERROR"));
 
             }
 
+        }
+
+        private function onDeactivate(event:Event):void {
+            trace("on deactivate app");
         }
         ]]>
 	</fx:Script>

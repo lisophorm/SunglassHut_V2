@@ -53,7 +53,7 @@ public class SQLConnectionWrapper extends EventDispatcher
         trace("sql database open!");
         var stat:SQLStatement = new SQLStatement();
         stat.sqlConnection = connection;
-        stat.text = "CREATE TABLE IF NOT EXISTS userdata (id INTEGER PRIMARY KEY AUTOINCREMENT, created DATETIME, modified DATETIME, vars TEXT, status TEXT,url TEXT,filename TEXT,lastresult TEXT)";
+        stat.text = "CREATE TABLE IF NOT EXISTS userdata (id INTEGER PRIMARY KEY AUTOINCREMENT, created DATETIME, modified DATETIME, local integer DEFAULT 0, vars TEXT, status TEXT,url TEXT,filename TEXT,lastresult TEXT)";
         stat.execute(-1, new Responder(handleSuccess,handleFailure));
     }
 

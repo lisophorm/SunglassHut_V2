@@ -1,286 +1,267 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
-        xmlns:s="library://ns.adobe.com/flex/spark" viewActivate="view1_activateHandler(event)"
-        creationComplete="view1_creationCompleteHandler(event)" removing="view1_removingHandler(event)">
+        xmlns:s="library://ns.adobe.com/flex/spark"
+        creationComplete="creationCompleteHandler(event)" removing="removingHandler(event)">
 
     <fx:Script>
 		<![CDATA[
-        import com.alfo.UserObject;
-        import com.alfo.utils.EncryptWrapper;
-
-        import events.KioskError;
-        import events.ViewEvent;
-
-        import model.Config;
-
-        import mx.core.DPIClassification;
-
-        import mx.core.FlexGlobals;
-
         import mx.events.FlexEvent;
-        import mx.rpc.events.FaultEvent;
-        import mx.rpc.events.ResultEvent;
-
-
 
         import spark.events.ViewNavigatorEvent;
 
-        protected var webView:StageWebView = new StageWebView();
-        protected var openBrowser:Boolean = false;
-        // URL Should be: http://www.ignitesocial.co.uk/vf_budapest/
-        private var fbScope:String = "email,publish_actions";
-        //public var fbAppID:String="316759675084824";
-        private var fbRedir:String;
-        private var fbLogout:String;
-        protected var fbAuthURL:String;
-        //protected var fbAuthURL:String="https://m.facebook.com/dialog/permissions.request?app_id=252378658153874&display=touch&next=http://www.ignitesocial.co.uk/ignite/php-sdk/examples/landed.php&type=user_agent&perms=email,publish_checkins,publish_stream,offline_access&fbconnect=1&response_type=token";
+        import com.distriqt.extension.facebookapi.FacebookAPI;
+        import com.distriqt.extension.facebookapi.events.FacebookAPIEvent;
+        import com.distriqt.extension.facebookapi.events.FacebookAppRequestEvent;
+        import com.distriqt.extension.facebookapi.events.FacebookOpenGraphActionEvent;
+        import com.distriqt.extension.facebookapi.objects.FacebookAppRequestInfo;
+        import com.distriqt.extension.facebookapi.objects.FacebookDialogType;
+        import com.distriqt.extension.facebookapi.objects.FacebookShareParams;
+
+        import flash.display.Sprite;
+        import flash.display.StageAlign;
+        import flash.display.StageScaleMode;
+        import flash.events.Event;
+        import flash.events.MouseEvent;
+        import flash.text.TextField;
+        import flash.text.TextFormat;
+        import flash.text.TextFormatAlign;
+        import flash.utils.setTimeout;
+
+        public static const DEV_KEY:String = "aae5a5bb826512c6c98103029a639e33512e78e3ujlHJUnnwfoiVYl3ylYKxNFG3qXQF5AZ963nGr37YMufzoCalX/yDOCk6EkHS16IZxkIMKwnlas5Z7n9xJPfaM4S9jz0Z9UuCSV7rnpS7g+4MtPVJx4D1RknOdTbrft1x0q6IUoOOZ7ltmTojiD98oa3uWKZL5d398cN5ZZRcTdA2OVKzdvnQ3Xgf1yeJ2DC4gNZNGRHE2MsRsaq2QqkSPEEEQDhtoU3/6QuVF0ZoGbuju1dxKUQJxnPyOF8AFDy+0b6ZykZTCIM2bvxoEnldLTbFkQfDpXQQJIZV28B733Y0gF4IWWWtMPXzOR2Fitn7FAvCUPITorA5efs+pOH3A==";
+
+        private var _buttons:Array;
+        private var _text:TextField;
+        private var _dialogType:String = FacebookDialogType.NATIVE;
+
+        private function creationCompleteHandler(event:FlexEvent):void {
 
 
-        public var access_token:String;
-        public var currentURN:String;
-        public var optin_marketing:Boolean;
-        public var optin_terms:Boolean;
-
-
-
-        protected var intervallo:Number;
-
-
-        protected var pref:Config;
-
-        protected function view1_creationCompleteHandler(event:FlexEvent):void {
-
-            
-
-
-            var facebookAppID:String = Config.instance.facebookAppID;
-            var redirect_uri:String = Config.instance.serverIP;
-
-
-            fbRedir = Config.instance.serverIP + "php-sdk/examples/landed.php";
-            fbLogout = Config.instance.serverIP + "php-sdk/examples/logout.php"; // &display=touch publish_checkins ,offline_access
-            //fbAuthURL = "https://graph.facebook.com/oauth/authorize?type=user_agent&scope=email,user_photos,publish_stream,publish_checkins&client_id="+fbAppID+"&display=touch&redirect_uri=http://www.ignitesocial.co.uk/edfenergy/php-sdk/examples/landed.php&response_type=token";
-            fbAuthURL="https://www.facebook.com/dialog/oauth?client_id=" + facebookAppID + "&scope=publish_actions&redirect_uri=https://" + redirect_uri + "/php-sdk/examples/landed.php&response_type=token";
-            //fbAuthURL = "https://graph.facebook.com/oauth/authorize?type=user_agent&scope=email,publish_actions,user_photos&client_id=" + facebookAppID + "&display=touch&redirect_uri=https://" + redirect_uri + "/php-sdk/examples/landed.php&response_type=token"; //&auth_type=reauthenticate
-            //var tempo:DelayedExecution=new DelayedExecution(2000,this,createBrowser);
-            trace("auth url:" + fbAuthURL);
-            createBrowser();
-
+            init();
         }
 
-        protected function view1_activateHandler(event:Event):void {
 
-            trace("facebook login page" + data.urn);
-            //this.navigator.dispatchEvent( new UserEvent( UserEvent.URN, data.urn) );
-            currentURN = data.urn;
-            optin_marketing = data.optin_marketing;
-            optin_terms = data.optin_terms;
 
-            //navigator.actionBar.title=data.title;
+        private function init():void {
+            try {
+                FacebookAPI.init(DEV_KEY);
 
-        }
+                message("FacebookAPI Supported: " + String(FacebookAPI.isSupported));
+                message("FacebookAPI Version: " + FacebookAPI.service.version);
 
-        protected function onURLError(event:ErrorEvent):void {
-            webView.removeEventListener(LocationChangeEvent.LOCATION_CHANGING, onURLChanging);
-            webView.removeEventListener(LocationChangeEvent.LOCATION_CHANGE, onURLChange);
-            webView.removeEventListener(Event.COMPLETE, onURLCompleted);
-            trace("URL error: " + event.text);
-            webView.stage = null;
-            this.navigator.dispatchEvent(new KioskError(KioskError.MODAL, event.text, "We're currently experiencing connectivity issues, try again?", ricomincia, createBrowser));
+                FacebookAPI.service.addEventListener(FacebookAPIEvent.SESSION_OPENED, session_openedHandler);
+                FacebookAPI.service.addEventListener(FacebookAPIEvent.SESSION_CLOSED, session_closedHandler);
+                FacebookAPI.service.addEventListener(FacebookAPIEvent.SESSION_OPEN_DISABLED, session_openDisabledHandler);
+                FacebookAPI.service.addEventListener(FacebookAPIEvent.SESSION_OPEN_ERROR, session_openErrorHandler);
+                FacebookAPI.service.addEventListener(FacebookAPIEvent.GET_PERMISSIONS_COMPLETED, permissionsResultHandler);
+                FacebookAPI.service.addEventListener(FacebookAPIEvent.APP_INVOKED, appInvokedHandler);
+                FacebookAPI.service.addEventListener(FacebookAppRequestEvent.APP_REQUESTS_FOUND, appRequestsFoundHandler);
+                FacebookAPI.service.addEventListener(FacebookAppRequestEvent.APP_REQUEST_DATA_LOADED, appRequestsDataHandler);
+                FacebookAPI.service.addEventListener(FacebookOpenGraphActionEvent.ACTION_IDS_FOUND, actionIdsFoundHandler);
+                FacebookAPI.service.addEventListener(FacebookAPIEvent.DIALOG_COMPLETED, dialog_completedHandler);
+                FacebookAPI.service.addEventListener(FacebookAPIEvent.DIALOG_CANCELLED, dialog_completedHandler);
+                FacebookAPI.service.addEventListener(FacebookAPIEvent.DIALOG_ERROR, dialog_completedHandler);
 
-        }
 
-        protected function onURLChanging(event:LocationChangeEvent):void {
-            trace("URL changing: " + event.location);
-            //webView.viewPort = new Rectangle(0,0,0,0);
-            status_label.text = "URL CHANGING " + event.location;
-           // webView.stage = null;
-            // Uncomment the following line to load in the default browser instead...
-            //navigateToURL(new URLRequest(event.location));
-        }
-
-        protected function onURLChange(event:LocationChangeEvent):void {
-            trace("URL change: " + event.location);
-            if (event.location.indexOf("https://www.facebook.com/login.php") != -1) {
-                trace("activating cookies");
-                //URLRequestDefaults.manageCookies=true;
             }
-
-            var punto:Point = container.localToGlobal(new Point());
-            status_label.text = "URL CHANGED " + event.location;
-            //webView.stage = null;
-
-            //webView.stage=stage;
-            //webView.viewPort = new Rectangle(punto.x, punto.y, container.width, container.height);
-
-            // Uncomment the following line to load in the default browser instead...
-            //navigateToURL(new URLRequest(event.location));
-        }
-
-        protected function onURLCompleted(e:Event):void {
-            trace("URL complete: " + webView.location);
-
-            status_label.text = "URL LOADING COMPLETE";
-            webView.stage = stage;
-            showURL();
-        }
-
-        private function showURL():void {
-            //trace("timer location:"+webView.location);
-            var URI:String = webView.location;
-            // access token exists in location
-            if (webView.location.indexOf("completop.php") != -1) {
-                webView.loadURL(fbAuthURL);
-            } else if (webView.location.indexOf("access_token") != -1) {
-                trace("ACCESS TOKEN OBTAINED");
-                webView.viewPort = new Rectangle(0, 0, 0, 0);
-                //webView.stage=null;
-                //URI=URI.replace("#","?");
-                trace("URI:" + URI);
-                URI = URI.substr(URI.indexOf("#") + 1);
-                var vars:URLVariables = new URLVariables();
-                vars.decode(URI);
-                access_token = vars.access_token;
-                UserObject.instance.token = vars.access_token;
-                trace("Access token:" + UserObject.instance.token);
-                webView.removeEventListener(Event.COMPLETE, onURLCompleted);
-
-
-                Config.access_token = access_token;
-                Config.logout = fbLogout;
-
-                this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_FACEBOOK_REGISTERED));
-            }
-
-            // error
-            if (webView.location.indexOf("landed.php?error_reason=user_denied") != -1 && webView.location.indexOf("facebook.com/login.php") == -1) {
-                webView.viewPort = new Rectangle(0, 0, 0, 0);
-                webView.removeEventListener(Event.COMPLETE, onURLCompleted);
-                webView.removeEventListener(LocationChangeEvent.LOCATION_CHANGE, onURLChange);
-                webView.removeEventListener(LocationChangeEvent.LOCATION_CHANGING, onURLChanging);
-                //webView.stage = null;
-                this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, "You have to install the app and accept the permissions.", "ERROR", ricomincia));
-
+            catch (e:Error) {
+                message("ERROR!");
             }
         }
 
-        protected function logoutCompleted(e:Event = null):void {
-            trace("**** LOGOUT COMPLETED ****");
-            webView.removeEventListener(LocationChangeEvent.LOCATION_CHANGING, onURLChanging);
-            webView.removeEventListener(LocationChangeEvent.LOCATION_CHANGE, onURLChange);
-            webView.removeEventListener(Event.COMPLETE, onURLCompleted);
+        //
+        //	EVENT HANDLERS
+        //
 
-            var passVars:Object = new Object();
-            passVars.token = EncryptWrapper.Wrap(access_token);
-            passVars.urn = EncryptWrapper.Wrap(currentURN);
-            passVars.optInTerms = optin_terms ? 1 : 0;
-            passVars.optInMarketing = optin_marketing ? 1 : 0;
-            passVars.current_location = UserObject.instance.current_location;
-            passVars.extraterms = UserObject.instance.extraterms ? 1 : 0;
-            setToken.send(passVars);
-
+        private function stage_resizeHandler(event:Event):void {
+            _text.width = stage.stageWidth;
+            _text.height = stage.stageHeight * 0.5;
 
         }
 
-        protected function exitLogin():void {
-            var dato:Object = new Object;
-            dato.urn = currentURN;
-            //navigator.pushView(views.ExtraInfo,dato);
-            this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_FACEBOOK_REGISTERED));
-        }
 
-        protected function onRemove(event:ViewNavigatorEvent):void {
-            trace("onremove fired");
 
-            if (webView != null) {
-                trace("WEBVIEW DISPOSING");
-                webView.dispose();
-                webView = null;
-            } else {
-                trace("WEBVIEW already disposed!");
+        private function dialogResultHandler(data:Object, error:String):void {
+            if (data) {
+                trace("Dialog completed");
+            }
+            else {
+                trace("Dialog error: " + error);
             }
         }
 
-
-        protected function createBrowser(e:Event = null):void {
-            trace("CREATING BROWSER");
-            //URLRequestDefaults.manageCookies=false;
-            var punto:Point = container.localToGlobal(new Point(0, 0));
-
-            var t:Number = 1;
-
-            if(FlexGlobals.topLevelApplication.runtimeDPI == DPIClassification.DPI_320){   t = 2; }
-            webView.viewPort = new Rectangle(punto.x, punto.y, container.width*t, container.height*t);
-            busone.x = container.width / 2 - 50;
-            busone.y = container.height / 2 - 50;
-            webView.addEventListener(ErrorEvent.ERROR, onURLError);
-            webView.addEventListener(Event.COMPLETE, onURLCompleted);	 // FIRES WHEN LOADING IS DONE
-            webView.addEventListener(LocationChangeEvent.LOCATION_CHANGE, onURLChange);	// NOT ALWAYS FIRING
-            webView.addEventListener(LocationChangeEvent.LOCATION_CHANGING, onURLChanging);
-            //webView.loadURL(fbAuthURL);
-            webView.loadURL("http://" + Config.instance.serverIP + "/forceloggaout.php");
-            //webView.loadURL(fbAuthURL);
-            this.addEventListener(ViewNavigatorEvent.REMOVING, onRemove);
-
+        private function permissionsResultHandler(event:FacebookAPIEvent):void {
+            trace("Loaded permissions: " + event.data.permissions.join(","));
         }
 
 
-        protected function httpservice1_resultHandler(event:ResultEvent):void {
+        private function session_openedHandler(event:FacebookAPIEvent):void {
+            trace("Session Opened!");
+            if (event.data) {
+                trace("> " + event.data.accessToken);
+                trace("> " + event.data.userId);
+                trace("> " + event.data.userName);
+                trace("> " + event.data.firstName);
+                trace("> " + event.data.lastName);
+                trace("> " + event.data.expiry);
+            }
+        }
 
-            trace("TOKEN RESULT FROM DATABASE " + setToken.lastResult.result + " " + currentURN);
+        private function session_closedHandler(event:FacebookAPIEvent):void {
+            trace("Session Closed!");
+        }
 
-            switch (setToken.lastResult.result) {
-                case "NO":// Token not found
-                    this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_FACEBOOK));
+        private function session_openDisabledHandler(event:FacebookAPIEvent):void {
+            trace("Session Open failed - application is disabled!");
+        }
+
+        private function session_openErrorHandler(event:FacebookAPIEvent):void {
+            trace("Session Open error - " + event.error);
+        }
+
+        private function appRequestsFoundHandler(event:FacebookAppRequestEvent):void {
+            trace("Found app requests: " + event.requestIds.join(", "));
+        }
+
+        private function appRequestsDataHandler(event:FacebookAppRequestEvent):void {
+            trace("Found app request data!");
+            for each (var r:FacebookAppRequestInfo in event.requests) {
+                trace("R id: " + r.requestId);
+                trace("From: " + r.fromUserName);
+                trace("Data: " + r.data);
+            }
+        }
+
+        private function dialog_completedHandler(event:FacebookAPIEvent):void {
+            // Dialog completed
+        }
+
+        private function dialog_cancelledHandler(event:FacebookAPIEvent):void {
+            // The user cancelled the dialog
+        }
+
+        private function dialog_errorHandler(event:FacebookAPIEvent):void {
+            // An error occurred
+            trace(" Dialog error: " + event.error);
+        }
+
+        private function actionIdsFoundHandler(event:FacebookOpenGraphActionEvent):void {
+            trace("Action IDs: " + event.actionIds.join(","));
+        }
+
+        private function appInvokedHandler(event:FacebookAPIEvent):void {
+            message("App invoked: " + event.data.targetUrl + ", " + event.data.sourceApplication);
+        }
+
+        private function message(str:String):void {
+            trace(str);
+            theOutput.appendText(str + "\n");
+        }
+
+
+
+
+
+        private function removingHandler(event:ViewNavigatorEvent):void {
+
+        }
+
+        private function button_clickHandler(event:MouseEvent):void {
+            trace(event.target.id);
+            if (!FacebookAPI.isSupported) {
+                message("Facebook API not supported on this platform!");
+                return;
+            }
+
+            switch (event.target.id) {
+
+                // Init Facebook and create session
+                case "button0":
+                    message("Initialising FacebookAPI...\n");
+                    FacebookAPI.service.initialiseApp("606919926007758");
                     break;
-                case "OK":// Token save
-                    UserObject.instance.facebook = true;
-                    UserObject.instance.firstname = unescape(setToken.lastResult.first_name);
-                    UserObject.instance.lastname = unescape(setToken.lastResult.last_name);
-                    UserObject.instance.email = unescape(setToken.lastResult.email);
-                    UserObject.instance.fb_id = unescape(setToken.lastResult.id);
-                    UserObject.instance.location = unescape(setToken.lastResult.location);
-                    UserObject.instance.hometown = unescape(setToken.lastResult.hometown);
-                    this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_FACEBOOK_REGISTERED));
-                    break;
-                case "ERROR":
-                    this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, unescape(setToken.lastResult.message), "ERROR", ricomincia));
 
+                // Log in
+                case "button1":
+                    FacebookAPI.service.createSession([ "basic_info","publish_actions" ], true, true);
                     break;
-                default:
+
+                // Check session
+                case "button2":
+                    //message("Session open: " + FacebookAPI.service.isSessionOpen().toString());
+                    message("Token: " + FacebookAPI.service.getAccessToken());
+                    break;
+
+                // Request publish permissions
+                case "button3":
+                    FacebookAPI.service.requestPermissions([ "publish_actions" ], false);
+                    break;
+
+                // Load the current permissions for the user
+                case "button4":
+                    FacebookAPI.service.getCurrentPermissions();
+                    break;
+
+                // Share dialog to share a link
+                case "button5":
+                    var params:FacebookShareParams = new FacebookShareParams();
+                    params.title = "This is the title";
+                    params.caption = "This is the caption";
+                    params.description = "This is the description";
+                    //params.link = "http://bolleloz.herokuapp.com/test";
+                    FacebookAPI.service.openShareDialog(params, dialogResultHandler);
+                    break;
+
+                // Change the preferred dialog type
+                case "button6":
+
+                    switch (_dialogType) {
+                        case FacebookDialogType.NATIVE:
+                            _dialogType = FacebookDialogType.OS_INTEGRATED;
+                            break;
+
+                        case FacebookDialogType.OS_INTEGRATED:
+                            _dialogType = FacebookDialogType.WEB;
+                            break;
+
+                        case FacebookDialogType.WEB:
+                            _dialogType = FacebookDialogType.NATIVE;
+                            break;
+
+                    }
+
+                    trace("Preferred dialog type: " + _dialogType);
+                    FacebookAPI.service.setPreferredDialogType(_dialogType);
+                    break;
+
+                // Logout
+                case "button7":
+                    FacebookAPI.service.closeSession(true);
+                    break;
+
             }
 
-
-        }
-
-        protected function httpservice1_faultHandler(event:FaultEvent):void {
-            trace("failure");
-            this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, event.fault.faultString, "FAILURE", ricomincia));
-        }
-
-
-        protected function view1_removingHandler(event:ViewNavigatorEvent):void {
-            clearInterval(intervallo);
-        }
-
-        protected function ricomincia(e:Event = null):void {
-
-            //NativeApplication.nativeApplication.exit();
-            this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_RESTART));
         }
         ]]>
 	</fx:Script>
 	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
-		<s:HTTPService id="setToken" resultFormat="flashvars" method="POST" url="{Config.instance.serverIP+'setuser.php'}" result="httpservice1_resultHandler(event)" fault="httpservice1_faultHandler(event)" />
 	</fx:Declarations>
 	
+    <s:SpriteVisualElement id="cont" alpha="0" />
+    <s:HGroup>
+        <s:VGroup>
+            <s:Button id="button0" label="Init Facebook" click="button_clickHandler(event)" />
+            <s:Button id="button1" label="Open Session" click="button_clickHandler(event)" />
+            <s:Button id="button2" label="Session Check" click="button_clickHandler(event)" />
+            <s:Button id="button3" label="Request Perms" click="button_clickHandler(event)" />
+            <s:Button id="button4" label="Get Perms" click="button_clickHandler(event)" />
+            <s:Button id="button5" label="Share Dialog" click="button_clickHandler(event)" />
+            <s:Button id="button6" label="Change Dlg Type" click="button_clickHandler(event)" />
+            <s:Button id="button7" label="Logout" click="button_clickHandler(event)" />
+        </s:VGroup>
+        <s:TextArea width="100%" height="100%" id="theOutput" />
+    </s:HGroup>
 
-	<s:VGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
-		<s:Label id="status_label" includeInLayout="false" text="status" color="0x000000" />
-		<s:BorderContainer width="100%" height="100%" id="container" backgroundColor="#cc0000" >
-			<s:BusyIndicator horizontalCenter="0" verticalCenter="0" width="100" height="100" rotationInterval="200" symbolColor="#ED1C24" id="busone" />
-		</s:BorderContainer>
-	</s:VGroup>
+
 </s:View>

@@ -21,7 +21,7 @@
 
         import mx.events.FlexEvent;
 
-        private var ftpCopy:FTPCopy;
+
         private var file:File;
 
 
@@ -39,8 +39,6 @@
                 this.localserver.text = Config.instance.localIP;
                 this.server.text = Config.instance.serverIP;
                 this.facebookAPI_ID.text = Config.instance.facebookAppID;
-                this.urnLength.text = Config.instance.urnLength;
-                this.scoreFormat.text = Config.instance.scoreFormat;
 
 
 
@@ -65,8 +63,6 @@
             Config.instance.localIP=this.localserver.text;
             Config.instance.serverIP=this.server.text;
             Config.instance.facebookAppID=this.facebookAPI_ID.text;
-            Config.instance.urnLength=this.urnLength.text;
-            Config.instance.scoreFormat=this.scoreFormat.text;
 
             Config.instance.writeXMLData();
 
@@ -98,10 +94,7 @@
             } else {
                 trace("****** blank file does not exists");
             }
-            ftpCopy = new FTPCopy(destFile, this.parentApplication.localURL + "upload.php");
-            ftpCopy.addEventListener(IOErrorEvent.IO_ERROR, handleLocalError);
-            ftpCopy.addEventListener(Event.COMPLETE, onCompleteLocal);
-            ftpCopy.start();
+            // TODO send to printer with new method Uploader
         }
 
         private function handleLocalError(e:IOErrorEvent):void {
@@ -113,13 +106,7 @@
         }
 
         protected function view1_removeHandler(event:FlexEvent):void {
-            if (ftpCopy != null) {
-                if (ftpCopy.hasEventListener(IOErrorEvent.NETWORK_ERROR)) {
-                    ftpCopy.removeEventListener(IOErrorEvent.NETWORK_ERROR, handleLocalError);
-                    ftpCopy.removeEventListener(Event.COMPLETE, onCompleteLocal);
-                }
-                ftpCopy = null;
-            }
+
 
         }
         ]]>
@@ -150,12 +137,8 @@
 					</s:FormItem>
 					
 					<s:HGroup>
-						<s:FormItem width="365" label="URN Length:" >
-							<s:TextInput id="urnLength" width="80" color="0x000000"   fontFamily="Arial"/>
-						</s:FormItem>
-						<s:FormItem width="365" label="Score format:" >
-							<s:TextInput id="scoreFormat" width="80" color="0x000000"   fontFamily="Arial"/>
-						</s:FormItem>
+
+
 					</s:HGroup>
 					
 					<s:FormItem width="365" label="Facebook appID:" >

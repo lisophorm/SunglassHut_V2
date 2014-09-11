@@ -254,5 +254,8 @@
         <!-- Indicates if the app contains video or not. Necessary for ordering of video planes with graphics plane, especially in Jellybean - if you app does video this must be set to true - valid values are true or false -->
         <!-- <containsVideo></containsVideo> -->
     </android>
+    <extensions>
+        <extensionID>com.distriqt.FacebookAPI</extensionID>
+    </extensions>
 
 </application>
