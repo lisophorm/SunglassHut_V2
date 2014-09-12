@@ -370,9 +370,12 @@
             theJPG.removeEventListener(ProgressEvent.PROGRESS, onEncodingProgress);
             theJPG.removeEventListener(Event.COMPLETE, onEncodeComplete);
             theJPG = null;
-            if(theBitmapAsset.bitmapData){
-                theBitmapAsset.bitmapData.dispose();
+            if(theBitmapAsset) {
+                if(theBitmapAsset.bitmapData){
+                    theBitmapAsset.bitmapData.dispose();
+                }
             }
+
 
             theBitmapAsset = null;
             photoBitmaps[0].dispose();
@@ -401,8 +404,8 @@
 
 
         protected function photo1Preview_readyHandler(event:FlexEvent):void {
-            trace("************ image ready, current width:" + event.target.width);
-            event.target.width = 1280 / 3 - 50;
+            trace("************ image ready, current width:" + event.target.width+"stage width:0" + stage.width);
+            event.target.width = stage.width / 3 - 50;
             event.target.height = event.target.width;
 
             trace("************ new width:" + event.target.width);
@@ -508,18 +511,18 @@
 				<s:Label id="statusText" color="#009BD7" />
 				<s:HGroup horizontalAlign="center" verticalAlign="middle" updateComplete="hGroup1_updateCompleteHandler(event)" resize="hGroup1_resizeHandler(event)">
 					<s:VGroup width="33%" height="100%" horizontalAlign="center">
-						<s:BitmapImage id="photo1Preview" percentWidth="33"   source="{Resource.NO_PHOTO}" ready="photo1Preview_readyHandler(event)"    complete="photo1Preview_completeHandler(event)" fillMode="scale" scaleMode="zoom" smooth="true" />
-						<s:Button id="takePhotoButton" horizontalCenter="0" label="TAKE PHOTO 1"  click="takePhoto(0)"/>
+						<s:Image id="photo1Preview" source="{Resource.NO_PHOTO}" ready="photo1Preview_readyHandler(event)"    complete="photo1Preview_completeHandler(event)" scaleMode="zoom" smooth="true" />
+						<s:Button id="takePhotoButton" scaleX="0.9" scaleY="0.9" horizontalCenter="0" label="TAKE PHOTO 1"  click="takePhoto(0)"/>
 					</s:VGroup>
 					<s:Spacer width="10" />
 					<s:VGroup width="33%" height="100%" horizontalAlign="center" >
-						<s:BitmapImage id="photo2Preview" width="70%" source="{Resource.NO_PHOTO}"  ready="photo1Preview_readyHandler(event)" complete="photo1Preview_completeHandler(event)" scaleMode="zoom" smooth="true" />
-						<s:Button  horizontalCenter="0" label="TAKE PHOTO 2"  click="takePhoto(1)"/>
+                        <s:Image  id="photo2Preview" source="{Resource.NO_PHOTO}"  ready="photo1Preview_readyHandler(event)" complete="photo1Preview_completeHandler(event)" scaleMode="zoom" smooth="true" />
+						<s:Button  horizontalCenter="0" scaleX="0.9" scaleY="0.9" label="TAKE PHOTO 2"  click="takePhoto(1)"/>
 					</s:VGroup>
 					<s:Spacer width="10" />
 					<s:VGroup width="33%" height="100%" horizontalAlign="center">
-						<s:BitmapImage id="photo3Preview" width="70%"  source="{Resource.NO_PHOTO}"  ready="photo1Preview_readyHandler(event)" complete="photo1Preview_completeHandler(event)" scaleMode="zoom" smooth="true" />
-						<s:Button  horizontalCenter="0" label="TAKE PHOTO 3"  click="takePhoto(2)"/>
+                        <s:Image  id="photo3Preview" source="{Resource.NO_PHOTO}"  ready="photo1Preview_readyHandler(event)" complete="photo1Preview_completeHandler(event)" scaleMode="zoom" smooth="true" />
+						<s:Button  horizontalCenter="0" scaleX="0.9" scaleY="0.9" label="TAKE PHOTO 3"  click="takePhoto(2)"/>
 					</s:VGroup>
 				</s:HGroup>
 			</s:VGroup>
