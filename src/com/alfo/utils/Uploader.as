@@ -1,5 +1,7 @@
 package com.alfo.utils
 {
+import events.UploadResultEvent;
+
 import flash.data.SQLResult;
 import flash.data.SQLStatement;
 import flash.errors.SQLError;
@@ -85,7 +87,7 @@ public class Uploader extends EventDispatcher
         SQLConnectionWrapper.instance.connection.close(new Responder(onCloseDB,handleFailure));
     }
 
-    private function countRecords(e:Object=null):void {
+    public function countRecords(e:Object=null):void {
         trace("sending count records");
         var statement:SQLStatement = SQLConnectionWrapper.instance.totalRecords("userdata");
         statement.execute(-1,new Responder(handleRecordCount,handleFailure));
@@ -117,6 +119,9 @@ public class Uploader extends EventDispatcher
      */
 
     private function handleRecordCount(result:SQLResult):void {
+
+        dispatchEvent(new UploaderEvent(UploaderEvent.UPDATE,result));
+
         trace("got new records");
         _totalFiles=0;
         _failedFiles=0; // failed count sums everything that is not QUEUED os Succsess
@@ -141,7 +146,9 @@ public class Uploader extends EventDispatcher
 
         trace("result count!"+_totalFiles);
         if(_queuedFiles>0) {
-            setTimeout(function() {                start();},3000)
+            setTimeout(function() {
+                start();
+            },3000)
 
         }
     }

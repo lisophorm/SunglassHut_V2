@@ -4,65 +4,56 @@
 		creationComplete="onCreationCompleteHandler(event)" backgroundColor="0x000000" addedToStage=""  remove="view1_removeHandler(event)" >
 	<fx:Script>
 		<![CDATA[
-        import com.alfo.DelayedExecution;
         import com.alfo.UserObject;
-        import com.alfo.utils.FTPCopy;
         import com.alfo.utils.SQLConnectionWrapper;
         import com.alfo.utils.StringUtils;
         import com.alfo.utils.Uploader;
+        import com.alfo.utils.UploaderEvent;
 
-        import events.ApplicationEvent;
         import events.KioskError;
         import events.ViewEvent;
 
         import model.Config;
 
         import mx.collections.ArrayCollection;
-
         import mx.events.FlexEvent;
-
 
         private var file:File;
 
 
         [Bindable]
-        private var uploadDP:ArrayCollection=new ArrayCollection();
+        private var uploadDP:ArrayCollection = new ArrayCollection();
 
         protected function onCreationCompleteHandler(event:FlexEvent):void {
 
+            Uploader.instance.addEventListener(UploaderEvent.UPDATE, updateRecordCountHandler);
+            Uploader.instance.countRecords();
+            //var statement:SQLStatement = SQLConnectionWrapper.instance.getAllRecords();
+            //statement.execute(-1, new Responder(handleRecordCount, handleFailure));
 
 
-            var statement:SQLStatement = SQLConnectionWrapper.instance.getAllRecords();
-            statement.execute(-1,new Responder(handleRecordCount,handleFailure));
-
-
-                this.localserver.text = Config.instance.localIP;
-                this.server.text = Config.instance.serverIP;
-                this.facebookAPI_ID.text = Config.instance.facebookAppID;
-
+            this.localserver.text = Config.instance.localIP;
+            this.server.text = Config.instance.serverIP;
+            this.facebookAPI_ID.text = Config.instance.facebookAppID;
 
 
         }
 
         private function handleRecordCount(result:SQLResult):void {
 
-            var data:Array=result.data;
-            uploadDP=new ArrayCollection(data);
-            trace("got all the records from ApplicationType");
+
         }
-        private function handleFailure(error:SQLError):void
-        {
+
+        private function handleFailure(error:SQLError):void {
             trace("Epic Fail from ApplicationType: " + error.message);
         }
 
 
-
-
         protected function submit(e:MouseEvent):void {
 
-            Config.instance.localIP=this.localserver.text;
-            Config.instance.serverIP=this.server.text;
-            Config.instance.facebookAppID=this.facebookAPI_ID.text;
+            Config.instance.localIP = this.localserver.text;
+            Config.instance.serverIP = this.server.text;
+            Config.instance.facebookAppID = this.facebookAPI_ID.text;
 
             Config.instance.writeXMLData();
 
@@ -107,6 +98,14 @@
 
         protected function view1_removeHandler(event:FlexEvent):void {
 
+            Uploader.instance.removeEventListener(UploaderEvent.UPDATE, updateRecordCountHandler);
+        }
+
+        private function updateRecordCountHandler(event:UploaderEvent):void {
+            trace("******* applicationType: updated record count")
+            var data:Array =  event.result.data;
+            uploadDP = new ArrayCollection(data);
+            trace("got all the records from ApplicationType");
 
         }
         ]]>
@@ -144,27 +143,7 @@
 					<s:FormItem width="365" label="Facebook appID:" >
 						<s:TextInput id="facebookAPI_ID" width="400" color="0x000000" softKeyboardType="number"  fontFamily="Arial"/>
 					</s:FormItem>
-					<s:FormItem width="365" label="Application:">
-						<s:HGroup>
-							<s:VGroup>
-								<s:RadioButton width="100%" skinClass="spark.skins.mobile.RadioButtonSkin" label="Registration Only" value="registration" group="{radioGroup}" />
-								<s:RadioButton width="100%" skinClass="spark.skins.mobile.RadioButtonSkin" label="Pit Stop Challenge" value="pitstop" group="{radioGroup}" visible="false" includeInLayout="false" />
-								<s:RadioButton width="100%" skinClass="spark.skins.mobile.RadioButtonSkin" label="Simulator" value="simulator" group="{radioGroup}" visible="false" includeInLayout="false" />
-								<s:RadioButton width="100%" skinClass="spark.skins.mobile.RadioButtonSkin" label="Photo capture" value="photocapture" group="{radioGroup}" />
-								<s:RadioButton width="100%" skinClass="spark.skins.mobile.RadioButtonSkin" label="Green screen" value="greenscreen" group="{radioGroup}" visible="false" includeInLayout="false" />
-							</s:VGroup>
-							<s:VGroup>
-								<s:RadioButton width="100%" skinClass="spark.skins.mobile.RadioButtonSkin" label="Bungee Run" value="helmet" group="{radioGroup}" />
-								<s:RadioButton width="100%" skinClass="spark.skins.mobile.RadioButtonSkin" label="Race the Racecar" value="racecar" group="{radioGroup}" visible="false" includeInLayout="false" />
-								<s:RadioButton width="100%" skinClass="spark.skins.mobile.RadioButtonSkin" label="Virtual waterpool" value="waterpool" group="{radioGroup}" visible="false" includeInLayout="false" />
-								<s:RadioButton width="100%" skinClass="spark.skins.mobile.RadioButtonSkin" label="Gastro cooking" value="cooking" group="{radioGroup}" visible="false" includeInLayout="false" />
-								<s:RadioButton width="100%" skinClass="spark.skins.mobile.RadioButtonSkin" label="Dj course" value="dj" group="{radioGroup}" visible="false" includeInLayout="false" />
 
-							</s:VGroup>
-						</s:HGroup>
-						
-						
-					</s:FormItem>
 				</s:Form>
 				<s:HGroup verticalAlign="middle">
 					<s:Button x="259" y="591" label="Cancel" click="cancel(event)"/>
