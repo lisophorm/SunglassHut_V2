@@ -5,6 +5,12 @@
 
     <fx:Script>
 		<![CDATA[
+        import com.alfo.UserObject;
+        import com.alfo.res.Resource;
+
+        import events.KioskError;
+        import events.ViewEvent;
+
         import mx.events.FlexEvent;
 
         import spark.events.ViewNavigatorEvent;
@@ -29,16 +35,32 @@
 
         public static const DEV_KEY:String = "aae5a5bb826512c6c98103029a639e33512e78e3ujlHJUnnwfoiVYl3ylYKxNFG3qXQF5AZ963nGr37YMufzoCalX/yDOCk6EkHS16IZxkIMKwnlas5Z7n9xJPfaM4S9jz0Z9UuCSV7rnpS7g+4MtPVJx4D1RknOdTbrft1x0q6IUoOOZ7ltmTojiD98oa3uWKZL5d398cN5ZZRcTdA2OVKzdvnQ3Xgf1yeJ2DC4gNZNGRHE2MsRsaq2QqkSPEEEQDhtoU3/6QuVF0ZoGbuju1dxKUQJxnPyOF8AFDy+0b6ZykZTCIM2bvxoEnldLTbFkQfDpXQQJIZV28B733Y0gF4IWWWtMPXzOR2Fitn7FAvCUPITorA5efs+pOH3A==";
 
-        private var _buttons:Array;
-        private var _text:TextField;
         private var _dialogType:String = FacebookDialogType.NATIVE;
+
+        private static const CREATESESSION:String = "button1";
+
+        private static const INIT:String = "button0";
+
+        private static const CHECKSESSION:String = "button2";
+
+        private static const REQUESTXPERMS:String = "button3";
+
+        private static const GETPERMS:String = "button4";
+
+        private static const SHARE:String = "button5";
+
+        private static const CHANGEDLG:String = "button6";
+
+        private static const LOGOUT:String = "button7";
 
         private function creationCompleteHandler(event:FlexEvent):void {
 
 
             init();
+            //setTimeout(function() {
+            //   callFBAPI(CREATESESSION);
+            //},3000)
         }
-
 
 
         private function init():void {
@@ -53,6 +75,7 @@
                 FacebookAPI.service.addEventListener(FacebookAPIEvent.SESSION_OPEN_DISABLED, session_openDisabledHandler);
                 FacebookAPI.service.addEventListener(FacebookAPIEvent.SESSION_OPEN_ERROR, session_openErrorHandler);
                 FacebookAPI.service.addEventListener(FacebookAPIEvent.GET_PERMISSIONS_COMPLETED, permissionsResultHandler);
+
                 FacebookAPI.service.addEventListener(FacebookAPIEvent.APP_INVOKED, appInvokedHandler);
                 FacebookAPI.service.addEventListener(FacebookAppRequestEvent.APP_REQUESTS_FOUND, appRequestsFoundHandler);
                 FacebookAPI.service.addEventListener(FacebookAppRequestEvent.APP_REQUEST_DATA_LOADED, appRequestsDataHandler);
@@ -60,24 +83,27 @@
                 FacebookAPI.service.addEventListener(FacebookAPIEvent.DIALOG_COMPLETED, dialog_completedHandler);
                 FacebookAPI.service.addEventListener(FacebookAPIEvent.DIALOG_CANCELLED, dialog_completedHandler);
                 FacebookAPI.service.addEventListener(FacebookAPIEvent.DIALOG_ERROR, dialog_completedHandler);
+                // handling the request of extra permissions
+                FacebookAPI.service.addEventListener(FacebookAPIEvent.REQUEST_PERMISSIONS_COMPLETED, facebookapi_permissions_request_completedHandler);
+                FacebookAPI.service.addEventListener(FacebookAPIEvent.REQUEST_PERMISSIONS_CANCELLED, facebookapi_permissions_request_cancelledHandler);
+                FacebookAPI.service.addEventListener(FacebookAPIEvent.REQUEST_PERMISSIONS_ERROR, facebookapi_permissions_request_errorHandler);
 
 
             }
             catch (e:Error) {
-                message("ERROR!");
+                this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, e.message, "INIT API ERROR"));
             }
+            /*try {
+             FacebookAPI.service.initialiseApp("606919926007758");
+             } catch (e:Error) {
+             this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, e.message, "INIT APP ERROR"));
+             }
+             callFBAPI(CREATESESSION);*/
         }
 
         //
         //	EVENT HANDLERS
         //
-
-        private function stage_resizeHandler(event:Event):void {
-            _text.width = stage.stageWidth;
-            _text.height = stage.stageHeight * 0.5;
-
-        }
-
 
 
         private function dialogResultHandler(data:Object, error:String):void {
@@ -104,10 +130,22 @@
                 trace("> " + event.data.lastName);
                 trace("> " + event.data.expiry);
             }
+            // TODO add extra fields usedID username etc.
+            if (event.rawData) {
+                var userInfo:Object = JSON.parse(event.rawData.toString());
+                UserObject.instance.firstname = userInfo.firstName;
+                UserObject.instance.lastname = userInfo.lastName;
+                UserObject.instance.email = userInfo.email;
+                UserObject.instance.token = userInfo.accessToken;
+                UserObject.instance.facebook = true;
+            }
+            trace("userobject updated:" + UserObject.instance.facebook);
+
         }
 
         private function session_closedHandler(event:FacebookAPIEvent):void {
             trace("Session Closed!");
+            //this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_FACEBOOK_REGISTERED));
         }
 
         private function session_openDisabledHandler(event:FacebookAPIEvent):void {
@@ -116,6 +154,7 @@
 
         private function session_openErrorHandler(event:FacebookAPIEvent):void {
             trace("Session Open error - " + event.error);
+            this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, event.error, "Session Open error"));
         }
 
         private function appRequestsFoundHandler(event:FacebookAppRequestEvent):void {
@@ -132,11 +171,11 @@
         }
 
         private function dialog_completedHandler(event:FacebookAPIEvent):void {
-            // Dialog completed
+            trace("dialog complete:" + event.data);
         }
 
         private function dialog_cancelledHandler(event:FacebookAPIEvent):void {
-            // The user cancelled the dialog
+            trace("dialog cancel:" + event.data);
         }
 
         private function dialog_errorHandler(event:FacebookAPIEvent):void {
@@ -158,61 +197,62 @@
         }
 
 
-
-
-
         private function removingHandler(event:ViewNavigatorEvent):void {
 
         }
 
-        private function button_clickHandler(event:MouseEvent):void {
-            trace(event.target.id);
+
+        private function callFBAPI(command:String):void {
+
             if (!FacebookAPI.isSupported) {
                 message("Facebook API not supported on this platform!");
                 return;
             }
 
-            switch (event.target.id) {
+            switch (command) {
 
                 // Init Facebook and create session
-                case "button0":
+                case INIT:
                     message("Initialising FacebookAPI...\n");
                     FacebookAPI.service.initialiseApp("606919926007758");
                     break;
 
                 // Log in
-                case "button1":
-                    FacebookAPI.service.createSession([ "basic_info","publish_actions" ], true, true);
+                case CREATESESSION:
+                    FacebookAPI.service.createSession([ "basic_info", "email" ], true, true);
                     break;
 
                 // Check session
-                case "button2":
+                case CHECKSESSION:
                     //message("Session open: " + FacebookAPI.service.isSessionOpen().toString());
                     message("Token: " + FacebookAPI.service.getAccessToken());
                     break;
 
                 // Request publish permissions
-                case "button3":
-                    FacebookAPI.service.requestPermissions([ "publish_actions" ], false);
+                case REQUESTXPERMS:
+                    trace("requesting extra perms");
+                    FacebookAPI.service.requestPermissions([ "publish_actions","upload_photos" ], false);
+                    FacebookAPI.service.flushAppEvents();
                     break;
 
                 // Load the current permissions for the user
-                case "button4":
+                case GETPERMS:
                     FacebookAPI.service.getCurrentPermissions();
                     break;
 
                 // Share dialog to share a link
-                case "button5":
+                case SHARE:
                     var params:FacebookShareParams = new FacebookShareParams();
                     params.title = "This is the title";
                     params.caption = "This is the caption";
                     params.description = "This is the description";
+                    params.image=new BitmapData(400,400,false,0xcc0000);
                     //params.link = "http://bolleloz.herokuapp.com/test";
                     FacebookAPI.service.openShareDialog(params, dialogResultHandler);
                     break;
 
                 // Change the preferred dialog type
-                case "button6":
+                case CHANGEDLG:
 
                     switch (_dialogType) {
                         case FacebookDialogType.NATIVE:
@@ -234,12 +274,24 @@
                     break;
 
                 // Logout
-                case "button7":
+                case LOGOUT:
                     FacebookAPI.service.closeSession(true);
                     break;
 
             }
 
+        }
+
+        private function facebookapi_permissions_request_completedHandler(event:FacebookAPIEvent):void {
+            trace("extra permissions obtained");
+        }
+
+        private function facebookapi_permissions_request_cancelledHandler(event:FacebookAPIEvent):void {
+            trace("request extra permissions canceled");
+        }
+
+        private function facebookapi_permissions_request_errorHandler(event:FacebookAPIEvent):void {
+            trace("request extra permissions canceled");
         }
         ]]>
 	</fx:Script>
@@ -247,21 +299,23 @@
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	
-    <s:SpriteVisualElement id="cont" alpha="0" />
+
+    <s:BorderContainer width="100%" height="100%" borderVisible="false" backgroundColor="0x000000">
+        <s:BitmapImage width="100%" height="100%" scaleMode="zoom" smooth="true" smoothingQuality="high" source="{Resource.BACKGROUND}" id="backgroundImg" />
     <s:HGroup>
         <s:VGroup>
-            <s:Button id="button0" label="Init Facebook" click="button_clickHandler(event)" />
-            <s:Button id="button1" label="Open Session" click="button_clickHandler(event)" />
-            <s:Button id="button2" label="Session Check" click="button_clickHandler(event)" />
-            <s:Button id="button3" label="Request Perms" click="button_clickHandler(event)" />
-            <s:Button id="button4" label="Get Perms" click="button_clickHandler(event)" />
-            <s:Button id="button5" label="Share Dialog" click="button_clickHandler(event)" />
-            <s:Button id="button6" label="Change Dlg Type" click="button_clickHandler(event)" />
-            <s:Button id="button7" label="Logout" click="button_clickHandler(event)" />
+            <s:Button label="INIT" click="callFBAPI(INIT)" />
+            <s:Button label="CREATE" click="callFBAPI(CREATESESSION)" />
+            <s:Button label="CHECK" click="callFBAPI(CHECKSESSION)" />
+            <s:Button label="GET PERMS" click="callFBAPI(GETPERMS)" />
+            <s:Button label="REQUEST" click="callFBAPI(REQUESTXPERMS)" />
+            <s:Button label="SHARE" click="callFBAPI(SHARE)" />
+            <s:Button label="CHANGEDIALOG" click="callFBAPI(CHANGEDLG)" />
+            <s:Button label="SHARE" click="callFBAPI(SHARE)" />
+            <s:Button label="LOGOUT" click="callFBAPI(LOGOUT)" />
         </s:VGroup>
-        <s:TextArea width="100%" height="100%" id="theOutput" />
+        <s:TextArea width="50%" height="50%" id="theOutput" />
     </s:HGroup>
-
+    </s:BorderContainer>
 
 </s:View>

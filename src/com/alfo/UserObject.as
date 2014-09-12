@@ -137,7 +137,9 @@ public class UserObject extends Sprite
 		public function set lastname(thelastname:String):void {
 			userDataObj.lastName=thelastname;
 		}
-
+        public function get lastname():String {
+            return userDataObj.lastName;
+        }
 		public function set mobile(themobile:String):void {
 			userDataObj.postcode=themobile;
 		}
@@ -145,8 +147,12 @@ public class UserObject extends Sprite
 		public function set email(theemail:String):void {
 			userDataObj.emailAddress=theemail;
 		}
+    public function get email():String {
+        return userDataObj.emailAddress;
+    }
 
-		public function set fb_id(thefb_id:String):void {
+
+    public function set fb_id(thefb_id:String):void {
 			userDataObj.fb_id=thefb_id;
 		}
 
@@ -157,6 +163,10 @@ public class UserObject extends Sprite
 		public function set facebook(thefacebook:Boolean):void {
 			userDataObj.facebook=thefacebook?"1":"0";
 		}
+
+        public function get facebook():Boolean {
+            return userDataObj.facebook=="1"?true:false;
+        }
 
 		public function set hasphoto(thehasphoto:Boolean):void {
 			userDataObj.hasphoto=thehasphoto?"1":"0";

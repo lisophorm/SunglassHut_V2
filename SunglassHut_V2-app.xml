@@ -196,6 +196,19 @@
             <!--<string>UIStatusBarStyleBlackOpaque</string>-->
             <!--<key>UIRequiresPersistentWiFi</key>-->
             <!--<string>YES</string>-->
+			<!--key>CFBundleURLTypes</key>
+		   	<array>
+		    	<dict>
+		     		<key>CFBundleURLSchemes</key>
+		     		<array>
+		      			<string>fb606919926007758</string>
+		     		</array>
+		    	</dict>
+		   	</array-->
+		   	<key>FacebookAppID</key>
+           	<string>606919926007758</string>
+           	<key>FacebookDisplayName</key>
+           	<string>Sunglass Hut Photo Uploader</string>
             ]]>
         </InfoAdditions>
 
