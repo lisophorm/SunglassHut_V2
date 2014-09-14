@@ -3,13 +3,13 @@
          xmlns:s="library://ns.adobe.com/flex/spark"
          width="600" height="300">
     <fx:Declarations>
-		<s:DropShadowFilter id="shadowfilter" strength=".8" distance="8" />
-	</fx:Declarations> 
-	<s:Rect id="tbFill" left="0" right="0" top="0" bottom="1" radiusX="30" filters="{[shadowfilter]}">
-		<s:fill>
-			<s:SolidColor color="#ED1C24"/>
+        <s:DropShadowFilter id="shadowfilter" strength=".8" distance="8"/>
+    </fx:Declarations>
+    <s:Rect id="tbFill" left="0" right="0" top="0" bottom="1" radiusX="30" filters="{[shadowfilter]}">
+        <s:fill>
+            <s:SolidColor color="#ED1C24"/>
 
-		</s:fill>
-	</s:Rect>
-	<s:Label x="81" y="124" color="#FFFFFF"  fontFamily="Font Rg CFF" fontSize="64" text="PLEASE WAIT"/>
+        </s:fill>
+    </s:Rect>
+    <s:Label x="81" y="124" color="#FFFFFF" fontFamily="Font Rg CFF" fontSize="64" text="PLEASE WAIT"/>
 </s:Group>

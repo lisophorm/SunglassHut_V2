@@ -7,14 +7,6 @@
 		<![CDATA[
         import com.alfo.UserObject;
         import com.alfo.res.Resource;
-
-        import events.KioskError;
-        import events.ViewEvent;
-
-        import mx.events.FlexEvent;
-
-        import spark.events.ViewNavigatorEvent;
-
         import com.distriqt.extension.facebookapi.FacebookAPI;
         import com.distriqt.extension.facebookapi.events.FacebookAPIEvent;
         import com.distriqt.extension.facebookapi.events.FacebookAppRequestEvent;
@@ -23,15 +15,16 @@
         import com.distriqt.extension.facebookapi.objects.FacebookDialogType;
         import com.distriqt.extension.facebookapi.objects.FacebookShareParams;
 
-        import flash.display.Sprite;
-        import flash.display.StageAlign;
-        import flash.display.StageScaleMode;
-        import flash.events.Event;
-        import flash.events.MouseEvent;
-        import flash.text.TextField;
-        import flash.text.TextFormat;
-        import flash.text.TextFormatAlign;
-        import flash.utils.setTimeout;
+        import events.KioskError;
+        import events.ViewEvent;
+
+        import model.Config;
+
+        import mx.events.FlexEvent;
+        import mx.rpc.events.FaultEvent;
+        import mx.rpc.events.ResultEvent;
+
+        import spark.events.ViewNavigatorEvent;
 
         public static const DEV_KEY:String = "aae5a5bb826512c6c98103029a639e33512e78e3ujlHJUnnwfoiVYl3ylYKxNFG3qXQF5AZ963nGr37YMufzoCalX/yDOCk6EkHS16IZxkIMKwnlas5Z7n9xJPfaM4S9jz0Z9UuCSV7rnpS7g+4MtPVJx4D1RknOdTbrft1x0q6IUoOOZ7ltmTojiD98oa3uWKZL5d398cN5ZZRcTdA2OVKzdvnQ3Xgf1yeJ2DC4gNZNGRHE2MsRsaq2QqkSPEEEQDhtoU3/6QuVF0ZoGbuju1dxKUQJxnPyOF8AFDy+0b6ZykZTCIM2bvxoEnldLTbFkQfDpXQQJIZV28B733Y0gF4IWWWtMPXzOR2Fitn7FAvCUPITorA5efs+pOH3A==";
 
@@ -75,7 +68,7 @@
                 FacebookAPI.service.addEventListener(FacebookAPIEvent.GET_PERMISSIONS_COMPLETED, permissionsResultHandler);
 
                 //FacebookAPI.service.addEventListener(FacebookAPIEvent.APP_INVOKED, appInvokedHandler);
-               // FacebookAPI.service.addEventListener(FacebookAppRequestEvent.APP_REQUESTS_FOUND, appRequestsFoundHandler);
+                // FacebookAPI.service.addEventListener(FacebookAppRequestEvent.APP_REQUESTS_FOUND, appRequestsFoundHandler);
                 //FacebookAPI.service.addEventListener(FacebookAppRequestEvent.APP_REQUEST_DATA_LOADED, appRequestsDataHandler);
                 //FacebookAPI.service.addEventListener(FacebookOpenGraphActionEvent.ACTION_IDS_FOUND, actionIdsFoundHandler);
                 //FacebookAPI.service.addEventListener(FacebookAPIEvent.DIALOG_COMPLETED, dialog_completedHandler);
@@ -92,15 +85,14 @@
                 this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, e.message, "INIT API ERROR"));
             }
             try {
-             FacebookAPI.service.initialiseApp("606919926007758");
-             } catch (e:Error) {
-             this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, e.message, "INIT APP ERROR"));
-             }
-            setTimeout(function(){
+                FacebookAPI.service.initialiseApp("606919926007758");
+            } catch (e:Error) {
+                this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, e.message, "INIT APP ERROR"));
+            }
+            setTimeout(function () {
                 trace("callFBApi CreateSession")
-                FacebookAPI.service.createSession([ "basic_info", "email","publish_actions" ], false,false);
-            },3000);
-
+                FacebookAPI.service.createSession([ "basic_info", "email", "publish_actions" ], false, false);
+            }, 3000);
 
 
         }
@@ -145,8 +137,10 @@
             }
             trace("userobject updated:" + UserObject.instance.firstname);
             FacebookAPI.service.closeSession(true);
-            this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_GAME));
-            // now let's close the session and get out of here
+            //
+            var passVars:Object = new Object();
+            passVars.token = userInfo.result.accessToken;
+            regenerateTokenHTTPService.send(passVars);
         }
 
         private function session_closedHandler(event:FacebookAPIEvent):void {
@@ -233,7 +227,7 @@
 
                 // Log in
                 case CREATESESSION:
-                    FacebookAPI.service.createSession([ "basic_info", "email","publish_actions" ], false,false);
+                    FacebookAPI.service.createSession([ "basic_info", "email", "publish_actions" ], false, false);
                     break;
 
                 // Check session
@@ -245,7 +239,7 @@
                 // Request publish permissions
                 case REQUESTXPERMS:
                     trace("requesting extra perms");
-                    FacebookAPI.service.requestPermissions([ "publish_actions","upload_photos" ], false);
+                    FacebookAPI.service.requestPermissions([ "publish_actions", "upload_photos" ], false);
                     FacebookAPI.service.flushAppEvents();
                     break;
 
@@ -307,29 +301,48 @@
         private function facebookapi_permissions_request_errorHandler(event:FacebookAPIEvent):void {
             trace("request extra permissions canceled");
         }
+
+        private function regenerateTokenHTTPService_resultHandler(event:ResultEvent):void {
+            if (event.result.facebook_response == "ok") {
+                UserObject.instance.token = event.result.token;
+                this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_GAME));
+            } else {
+                this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, event.result.message.toString(), "REGENERATE TOKEN ERROR"));
+            }
+            trace("token result");
+        }
+
+        private function regenerateTokenHTTPService_faultHandler(event:FaultEvent):void {
+            this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, event.message.toString(), "REGENERATE TOKEN ERROR"));
+
+        }
         ]]>
 	</fx:Script>
-	
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-	</fx:Declarations>
+
+    <fx:Declarations>
+        <s:HTTPService id="regenerateTokenHTTPService" resultFormat="flashvars" method="POST"
+                       url="http://sunglasshut.wassermanexperience.com/storetoken.php"
+                       result="regenerateTokenHTTPService_resultHandler(event)"
+                       fault="regenerateTokenHTTPService_faultHandler(event)"/>
+    </fx:Declarations>
 
     <s:BorderContainer width="100%" height="100%" borderVisible="false" backgroundColor="0x000000">
-        <s:BitmapImage width="100%" height="100%" smooth="true" smoothingQuality="high" source="{Resource.BACKGROUND}" id="backgroundImg" />
-    <s:HGroup>
-        <s:VGroup>
-            <s:Button label="INIT" click="callFBAPI(INIT)" />
-            <s:Button label="CREATE" click="callFBAPI(CREATESESSION)" />
-            <s:Button label="CHECK" click="callFBAPI(CHECKSESSION)" />
-            <s:Button label="GET PERMS" click="callFBAPI(GETPERMS)" />
-            <s:Button label="REQUEST" click="callFBAPI(REQUESTXPERMS)" />
-            <s:Button label="SHARE" click="callFBAPI(SHARE)" />
-            <s:Button label="CHANGEDIALOG" click="callFBAPI(CHANGEDLG)" />
-            <s:Button label="SHARE" click="callFBAPI(SHARE)" />
-            <s:Button label="LOGOUT" click="callFBAPI(LOGOUT)" />
-        </s:VGroup>
-        <s:TextArea width="50%" height="50%" id="theOutput" />
-    </s:HGroup>
+        <s:BitmapImage width="100%" height="100%" smooth="true" smoothingQuality="high" source="{Resource.BACKGROUND}"
+                       id="backgroundImg"/>
+        <s:HGroup visible="{Config.instance.debugMode}}">
+            <s:VGroup>
+                <s:Button label="INIT" click="callFBAPI(INIT)"/>
+                <s:Button label="CREATE" click="callFBAPI(CREATESESSION)"/>
+                <s:Button label="CHECK" click="callFBAPI(CHECKSESSION)"/>
+                <s:Button label="GET PERMS" click="callFBAPI(GETPERMS)"/>
+                <s:Button label="REQUEST" click="callFBAPI(REQUESTXPERMS)"/>
+                <s:Button label="SHARE" click="callFBAPI(SHARE)"/>
+                <s:Button label="CHANGEDIALOG" click="callFBAPI(CHANGEDLG)"/>
+                <s:Button label="SHARE" click="callFBAPI(SHARE)"/>
+                <s:Button label="LOGOUT" click="callFBAPI(LOGOUT)"/>
+            </s:VGroup>
+            <s:TextArea width="50%" height="50%" id="theOutput"/>
+        </s:HGroup>
     </s:BorderContainer>
 
 </s:View>

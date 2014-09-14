@@ -3,19 +3,18 @@
          xmlns:fx="http://ns.adobe.com/mxml/2009">
     <fx:Script>
 		<![CDATA[
-			[Bindable]
-			public var text = "";
-			
-		]]>
+        [Bindable]
+        public var text = "";
+        ]]>
 	</fx:Script>
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-	</fx:Declarations>
-	<s:HGroup>
-		<s:TextInput text="" id="minute"  softKeyboardType="number" /> 
-		<s:Label text=":" /> 
-		<s:TextInput text="" id="seconds" softKeyboardType="number" />		
-	</s:HGroup>
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+    <s:HGroup>
+        <s:TextInput text="" id="minute" softKeyboardType="number"/>
+        <s:Label text=":"/>
+        <s:TextInput text="" id="seconds" softKeyboardType="number"/>
+    </s:HGroup>
 
-	
+
 </s:Group>

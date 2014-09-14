@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		xmlns:s="library://ns.adobe.com/flex/spark" title=""
-		creationComplete="onCreationCompleteHandler(event)" backgroundColor="0x000000" addedToStage=""  remove="view1_removeHandler(event)" >
-	<fx:Script>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+        xmlns:s="library://ns.adobe.com/flex/spark" title=""
+        creationComplete="onCreationCompleteHandler(event)" backgroundColor="0x000000" addedToStage=""
+        remove="view1_removeHandler(event)">
+    <fx:Script>
 		<![CDATA[
         import com.alfo.UserObject;
-        import com.alfo.utils.SQLConnectionWrapper;
         import com.alfo.utils.StringUtils;
         import com.alfo.utils.Uploader;
         import com.alfo.utils.UploaderEvent;
@@ -30,8 +30,8 @@
             Uploader.instance.countRecords();
             //var statement:SQLStatement = SQLConnectionWrapper.instance.getAllRecords();
             //statement.execute(-1, new Responder(handleRecordCount, handleFailure));
-            trace("debug mode:"+    Config.instance.debugMode);
-            debugCheck.selected=Config.instance.debugMode;
+            trace("debug mode:" + Config.instance.debugMode);
+            debugCheck.selected = Config.instance.debugMode;
             this.localserver.text = Config.instance.localIP;
             this.server.text = Config.instance.serverIP;
             this.facebookAPI_ID.text = Config.instance.facebookAppID;
@@ -110,58 +110,59 @@
         }
 
         private function debugCheck_clickHandler(event:MouseEvent):void {
-                   Config.instance.debugMode=debugCheck.selected;
+            Config.instance.debugMode = debugCheck.selected;
         }
         ]]>
 	</fx:Script>
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->						
-		<s:RadioButtonGroup id="radioGroup" />
-		
-	</fx:Declarations>
-	
-	
-	<s:Scroller width="100%" height="100%" horizontalScrollPolicy="off" >
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+        <s:RadioButtonGroup id="radioGroup"/>
 
-			
-			
-			<s:VGroup horizontalAlign="center" verticalAlign="middle" width="100%" height="100%">
-				<s:Form id="configform" horizontalCenter="0" verticalCenter="0" backgroundColor="0x000000">
-					<s:layout>
-						<s:FormLayout/>
-					</s:layout>
-					<s:FormHeading label="CONFIGURATION DETAILS:" />
-					
-					<s:FormItem width="365" label="Server name:" fontFamily="Arial">
-						<s:TextInput id="server" width="500"  color="0x000000" fontFamily="Arial"/>
-					</s:FormItem>
-					<s:FormItem width="365" label="Local server:" fontFamily="Arial">
-						<s:TextInput id="localserver" width="500"  color="0x000000" fontFamily="Arial"/>
-					</s:FormItem>
-					
-					<s:HGroup>
+    </fx:Declarations>
 
 
-					</s:HGroup>
-					
-					<s:FormItem width="365" label="Facebook appID:" >
-						<s:TextInput id="facebookAPI_ID" width="400" color="0x000000" softKeyboardType="number"  fontFamily="Arial"/>
-					</s:FormItem>
-                    <s:FormItem label="Debug mode">
-                        <s:CheckBox id="debugCheck" click="debugCheck_clickHandler(event)" />
-                    </s:FormItem>
-                    <s:HGroup verticalAlign="middle">
-                        <s:Button label="Cancel" click="cancel(event)"/>
-                        <s:Spacer  width="50" />
-                        <s:Button id="submitButton" label="Submit" click="submit(event)" />
-                        <s:Spacer  width="100" />
-                        <s:Button label="Force print" id="forcePrint" click="forcePrint_clickHandler(event)" />
-                    </s:HGroup>
-				</s:Form>
+    <s:Scroller width="100%" height="100%" horizontalScrollPolicy="off">
 
 
-			<s:DataGrid skinClass="skins.CustomDataGridSkin" height="400" dataProvider="{uploadDP}" width="700" visible="{debugCheck.selected}" includeInLayout="{debugCheck.selected}" />
-			</s:VGroup>
+        <s:VGroup horizontalAlign="center" verticalAlign="middle" width="100%" height="100%">
+            <s:Form id="configform" horizontalCenter="0" verticalCenter="0" backgroundColor="0x000000">
+                <s:layout>
+                    <s:FormLayout/>
+                </s:layout>
+                <s:FormHeading label="CONFIGURATION DETAILS:"/>
 
-	</s:Scroller>
+                <s:FormItem width="365" label="Server name:" fontFamily="Arial">
+                    <s:TextInput id="server" width="500" color="0x000000" fontFamily="Arial"/>
+                </s:FormItem>
+                <s:FormItem width="365" label="Local server:" fontFamily="Arial">
+                    <s:TextInput id="localserver" width="500" color="0x000000" fontFamily="Arial"/>
+                </s:FormItem>
+
+                <s:HGroup>
+
+
+                </s:HGroup>
+
+                <s:FormItem width="365" label="Facebook appID:">
+                    <s:TextInput id="facebookAPI_ID" width="400" color="0x000000" softKeyboardType="number"
+                                 fontFamily="Arial"/>
+                </s:FormItem>
+                <s:FormItem label="Debug mode">
+                    <s:CheckBox id="debugCheck" click="debugCheck_clickHandler(event)"/>
+                </s:FormItem>
+                <s:HGroup verticalAlign="middle">
+                    <s:Button label="Cancel" click="cancel(event)"/>
+                    <s:Spacer width="50"/>
+                    <s:Button id="submitButton" label="Submit" click="submit(event)"/>
+                    <s:Spacer width="100"/>
+                    <s:Button label="Force print" id="forcePrint" click="forcePrint_clickHandler(event)"/>
+                </s:HGroup>
+            </s:Form>
+
+
+            <s:DataGrid skinClass="skins.CustomDataGridSkin" height="400" dataProvider="{uploadDP}" width="700"
+                        visible="{debugCheck.selected}" includeInLayout="{debugCheck.selected}"/>
+        </s:VGroup>
+
+    </s:Scroller>
 </s:View>

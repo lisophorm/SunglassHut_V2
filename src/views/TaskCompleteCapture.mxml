@@ -114,49 +114,54 @@
         }
         ]]>
 	</fx:Script>
-	
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-		<s:HTTPService id="getUser" resultFormat="flashvars" method="POST" url="{this.parentApplication.baseURL+'getuser.php'}"  result="getUser_resultHandler(event)" fault="httpservice_faultHandler(event)" />
-		<s:HTTPService id="publishData" resultFormat="flashvars" method="POST" url="{this.parentApplication.baseURL+'publishscore.php'}"  result="publish_resultHandler(event)" fault="httpservice_faultHandler(event)" />
-		
-	</fx:Declarations>
 
-	<s:states>
-		<s:State name="default" />
-		<s:State name="facebook" />
-	</s:states>
-	
-	
-	<s:VGroup  styleName="Game"  horizontalAlign="center" verticalAlign="middle" width="100%" height="592">
-		<s:Label text="{activitytitle}" styleName="heading" fontWeight="bold" />
-		<s:Spacer width="10" height="30"/>
-		
-		<s:VGroup>
-			<s:Label id="statusText" />
-			<s:HGroup horizontalAlign="left">
-				<s:Label width="400" text="Name"/>
-				<s:Spacer width="20" />
-				<s:Label text="{userName}" paddingLeft="20" id="user" fontWeight="bold" />
-			</s:HGroup>
-			<s:Spacer height="5" />
-			<s:HGroup horizontalAlign="left" includeIn="facebook">
-				<s:Label width="400" text="Published Facebook Posts:"/>
-				<s:Spacer width="20" />
-				<s:Label text="{posts}" id="facebookposts_label" fontWeight="bold" />
-				
-			</s:HGroup>
-			<s:Spacer width="10" height="5" includeIn="facebook"/>
-			<s:HGroup includeIn="facebook">
-				<s:CheckBox  id="facebookposts_check" />
-				<s:Label id="facebookposts_check_label" height="{facebookposts_check.height}" text="Post fo Facebook?" verticalAlign="middle"/>
-			</s:HGroup>
-			<s:Spacer width="10" height="100"/>
-			<s:HGroup width="100%" horizontalAlign="center">
-				<s:Button id="publishBTN" horizontalCenter="0" label="Done" click="publishBTN_clickHandler(event)"/>
-			</s:HGroup>
-		</s:VGroup>
-		
-	</s:VGroup>
-	
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+        <s:HTTPService id="getUser" resultFormat="flashvars" method="POST"
+                       url="{this.parentApplication.baseURL+'getuser.php'}" result="getUser_resultHandler(event)"
+                       fault="httpservice_faultHandler(event)"/>
+        <s:HTTPService id="publishData" resultFormat="flashvars" method="POST"
+                       url="{this.parentApplication.baseURL+'publishscore.php'}" result="publish_resultHandler(event)"
+                       fault="httpservice_faultHandler(event)"/>
+
+    </fx:Declarations>
+
+    <s:states>
+        <s:State name="default"/>
+        <s:State name="facebook"/>
+    </s:states>
+
+
+    <s:VGroup styleName="Game" horizontalAlign="center" verticalAlign="middle" width="100%" height="592">
+        <s:Label text="{activitytitle}" styleName="heading" fontWeight="bold"/>
+        <s:Spacer width="10" height="30"/>
+
+        <s:VGroup>
+            <s:Label id="statusText"/>
+            <s:HGroup horizontalAlign="left">
+                <s:Label width="400" text="Name"/>
+                <s:Spacer width="20"/>
+                <s:Label text="{userName}" paddingLeft="20" id="user" fontWeight="bold"/>
+            </s:HGroup>
+            <s:Spacer height="5"/>
+            <s:HGroup horizontalAlign="left" includeIn="facebook">
+                <s:Label width="400" text="Published Facebook Posts:"/>
+                <s:Spacer width="20"/>
+                <s:Label text="{posts}" id="facebookposts_label" fontWeight="bold"/>
+
+            </s:HGroup>
+            <s:Spacer width="10" height="5" includeIn="facebook"/>
+            <s:HGroup includeIn="facebook">
+                <s:CheckBox id="facebookposts_check"/>
+                <s:Label id="facebookposts_check_label" height="{facebookposts_check.height}" text="Post fo Facebook?"
+                         verticalAlign="middle"/>
+            </s:HGroup>
+            <s:Spacer width="10" height="100"/>
+            <s:HGroup width="100%" horizontalAlign="center">
+                <s:Button id="publishBTN" horizontalCenter="0" label="Done" click="publishBTN_clickHandler(event)"/>
+            </s:HGroup>
+        </s:VGroup>
+
+    </s:VGroup>
+
 </s:View>

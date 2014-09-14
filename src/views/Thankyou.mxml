@@ -31,15 +31,15 @@
         }
         ]]>
 	</fx:Script>
-	
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-	</fx:Declarations>
-	<s:BorderContainer height="100%" width="100%" id="gino" backgroundColor="0x000000">
-		<s:VGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
-			<s:Image smooth="true"  source="@Embed('/assets/images/thank_you.png')" />
-		</s:VGroup>	
-		
-		
-	</s:BorderContainer>
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+    <s:BorderContainer height="100%" width="100%" id="gino" backgroundColor="0x000000">
+        <s:VGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+            <s:Image smooth="true" source="@Embed('/assets/images/thank_you.png')"/>
+        </s:VGroup>
+
+
+    </s:BorderContainer>
 </s:View>

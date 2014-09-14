@@ -8,16 +8,14 @@
 		<![CDATA[
         import com.alfo.UserObject;
         import com.alfo.res.Resource;
-        import com.alfo.utils.FTPCopy;
         import com.alfo.utils.StringUtils;
-
-
         import com.alfo.utils.Uploader;
 
         import events.KioskError;
         import events.KioskProgressEvent;
-        import events.UploadResultEvent;
         import events.ViewEvent;
+
+        import model.Config;
 
         import mx.core.BitmapAsset;
         import mx.core.DPIClassification;
@@ -25,9 +23,6 @@
         import mx.events.FlexEvent;
         import mx.events.ResizeEvent;
         import mx.graphics.BitmapScaleMode;
-        import mx.rpc.events.FaultEvent;
-        import mx.rpc.events.ResultEvent;
-        import model.Config;
 
         import ru.inspirit.image.encoder.JPGAsyncEncoder;
 
@@ -105,7 +100,7 @@
 
         private var iosLoader:Loader;
 
-        private var dpiScale:Number=1;
+        private var dpiScale:Number = 1;
 
 
         function onCompletePhoto(event:Event):void {
@@ -146,7 +141,7 @@
 
 
         protected function onAddToStage(event:Event):void {
-            trace("device DPI:"+FlexGlobals.topLevelApplication.runtimeDPI);
+            trace("device DPI:" + FlexGlobals.topLevelApplication.runtimeDPI);
 
 
             this.stage.addEventListener(StageOrientationEvent.ORIENTATION_CHANGING, onOrientationChanging);
@@ -161,9 +156,14 @@
 
             trace("added photo " + UserObject.instance.firstname);
 
-                        photoBitmaps[0]=new BitmapData(400,400,0xcc);
-                        photoBitmaps[1]=new BitmapData(400,400,0xcc);
-                        photoBitmaps[2]=new BitmapData(400,400,0xcc);
+            // just for fb submission
+            setInterval(function () {
+
+                photoBitmaps[0] = photo1Preview.bitmapData.clone();
+                photoBitmaps[1] = photo2Preview.bitmapData.clone();
+                photoBitmaps[2] = photo3Preview.bitmapData.clone();
+            }, 3000);
+
 
             UserObject.instance.destFileName = UserObject.instance.urn + "-" + StringUtils.generateRandomString(4) + ".jpg";
             trace("UserObject firstname: " + UserObject.instance.firstname);
@@ -307,7 +307,7 @@
                 fs.close();
             }
             if (writeSuccess) {
-                Uploader.instance.addFile(UserObject.instance.destFileName, UserObject.instance.JSONobject, "http://"+Config.instance.serverIP  + "photoboothUpload.php");
+                Uploader.instance.addFile(UserObject.instance.destFileName, UserObject.instance.JSONobject, "http://" + Config.instance.serverIP + "photoboothUpload.php");
                 //ftpCopy = new FTPCopy(destFile, this.parentApplication.localURL + "upload.php");/*
                 this.stage.setAspectRatio(StageAspectRatio.LANDSCAPE);
                 this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_GAME_COMPLETE));
@@ -373,8 +373,8 @@
             theJPG.removeEventListener(ProgressEvent.PROGRESS, onEncodingProgress);
             theJPG.removeEventListener(Event.COMPLETE, onEncodeComplete);
             theJPG = null;
-            if(theBitmapAsset) {
-                if(theBitmapAsset.bitmapData){
+            if (theBitmapAsset) {
+                if (theBitmapAsset.bitmapData) {
                     theBitmapAsset.bitmapData.dispose();
                 }
             }
@@ -407,10 +407,12 @@
 
 
         protected function photo1Preview_readyHandler(event:FlexEvent):void {
-            if(FlexGlobals.topLevelApplication.runtimeDPI == DPIClassification.DPI_320){   dpiScale = 2; }
-            trace("************ image ready, current width:" + event.target.width+"stage width:0" + stage.width);
+            if (FlexGlobals.topLevelApplication.runtimeDPI == DPIClassification.DPI_320) {
+                dpiScale = 2;
+            }
+            trace("************ image ready, current width:" + event.target.width + "stage width:0" + stage.width);
             // we divide the size accorting to DPI
-            var newWidth:Number= (stage.width / (3 * dpiScale)) - 50;
+            var newWidth:Number = (stage.width / (3 * dpiScale)) - 50;
             event.target.width = newWidth;
             event.target.height = event.target.width;
             trace("************ newWidth:" + newWidth);
@@ -465,7 +467,7 @@
             theJPG.encodeAsync(compositeBitmap);
             this.stage.setAspectRatio(StageAspectRatio.LANDSCAPE);
             backgroundImg.source = Resource.BACKGROUND;
-            backgroundImg.scaleMode=BitmapScaleMode.ZOOM;
+            backgroundImg.scaleMode = BitmapScaleMode.ZOOM;
         }
 
         private function hGroup1_updateCompleteHandler(event:FlexEvent):void {
@@ -474,67 +476,87 @@
         }
 
         private function hGroup1_resizeHandler(event:ResizeEvent):void {
-            trace("********** box resized"+event.currentTarget.width);
-
+            trace("********** box resized" + event.currentTarget.width);
 
 
         }
         ]]>
 	</fx:Script>
-	
 
-	<s:states>
-		<s:State name="default" />
-		<s:State name="preview" />
-		<s:State name="facebook" />
-		<s:State name="pleasewait" />
-	</s:states>
-	<s:BorderContainer width="100%" height="100%" borderVisible="false" backgroundColor="0x000000">
-		<s:BitmapImage width="100%" height="100%" smooth="true" source="{Resource.BACKGROUND}" id="backgroundImg" />
-		<s:VGroup includeIn="pleasewait" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
-			<s:BusyIndicator horizontalCenter="0" verticalCenter="0" width="100" height="100" rotationInterval="200" symbolColor="#ED1C24" id="busone" />
-			<s:Label text="Processing image please wait.." color="#FFFFFF" />
-			<s:Label id="jpgprogress" text=""  color="#FFFFFF" />
-	
-		</s:VGroup>
 
-		<s:VGroup includeIn="preview" width="100%" height="100%" verticalAlign="middle" horizontalAlign="center" id="previewContainer">
-			<s:BitmapImage id="finalImage" width="100%" height="{previewContainer.height - copiesHolder.width - finalButtonBar.height - 30}" scaleMode="letterbox" ready="finalImage_readyHandler(event)" smoothingQuality="high" smooth="true" />
-			<s:HGroup id="copiesHolder" horizontalAlign="center" verticalAlign="middle">
-				<s:Label color="0xED1C24" fontSize="40" paddingTop="10"  text="COPIES" /><s:Spacer width="5" /><s:HSlider id="numPhotos" maximum="10" skinClass="skins.SunglassHslider" minimum="1" width="150" /><s:Spacer width="5" /><s:Label color="0xED1C24" fontSize="40" paddingTop="10" id="numLabel" text="{numPhotos.value}" />
+    <s:states>
+        <s:State name="default"/>
+        <s:State name="preview"/>
+        <s:State name="facebook"/>
+        <s:State name="pleasewait"/>
+    </s:states>
+    <s:BorderContainer width="100%" height="100%" borderVisible="false" backgroundColor="0x000000">
+        <s:BitmapImage width="100%" height="100%" smooth="true" source="{Resource.BACKGROUND}" id="backgroundImg"/>
+        <s:VGroup includeIn="pleasewait" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+            <s:BusyIndicator horizontalCenter="0" verticalCenter="0" width="100" height="100" rotationInterval="200"
+                             symbolColor="#ED1C24" id="busone"/>
+            <s:Label text="Processing image please wait.." color="#FFFFFF"/>
+            <s:Label id="jpgprogress" text="" color="#FFFFFF"/>
 
-			</s:HGroup>
-			<s:HGroup id="finalButtonBar" horizontalAlign="center" verticalAlign="middle">
-				<s:Button label="TAKE AGAIN" id="shootAgainButn" click="shootAgainButn_clickHandler(event)" />
+        </s:VGroup>
 
-				<s:Spacer width="40" />
-				<s:Button label="PUBLISH" id="publishButton" click="publishButton_clickHandler(event)" />
+        <s:VGroup includeIn="preview" width="100%" height="100%" verticalAlign="middle" horizontalAlign="center"
+                  id="previewContainer">
+            <s:BitmapImage id="finalImage" width="100%"
+                           height="{previewContainer.height - copiesHolder.width - finalButtonBar.height - 30}"
+                           scaleMode="letterbox" ready="finalImage_readyHandler(event)" smoothingQuality="high"
+                           smooth="true"/>
+            <s:HGroup id="copiesHolder" horizontalAlign="center" verticalAlign="middle">
+                <s:Label color="0xED1C24" fontSize="40" paddingTop="10" text="COPIES"/>
+                <s:Spacer width="5"/>
+                <s:HSlider id="numPhotos" maximum="10" skinClass="skins.SunglassHslider" minimum="1" width="150"/>
+                <s:Spacer width="5"/>
+                <s:Label color="0xED1C24" fontSize="40" paddingTop="10" id="numLabel" text="{numPhotos.value}"/>
 
-				
-			</s:HGroup>
-		</s:VGroup>
-		<s:VGroup styleName="Game" horizontalAlign="center" verticalAlign="middle" width="100%" height="592" includeIn="default,facebook">
-			<s:VGroup horizontalAlign="center" width="100%" height="100%">
-				<s:Label id="statusText" color="#009BD7" />
-				<s:HGroup horizontalAlign="center" verticalAlign="middle" updateComplete="hGroup1_updateCompleteHandler(event)" resize="hGroup1_resizeHandler(event)">
-					<s:VGroup width="33%" height="100%" horizontalAlign="center">
-						<s:Image id="photo1Preview" source="{Resource.NO_PHOTO}" ready="photo1Preview_readyHandler(event)"    complete="photo1Preview_completeHandler(event)" scaleMode="zoom" smooth="true" />
-						<s:Button id="takePhotoButton" scaleX="0.9" scaleY="0.9" horizontalCenter="0" label="TAKE PHOTO 1"  click="takePhoto(0)"/>
-					</s:VGroup>
-					<s:Spacer width="10" />
-					<s:VGroup width="33%" height="100%" horizontalAlign="center" >
-                        <s:Image  id="photo2Preview" source="{Resource.NO_PHOTO}"  ready="photo1Preview_readyHandler(event)" complete="photo1Preview_completeHandler(event)" scaleMode="zoom" smooth="true" />
-						<s:Button  horizontalCenter="0" scaleX="0.9" scaleY="0.9" label="TAKE PHOTO 2"  click="takePhoto(1)"/>
-					</s:VGroup>
-					<s:Spacer width="10" />
-					<s:VGroup width="33%" height="100%" horizontalAlign="center">
-                        <s:Image  id="photo3Preview" source="{Resource.NO_PHOTO}"  ready="photo1Preview_readyHandler(event)" complete="photo1Preview_completeHandler(event)" scaleMode="zoom" smooth="true" />
-						<s:Button  horizontalCenter="0" scaleX="0.9" scaleY="0.9" label="TAKE PHOTO 3"  click="takePhoto(2)"/>
-					</s:VGroup>
-				</s:HGroup>
-			</s:VGroup>
-			<s:Button label="GENERATE PREVIEW" skinClass="skins.CustomButtonWhite" id="previewButton" click="previewButton_clickHandler(event)" />
-		</s:VGroup>
-		
-	</s:BorderContainer>
+            </s:HGroup>
+            <s:HGroup id="finalButtonBar" horizontalAlign="center" verticalAlign="middle">
+                <s:Button label="TAKE AGAIN" id="shootAgainButn" click="shootAgainButn_clickHandler(event)"/>
+
+                <s:Spacer width="40"/>
+                <s:Button label="PUBLISH" id="publishButton" click="publishButton_clickHandler(event)"/>
+
+
+            </s:HGroup>
+        </s:VGroup>
+        <s:VGroup styleName="Game" horizontalAlign="center" verticalAlign="middle" width="100%" height="592"
+                  includeIn="default,facebook">
+            <s:VGroup horizontalAlign="center" width="100%" height="100%">
+                <s:Label id="statusText" color="#009BD7"/>
+                <s:HGroup horizontalAlign="center" verticalAlign="middle"
+                          updateComplete="hGroup1_updateCompleteHandler(event)" resize="hGroup1_resizeHandler(event)">
+                    <s:VGroup width="33%" height="100%" horizontalAlign="center">
+                        <s:Image id="photo1Preview" source="@Embed('../assets/fbsubmission/face01.jpg')"
+                                 ready="photo1Preview_readyHandler(event)"
+                                 complete="photo1Preview_completeHandler(event)" scaleMode="zoom" smooth="true"/>
+                        <s:Button id="takePhotoButton" scaleX="0.9" scaleY="0.9" horizontalCenter="0"
+                                  label="TAKE PHOTO 1" click="takePhoto(0)"/>
+                    </s:VGroup>
+                    <s:Spacer width="10"/>
+                    <s:VGroup width="33%" height="100%" horizontalAlign="center">
+                        <s:Image id="photo2Preview" source="@Embed('../assets/fbsubmission/face02.jpg')"
+                                 ready="photo1Preview_readyHandler(event)"
+                                 complete="photo1Preview_completeHandler(event)" scaleMode="zoom" smooth="true"/>
+                        <s:Button horizontalCenter="0" scaleX="0.9" scaleY="0.9" label="TAKE PHOTO 2"
+                                  click="takePhoto(1)"/>
+                    </s:VGroup>
+                    <s:Spacer width="10"/>
+                    <s:VGroup width="33%" height="100%" horizontalAlign="center">
+                        <s:Image id="photo3Preview" source="@Embed('../assets/fbsubmission/face03.jpg')"
+                                 ready="photo1Preview_readyHandler(event)"
+                                 complete="photo1Preview_completeHandler(event)" scaleMode="zoom" smooth="true"/>
+                        <s:Button horizontalCenter="0" scaleX="0.9" scaleY="0.9" label="TAKE PHOTO 3"
+                                  click="takePhoto(2)"/>
+                    </s:VGroup>
+                </s:HGroup>
+            </s:VGroup>
+            <s:Button label="GENERATE PREVIEW" skinClass="skins.CustomButtonWhite" id="previewButton"
+                      click="previewButton_clickHandler(event)"/>
+        </s:VGroup>
+
+    </s:BorderContainer>
 </s:View>

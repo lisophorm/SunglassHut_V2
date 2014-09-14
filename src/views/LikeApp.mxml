@@ -125,29 +125,32 @@
         }
         ]]>
 	</fx:Script>
-	
-	
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-	</fx:Declarations>
-	<s:BorderContainer width="100%" height="100%" borderVisible="false" backgroundColor="0x000000">
-		<s:BitmapImage width="100%" height="100%" scaleMode="zoom" smooth="true" smoothingQuality="high" source="{Resource.BACKGROUND}"/>
-		<s:VGroup width="100%" height="100%" verticalAlign="middle" horizontalAlign="center" >
-	<s:BitmapImage source="{Resource.LOGO}"/>
-			<s:Spacer height="70"/>
-			<s:HGroup>
-				<s:Label fontFamily="Font Rg CFF" text="PLEASE" color="0xFFFFFF" fontSize="60" />
-				<s:Label fontFamily="Font Rg CFF" text="LIKE" color="0xED1C24" fontSize="60" />
-				<s:Label fontFamily="Font Rg CFF" text=" THE SUNGLASS HUT FANPAGE" color="0xFFFFFF" fontSize="60" />
-			</s:HGroup>
-	
-			<s:Spacer height="70"/>	
-				<s:HGroup verticalAlign="middle">
-				<s:BorderContainer backgroundColor="#FFFFFF" height="80" borderVisible="false" width="250" id="placo" creationComplete="placo_creationCompleteHandler(event)" resize="placo_resizeHandler(event)" move="placo_moveHandler(event)"/>
-				<s:Button width="239" height="73" label="CONTINUE" click="takePhoto(event)" horizontalCenter="0"
-						  verticalCenter="0"/> 
-				</s:HGroup>
-			</s:VGroup>
 
-	</s:BorderContainer>
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+    <s:BorderContainer width="100%" height="100%" borderVisible="false" backgroundColor="0x000000">
+        <s:BitmapImage width="100%" height="100%" scaleMode="zoom" smooth="true" smoothingQuality="high"
+                       source="{Resource.BACKGROUND}"/>
+        <s:VGroup width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
+            <s:BitmapImage source="{Resource.LOGO}"/>
+            <s:Spacer height="70"/>
+            <s:HGroup>
+                <s:Label fontFamily="Font Rg CFF" text="PLEASE" color="0xFFFFFF" fontSize="60"/>
+                <s:Label fontFamily="Font Rg CFF" text="LIKE" color="0xED1C24" fontSize="60"/>
+                <s:Label fontFamily="Font Rg CFF" text=" THE SUNGLASS HUT FANPAGE" color="0xFFFFFF" fontSize="60"/>
+            </s:HGroup>
+
+            <s:Spacer height="70"/>
+            <s:HGroup verticalAlign="middle">
+                <s:BorderContainer backgroundColor="#FFFFFF" height="80" borderVisible="false" width="250" id="placo"
+                                   creationComplete="placo_creationCompleteHandler(event)"
+                                   resize="placo_resizeHandler(event)" move="placo_moveHandler(event)"/>
+                <s:Button width="239" height="73" label="CONTINUE" click="takePhoto(event)" horizontalCenter="0"
+                          verticalCenter="0"/>
+            </s:HGroup>
+        </s:VGroup>
+
+    </s:BorderContainer>
 </s:View>

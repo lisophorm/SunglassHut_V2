@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:ViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
-							xmlns:s="library://ns.adobe.com/flex/spark" firstView="views.ScanWristband" 
-							splashScreenImage="@Embed('assets/images/splashimage.png')"
+<s:ViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+                            xmlns:s="library://ns.adobe.com/flex/spark" firstView="views.ScanWristband"
+                            splashScreenImage="@Embed('assets/images/splashimage.png')"
                             applicationComplete="onApplicationComplete()" backgroundColor="0x000000"
-                            resizeForSoftKeyboard="true" applicationDPI="160" >
-	<fx:Script>
+                            resizeForSoftKeyboard="true" applicationDPI="160">
+    <fx:Script>
 		<![CDATA[
         import com.alfo.CleverUrlMonitor;
         import com.alfo.utils.GeoUtils;
@@ -12,7 +12,6 @@
         import com.alfo.utils.Uploader;
         import com.alfo.utils.UploaderErrorEvent;
 
-        import events.ApplicationEvent;
         import events.KioskError;
         import events.KioskEvent;
         import events.KioskProgressEvent;
@@ -35,16 +34,13 @@
         import views.FaceBookLogoutOverride;
         import views.LikeApp;
         import views.ScanWristband;
-        import views.ScoreCapture;
         import views.SelectUserType;
-        import views.TaskCompleteCapture;
         import views.Thankyou;
         import views.UserForm;
         import views.components.ErrorAlert;
         import views.components.ModalAlert;
         import views.components.ProgressPopUp;
         import views.components.tandcWindow;
-
 
         public var urn:int = 0;
         public var scoreFormat:String = "99:99"
@@ -592,32 +588,34 @@
         }
         ]]>
 	</fx:Script>
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-		
-	</fx:Declarations>
-	<fx:Style source="assets/css/Fonts.css" />
-	<fx:Style source="assets/css/Main.css" />
-	
-	
-	
-	<s:navigationContent>		
-		<s:HGroup verticalAlign="middle">
-			<s:Button id="takephoto" icon="assets/images/core/camera_icon.png" click="takephoto_clickHandler(event)" color="0xFFFFFF" />
-			<s:Label text="SUNGLASS HUT PHOTO UPLOADER" color="0xFFFFFF" fontSize="24" fontFamily="Font Bd" paddingLeft="10" paddingTop="10" />
-		</s:HGroup>
-	</s:navigationContent>
-	<s:actionContent>
-		<s:HGroup verticalAlign="middle">
-			
-			
-			<s:Button icon="assets/images/core/nm-no-connection.gif" id="connStatus" label="NO CONNECTION" color="0xFFFFFF" visible="false" />
-			<s:Button label="Quit" click="exit(event)"  color="0xFFFFFF" />
-			<s:Button label="Config" fontFamily="Font Bd" click="config(event)" color="0xFFFFFF" />
-			
-			<s:Button icon="assets/images/core/home.png" click="{defaultView()}"/>
-		</s:HGroup>
-		
-	</s:actionContent>
-	
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+
+    </fx:Declarations>
+    <fx:Style source="assets/css/Fonts.css"/>
+    <fx:Style source="assets/css/Main.css"/>
+
+
+    <s:navigationContent>
+        <s:HGroup verticalAlign="middle">
+            <s:Button id="takephoto" icon="assets/images/core/camera_icon.png" click="takephoto_clickHandler(event)"
+                      color="0xFFFFFF"/>
+            <s:Label text="SUNGLASS HUT PHOTO UPLOADER" color="0xFFFFFF" fontSize="24" fontFamily="Font Bd"
+                     paddingLeft="10" paddingTop="10"/>
+        </s:HGroup>
+    </s:navigationContent>
+    <s:actionContent>
+        <s:HGroup verticalAlign="middle">
+
+
+            <s:Button icon="assets/images/core/nm-no-connection.gif" id="connStatus" label="NO CONNECTION"
+                      color="0xFFFFFF" visible="false"/>
+            <s:Button label="Quit" click="exit(event)" color="0xFFFFFF"/>
+            <s:Button label="Config" fontFamily="Font Bd" click="config(event)" color="0xFFFFFF"/>
+
+            <s:Button icon="assets/images/core/home.png" click="{defaultView()}"/>
+        </s:HGroup>
+
+    </s:actionContent>
+
 </s:ViewNavigatorApplication>

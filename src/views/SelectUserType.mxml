@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" backgroundColor="0x000000"
-		xmlns:s="library://ns.adobe.com/flex/spark" creationComplete="init(event)" removedFromStage="view1_removedFromStageHandler(event)" xmlns:components="views.components.*" xmlns:mx="library://ns.adobe.com/flex/mx">
-	<fx:Script>
+        xmlns:s="library://ns.adobe.com/flex/spark" creationComplete="init(event)"
+        removedFromStage="view1_removedFromStageHandler(event)" xmlns:components="views.components.*"
+        xmlns:mx="library://ns.adobe.com/flex/mx">
+    <fx:Script>
 		<![CDATA[
-
         import com.alfo.UserObject;
         import com.alfo.res.Resource;
 
@@ -29,7 +30,6 @@
             groupWidth = normalbut.width;
             //this.navigator.addEventListener(UserObjectEvent.STATUS_CHANGE,checkNetStatus);
             trace("opening  welcome screen");
-
 
 
             validatorArr = new Array();
@@ -102,75 +102,77 @@
         }
         ]]>
 	</fx:Script>
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-		<mx:StringValidator id="validateTerms"
-							source="{termsCheck}"
-							required="true"
-							property="selected" maxLength="4" requiredFieldError="You must agree the terms of use" tooLongError="You must agree to the Terms of Use.">
-		</mx:StringValidator>
-		<!-- mx:StringValidator id="validateMarketing"
-		source="{marketCheck}"
-		required="true"
-		property="selected" maxLength="4" requiredFieldError="{ML.t('You must accept marketing approach from Vodafone.')}" tooLongError="You must accept marketing approach from Vodafone.">
-		</mx:StringValidator-->
-	</fx:Declarations>
-	<s:BorderContainer width="100%" height="100%" borderVisible="false" backgroundColor="0xcc0000">
-		<s:BitmapImage width="100%" height="100%" smooth="true" source="{Resource.BACKGROUND}"/>
-		
-		<s:VGroup horizontalAlign="center" verticalAlign="middle" width="100%" height="100%">
-			<s:BitmapImage source="{Resource.LOGO}"/>
-			<s:Spacer height="45" />
-			<s:VGroup id="rezScreen" horizontalAlign="center">
-				<s:VGroup horizontalAlign="center" >
-					
-					
-					<s:VGroup horizontalAlign="center">
-						<s:HGroup horizontalAlign="center" verticalAlign="middle"  paddingBottom="10" >
-							
-							<s:HGroup horizontalAlign="right" verticalAlign="middle">
-								
-								<s:Label fontSize="22" styleName="smallprint"
-										 text="I agree with the" paddingTop="10" />
-								<s:Label fontSize="22" 
-										 styleName="smallprintLink" click="tandcd_clickHandler(event)" text="Terms and Conditions" paddingTop="10"
-										 />
-							</s:HGroup>
-							<s:Spacer width="10"/>
-							<s:CheckBox id="termsCheck" label="" selected="true"
-										color="#000000" skinClass="skins.vodafoneCheckBox" width="36"/>
-						</s:HGroup>
-						<s:Rect width="{groupWidth}" height="2" >
-							<s:fill>
-								<s:SolidColor color="#ED1C24" />
-							</s:fill>
-						</s:Rect>
-						<s:HGroup horizontalAlign="center" verticalAlign="top" paddingTop="10" width="{groupWidth}">
-							
-							
-							<s:Label id="largeText" fontSize="22" styleName="smallprint" textAlign="right" lineBreak="toFit"
-									 text="Sunglass Hut would love to give you £10 off your next purchase, details of VIP events and special offers. Please check this box if you don’t want us to contact you." paddingTop="10" width="{groupWidth-extraCheck.width-10}" />
-							<s:Spacer width="10" id="termsSpacer"/>
-							<s:CheckBox id="extraCheck" label="" color="#000000" skinClass="skins.vodafoneCheckBox" width="36" click="extraCheck_clickHandler(event)" selected="false"/>
-							
-							
-							
-						</s:HGroup>
-					</s:VGroup>
-				</s:VGroup>
-				
-				<s:Spacer height="45" />
-				<components:facebookBtn id="faceBtn"  click="facebook()"  />
-				<s:Spacer height="15" id="faceSpacer" />
-				<s:Button id="normalbut" label="I DON’T HAVE A FACEBOOK ACCOUNT" fontSize="16" click="standard()" />
-				<s:Spacer height="35" />
-				
-				
-				
-				
-			</s:VGroup>
-			
-			
-		</s:VGroup>
-	</s:BorderContainer>
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+        <mx:StringValidator id="validateTerms"
+                            source="{termsCheck}"
+                            required="true"
+                            property="selected" maxLength="4" requiredFieldError="You must agree the terms of use"
+                            tooLongError="You must agree to the Terms of Use.">
+        </mx:StringValidator>
+        <!-- mx:StringValidator id="validateMarketing"
+        source="{marketCheck}"
+        required="true"
+        property="selected" maxLength="4" requiredFieldError="{ML.t('You must accept marketing approach from Vodafone.')}" tooLongError="You must accept marketing approach from Vodafone.">
+        </mx:StringValidator-->
+    </fx:Declarations>
+    <s:BorderContainer width="100%" height="100%" borderVisible="false" backgroundColor="0xcc0000">
+        <s:BitmapImage width="100%" height="100%" smooth="true" source="{Resource.BACKGROUND}"/>
+
+        <s:VGroup horizontalAlign="center" verticalAlign="middle" width="100%" height="100%">
+            <s:BitmapImage source="{Resource.LOGO}"/>
+            <s:Spacer height="45"/>
+            <s:VGroup id="rezScreen" horizontalAlign="center">
+                <s:VGroup horizontalAlign="center">
+
+
+                    <s:VGroup horizontalAlign="center">
+                        <s:HGroup horizontalAlign="center" verticalAlign="middle" paddingBottom="10">
+
+                            <s:HGroup horizontalAlign="right" verticalAlign="middle">
+
+                                <s:Label fontSize="22" styleName="smallprint"
+                                         text="I agree with the" paddingTop="10"/>
+                                <s:Label fontSize="22"
+                                         styleName="smallprintLink" click="tandcd_clickHandler(event)"
+                                         text="Terms and Conditions" paddingTop="10"
+                                        />
+                            </s:HGroup>
+                            <s:Spacer width="10"/>
+                            <s:CheckBox id="termsCheck" label="" selected="true"
+                                        color="#000000" skinClass="skins.vodafoneCheckBox" width="36"/>
+                        </s:HGroup>
+                        <s:Rect width="{groupWidth}" height="2">
+                            <s:fill>
+                                <s:SolidColor color="#ED1C24"/>
+                            </s:fill>
+                        </s:Rect>
+                        <s:HGroup horizontalAlign="center" verticalAlign="top" paddingTop="10" width="{groupWidth}">
+
+
+                            <s:Label id="largeText" fontSize="22" styleName="smallprint" textAlign="right"
+                                     lineBreak="toFit"
+                                     text="Sunglass Hut would love to give you £10 off your next purchase, details of VIP events and special offers. Please check this box if you don’t want us to contact you."
+                                     paddingTop="10" width="{groupWidth-extraCheck.width-10}"/>
+                            <s:Spacer width="10" id="termsSpacer"/>
+                            <s:CheckBox id="extraCheck" label="" color="#000000" skinClass="skins.vodafoneCheckBox"
+                                        width="36" click="extraCheck_clickHandler(event)" selected="false"/>
+
+
+                        </s:HGroup>
+                    </s:VGroup>
+                </s:VGroup>
+
+                <s:Spacer height="45"/>
+                <components:facebookBtn id="faceBtn" click="facebook()"/>
+                <s:Spacer height="15" id="faceSpacer"/>
+                <s:Button id="normalbut" label="I DON’T HAVE A FACEBOOK ACCOUNT" fontSize="16" click="standard()"/>
+                <s:Spacer height="35"/>
+
+
+            </s:VGroup>
+
+
+        </s:VGroup>
+    </s:BorderContainer>
 </s:View>

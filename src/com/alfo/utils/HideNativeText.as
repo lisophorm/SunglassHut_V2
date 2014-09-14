@@ -1,12 +1,9 @@
-package com.alfo.utils
-{
+package com.alfo.utils {
 import flash.display.DisplayObjectContainer;
 
-public class HideNativeText extends DisplayObjectContainer
-	{
-		public function HideNativeText()
-		{
-			super();
-		}
-	}
+public class HideNativeText extends DisplayObjectContainer {
+    public function HideNativeText() {
+        super();
+    }
+}
 }

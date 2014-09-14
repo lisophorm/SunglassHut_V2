@@ -4,14 +4,14 @@
          xmlns:s="library://ns.adobe.com/flex/spark"
          width="578" height="259" remove="exit()">
     <s:layout>
-		<s:VerticalLayout/>
-	</s:layout>
-	<fx:Metadata>
-		[Event(name="closeError", type="flash.events.Event")]
-	</fx:Metadata>
-	
-	
-	<fx:Script>
+        <s:VerticalLayout/>
+    </s:layout>
+    <fx:Metadata>
+        [Event(name="closeError", type="flash.events.Event")]
+    </fx:Metadata>
+
+
+    <fx:Script>
 		<![CDATA[
         import mx.events.FlexEvent;
         import mx.managers.PopUpManager;
@@ -45,36 +45,37 @@
         }
         ]]>
 	</fx:Script>
-	<s:Group>
-		
-	
-	<s:Rect top="0" bottom="0" left="0" right="0"
-			id="borderRect">
-		<s:stroke>
-			<s:SolidColorStroke id="borderStroke" color="#ED1C24" weight="0"/>
-		</s:stroke>
-		<s:fill>
-			<s:SolidColor id="bgFill" color="#ED1C24" alpha="1"  />
-		</s:fill>
-		<s:filters>
-			<s:DropShadowFilter 
-				distance="15" 
-				angle="45" 
-				color="0x000000" 
-				alpha=".8" 
-				blurX="8" 
-				blurY="8" 
-				strength=".65" 
-				inner="false" 
-				knockout="false"/>
-		</s:filters>
-	</s:Rect>
-	<s:BorderContainer width="574" height="259" backgroundAlpha="0" borderVisible="false" >
-		<s:TextArea x="12" width="574" height="259" borderVisible="false" fontFamily="Font Rg CFF" contentBackgroundAlpha="0" color="#ffffff"
-					fontSize="36" editable="false" selectable="false" text="{message}" textAlign="center" verticalAlign="middle" skinClass="spark.skins.spark.TextAreaSkin"/>
-	</s:BorderContainer>
-	</s:Group>
+    <s:Group>
 
 
+        <s:Rect top="0" bottom="0" left="0" right="0"
+                id="borderRect">
+            <s:stroke>
+                <s:SolidColorStroke id="borderStroke" color="#ED1C24" weight="0"/>
+            </s:stroke>
+            <s:fill>
+                <s:SolidColor id="bgFill" color="#ED1C24" alpha="1"/>
+            </s:fill>
+            <s:filters>
+                <s:DropShadowFilter
+                        distance="15"
+                        angle="45"
+                        color="0x000000"
+                        alpha=".8"
+                        blurX="8"
+                        blurY="8"
+                        strength=".65"
+                        inner="false"
+                        knockout="false"/>
+            </s:filters>
+        </s:Rect>
+        <s:BorderContainer width="574" height="259" backgroundAlpha="0" borderVisible="false">
+            <s:TextArea x="12" width="574" height="259" borderVisible="false" fontFamily="Font Rg CFF"
+                        contentBackgroundAlpha="0" color="#ffffff"
+                        fontSize="36" editable="false" selectable="false" text="{message}" textAlign="center"
+                        verticalAlign="middle" skinClass="spark.skins.spark.TextAreaSkin"/>
+        </s:BorderContainer>
+    </s:Group>
 
-        </s:Group>
+
+</s:Group>

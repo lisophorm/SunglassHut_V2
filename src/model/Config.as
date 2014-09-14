@@ -1,23 +1,21 @@
-package model
-{
+package model {
 import flash.filesystem.File;
 import flash.filesystem.FileMode;
 import flash.filesystem.FileStream;
 
-public class Config
-{
+public class Config {
 
-    private static const PI_OVER_180 : Number = Math.PI / 180.0;
+    private static const PI_OVER_180:Number = Math.PI / 180.0;
     private static const _instance:Config = new Config(SingletonLock); // The preferences prefsFile
-        public static var access_token:String; // The XML data
-        public static var logout:String; // The FileStream object used to read and write prefsFile data.
+    public static var access_token:String; // The XML data
+    public static var logout:String; // The FileStream object used to read and write prefsFile data.
 
     /**
      * Use this to return an instance of the singleton
      * @return
      *
      */
-    public static function get instance() : Config {
+    public static function get instance():Config {
         return _instance;
     }
 
@@ -27,7 +25,7 @@ public class Config
      *
      */
     public function Config(lock:Class) {
-        if(lock != SingletonLock) {
+        if (lock != SingletonLock) {
             throw new Error("Invalid Config access. Use Config.instance");
         }
 
@@ -35,12 +33,13 @@ public class Config
     }
 
     //this is the only instance of the class
-public var prefsFile:File;
+    public var prefsFile:File;
 
 
     //this will control wither the Singleton is really to be accessed
-[Bindable] public var prefsXML:XML;
-public var stream:FileStream;
+    [Bindable]
+    public var prefsXML:XML;
+    public var stream:FileStream;
 
     private var _initialized:Boolean = false;
 
@@ -55,7 +54,7 @@ public var stream:FileStream;
      * @return
      *
      */
-    public function get initialized() : Boolean {
+    public function get initialized():Boolean {
         return _initialized;
     }
 
@@ -64,7 +63,7 @@ public var stream:FileStream;
     }
 
     public function set serverIP(val:String):void {
-        prefsXML.serverIP=val;
+        prefsXML.serverIP = val;
     }
 
     public function  get localIP():String {
@@ -72,23 +71,24 @@ public var stream:FileStream;
     }
 
     public function set localIP(val:String):void {
-        prefsXML.localIP=val;
+        prefsXML.localIP = val;
     }
 
+    [Bindable]
     public function  get debugMode():Boolean {
-        return (prefsXML.debugMode=="1")?true:false;
+        return (prefsXML.debugMode == "1") ? true : false;
     }
 
     public function set debugMode(val:Boolean):void {
-        prefsXML.debugMode=(val==true?"1":"0");
+        prefsXML.debugMode = (val == true ? "1" : "0");
     }
 
     public function  get facebookAppID():String {
-    return prefsXML.facebookAppID;
-}
+        return prefsXML.facebookAppID;
+    }
 
     public function set facebookAppID(val:String):void {
-        prefsXML.facebookAppID=val;
+        prefsXML.facebookAppID = val;
     }
 
     public function  get urnLength():String {
@@ -96,7 +96,7 @@ public var stream:FileStream;
     }
 
     public function set urnLength(val:String):void {
-        prefsXML.urnLength=val;
+        prefsXML.urnLength = val;
     }
 
     public function  get scoreFormat():String {
@@ -104,7 +104,7 @@ public var stream:FileStream;
     }
 
     public function set scoreFormat(val:String):void {
-        prefsXML.scoreFormat=val;
+        prefsXML.scoreFormat = val;
     }
 
     public function  get applicationType():String {
@@ -112,26 +112,23 @@ public var stream:FileStream;
     }
 
     public function set applicationType(val:String):void {
-        prefsXML.applicationtype=val;
+        prefsXML.applicationtype = val;
     }
 
-    public function writeXMLData():void
-    {
+    public function writeXMLData():void {
         trace("saving xml:");
         var outputString:String = '<?xml version="1.0" encoding="utf-8"?>\n';
         outputString += prefsXML.toXMLString();
         outputString = outputString.replace(/\n/g, File.lineEnding);
-        trace("*********"+outputString+"***********");
-        try
-        {
-            var f:File = new File( prefsFile.nativePath );
+        trace("*********" + outputString + "***********");
+        try {
+            var f:File = new File(prefsFile.nativePath);
             stream = new FileStream();
             stream.open(f, FileMode.WRITE);
             stream.writeUTFBytes(outputString);
             stream.close();
-        } catch (error:Error)
-        {
-            trace("error saving xml:"+error.message);
+        } catch (error:Error) {
+            trace("error saving xml:" + error.message);
         }
 
     }
@@ -140,25 +137,24 @@ public var stream:FileStream;
      * This is where you would set up anything the Singleton needed before it should be accessible to the public
      *
      */
-    private function initialize() : void {
+    private function initialize():void {
         //we only need to initialize once.
-        if(_initialized) {
+        if (_initialized) {
             trace("CONFIG SINGLETON IS ALREADY INITIALIZED");
             return;
         }
         prefsFile = File.applicationStorageDirectory;
         prefsFile = prefsFile.resolvePath("assets/xml/preferences.xml");
-        if(!prefsFile.exists) {
+        if (!prefsFile.exists) {
             trace("preferences file does not exists");
         }
-        trace("preferences: "+prefsFile.nativePath);
+        trace("preferences: " + prefsFile.nativePath);
         readXML();
 
         _initialized = true;
     }
 
-    private function readXML():void
-    {
+    private function readXML():void {
         stream = new FileStream();
         // If it exists read it
         if (prefsFile.exists) {
@@ -171,10 +167,9 @@ public var stream:FileStream;
             var tempFile:File = File.applicationDirectory;
             tempFile = tempFile.resolvePath("assets/xml/preferences.xml");
             try {
-                tempFile.copyTo(prefsFile,true);
-            } catch (error:Error)
-            {
-                trace("error saving xml for the first time:"+error.message);
+                tempFile.copyTo(prefsFile, true);
+            } catch (error:Error) {
+                trace("error saving xml for the first time:" + error.message);
             }
             stream.open(prefsFile, FileMode.READ);
             processXMLData();
@@ -182,33 +177,29 @@ public var stream:FileStream;
 
     }
 
-    private function createXMLData():void
-    {
+    private function createXMLData():void {
         prefsXML = <preferences/>;
-        prefsXML.serverIP="0.0.0.0";
-        prefsXML.urnLength="10";
+        prefsXML.serverIP = "0.0.0.0";
+        prefsXML.urnLength = "10";
 
     }
 
-    private function saveData():void
-    {
+    private function saveData():void {
         createXMLData();
         writeXMLData();
     }
 
-    private function processXMLData():void
-    {
-        trace("file size:"+stream.bytesAvailable);
+    private function processXMLData():void {
+        trace("file size:" + stream.bytesAvailable);
         prefsXML = XML(stream.readUTFBytes(stream.bytesAvailable));
         stream.close();
 
-        trace("Preferences: (serverIP: '"+ serverIP + "' , urnLength: '"+urnLength+"' , applicationType: '"+applicationType+"')");
+        trace("Preferences: (serverIP: '" + serverIP + "' , urnLength: '" + urnLength + "' , applicationType: '" + applicationType + "')");
     }
 }
 }
 
 
-
-
 //this is used to lock the Singleton
-class SingletonLock{}
+class SingletonLock {
+}

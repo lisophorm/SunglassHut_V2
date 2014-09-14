@@ -11,49 +11,46 @@
 
 -->
 
-<!--- The default skin class for a Spark SkinnableContainer container.  
+<!--- The default skin class for a Spark SkinnableContainer container.
 
-     @see spark.components.SkinnableContainer
-        
-      @langversion 3.0
-      @playerversion Flash 10
-      @playerversion AIR 1.5
-      @productversion Flex 4
+ @see spark.components.SkinnableContainer
+
+ @langversion 3.0
+ @playerversion Flash 10
+ @playerversion AIR 1.5
+ @productversion Flex 4
 -->
-<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" 
-    xmlns:fb="http://ns.adobe.com/flashbuilder/2009" alpha.disabled="0.5">
-	<fx:Metadata>[HostComponent("spark.components.View")]</fx:Metadata>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+        xmlns:fb="http://ns.adobe.com/flashbuilder/2009" alpha.disabled="0.5">
+    <fx:Metadata>[HostComponent("spark.components.View")]</fx:Metadata>
 
     <fx:Script fb:purpose="styling">
-        <![CDATA[         
-            /**
-             *  @private
-             */
-            override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number) : void
-            {
-                // Push backgroundColor and backgroundAlpha directly.
-                // Handle undefined backgroundColor by hiding the background object.
-                if (isNaN(getStyle("backgroundColor")))
-                {
-                    background.visible = false;
-                }
-                else
-                {
-                    background.visible = true;
-                    bgFill.color = getStyle("backgroundColor");
-                    bgFill.alpha = getStyle("backgroundAlpha");
-                }
-                
-                super.updateDisplayList(unscaledWidth, unscaledHeight);
+        <![CDATA[
+        /**
+         *  @private
+         */
+        override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
+            // Push backgroundColor and backgroundAlpha directly.
+            // Handle undefined backgroundColor by hiding the background object.
+            if (isNaN(getStyle("backgroundColor"))) {
+                background.visible = false;
             }
+            else {
+                background.visible = true;
+                bgFill.color = getStyle("backgroundColor");
+                bgFill.alpha = getStyle("backgroundAlpha");
+            }
+
+            super.updateDisplayList(unscaledWidth, unscaledHeight);
+        }
         ]]>        
     </fx:Script>
-    
+
     <s:states>
-        <s:State name="normal" />
-        <s:State name="disabled" />
+        <s:State name="normal"/>
+        <s:State name="disabled"/>
     </s:states>
-    
+
     <!--- Defines the appearance of the SkinnableContainer class's background. -->
 
     <s:Rect id="background" left="0" right="0" top="0" bottom="0">
@@ -62,10 +59,10 @@
             <s:SolidColor id="bgFill" color="#FFFFFF"/>
         </s:fill>
     </s:Rect>
-	<s:BitmapImage source="assets/images/core/appbackground.png" left="0" right="0" top="0" bottom="0" >
-		
-	</s:BitmapImage>
-    
+    <s:BitmapImage source="assets/images/core/appbackground.png" left="0" right="0" top="0" bottom="0">
+
+    </s:BitmapImage>
+
     <!--
         Note: setting the minimum size to 0 here so that changes to the host component's
         size will not be thwarted by this skin part's minimum size.   This is a compromise,

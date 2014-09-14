@@ -1,41 +1,37 @@
-@font-face
-{
-	fontFamily: "Font Rg";
-	src: url("/assets/fonts/Brandon_bld.otf");
-	embedAsCFF: false;
-	fontWeight:normal;
-}
-@font-face
-{
-	fontFamily: "Font Rg CFF";
-	src: url("/assets/fonts/Brandon_bld.otf");
-	embedAsCFF: true;
+@font-face {
+    fontFamily: "Font Rg";
+    src: url("/assets/fonts/Brandon_bld.otf");
+    embedAsCFF: false;
+    fontWeight: normal;
 }
 
-@font-face
-{
-	fontFamily: "Font Bd";
-	src: url("/assets/fonts/Brandon_bld.otf");
+@font-face {
+    fontFamily: "Font Rg CFF";
+    src: url("/assets/fonts/Brandon_bld.otf");
+    embedAsCFF: true;
 }
 
-@font-face
-{
-	fontFamily: "Font Bd CFF";
-	src: url("/assets/fonts/Brandon_bld.otf");
-	embedAsCFF: true;
-	fontWeight:bold;
+@font-face {
+    fontFamily: "Font Bd";
+    src: url("/assets/fonts/Brandon_bld.otf");
 }
 
-@font-face
-{
-	fontFamily: "Font Light";
-	src: url("/assets/fonts/Brandon_light.otf");
-	embedAsCFF: false;
+@font-face {
+    fontFamily: "Font Bd CFF";
+    src: url("/assets/fonts/Brandon_bld.otf");
+    embedAsCFF: true;
+    fontWeight: bold;
 }
-@font-face
-{
-	fontFamily: "Font Light CFF";
-	src: url("/assets/fonts/Brandon_light.otf");
-	embedAsCFF: true;
+
+@font-face {
+    fontFamily: "Font Light";
+    src: url("/assets/fonts/Brandon_light.otf");
+    embedAsCFF: false;
+}
+
+@font-face {
+    fontFamily: "Font Light CFF";
+    src: url("/assets/fonts/Brandon_light.otf");
+    embedAsCFF: true;
 }
 

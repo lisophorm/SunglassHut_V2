@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
-		xmlns:s="library://ns.adobe.com/flex/spark"
-		xmlns:mx="library://ns.adobe.com/flex/mx"
-		addedToStage="onAddedToStage()"
-     backgroundColor="#000000">
-	<fx:Script>
+        xmlns:s="library://ns.adobe.com/flex/spark"
+        xmlns:mx="library://ns.adobe.com/flex/mx"
+        addedToStage="onAddedToStage()"
+        backgroundColor="#000000">
+    <fx:Script>
 		<![CDATA[
         import com.alfo.DelayedExecution;
         import com.alfo.UserObject;
@@ -78,61 +78,65 @@
         }
         ]]>
 	</fx:Script>
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-		
-		<mx:StringValidator id="validateName" minLength="2" property="text" source="{userFirstName}">
-		</mx:StringValidator>
-		<mx:StringValidator id="validateSurname" minLength="2" property="text"
-							source="{userLastName}">
-		</mx:StringValidator>
-		<mx:EmailValidator id="validateEmail" property="text" source="{userEmail}">
-		</mx:EmailValidator>
-		<mx:PhoneNumberValidator id="validateMobile" minDigits="6" property="text"
-								 source="{userMobile}">
-		</mx:PhoneNumberValidator>
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
 
-	</fx:Declarations>
-	<s:BorderContainer width="100%" height="100%" borderVisible="false" backgroundAlpha="0">
-		<s:BitmapImage width="100%" height="100%" scaleMode="zoom" smooth="true" smoothingQuality="high" source="{Resource.BACKGROUND}"/>
+        <mx:StringValidator id="validateName" minLength="2" property="text" source="{userFirstName}">
+        </mx:StringValidator>
+        <mx:StringValidator id="validateSurname" minLength="2" property="text"
+                            source="{userLastName}">
+        </mx:StringValidator>
+        <mx:EmailValidator id="validateEmail" property="text" source="{userEmail}">
+        </mx:EmailValidator>
+        <mx:PhoneNumberValidator id="validateMobile" minDigits="6" property="text"
+                                 source="{userMobile}">
+        </mx:PhoneNumberValidator>
 
-			
-		
-		<s:VGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
-			
-			<s:BitmapImage source="{Resource.LOGO}"/>
-			<s:Spacer height="33"/>
-			<s:Form id="userform"  horizontalCenter="0" verticalCenter="0" backgroundAlpha="0">
-				<s:layout>
-					<s:FormLayout/>
-				</s:layout>
-				<s:FormItem fontWeight="normal" label="First name:" backgroundAlpha="0"  >
-					<s:TextInput id="userFirstName" text="Alfonso" autoCapitalize="word" autoCorrect="false"  enter="{userLastName.setFocus()}" />
-				</s:FormItem>
-				
-				<s:FormItem label="Surname:">
-					<s:TextInput id="userLastName" autoCapitalize="word" autoCorrect="false" text="Florio" enter="{userEmail.setFocus()}"  />
-				</s:FormItem>
-				
-				<s:FormItem label="Email:" styleName="emailFormLabel" >
-					<s:TextInput id="userEmail"  autoCorrect="false" text="lisophorm@gmail.com" enter="{userMobile.setFocus()}" softKeyboardType="email"  />
-				</s:FormItem>
-				
-				<s:FormItem label="Postcode:">
-					<s:TextInput id="userMobile" autoCapitalize="all" autoCorrect="false" text="N15 3rg" paddingLeft="20" enter="{submit()}" softKeyboardType="default"  />
-				</s:FormItem>
-				<s:Spacer height="30" />
-				<s:HGroup width="100%" horizontalAlign="center">
-					
-					<s:Button label="CANCEL" click="clearForm()"/>
-					<s:Spacer width="20"/>
-					
-					<s:Button label="SUBMIT" click="submit(event)"/>
-				</s:HGroup>
-				
-			</s:Form>
-			
-		</s:VGroup>
+    </fx:Declarations>
+    <s:BorderContainer width="100%" height="100%" borderVisible="false" backgroundAlpha="0">
+        <s:BitmapImage width="100%" height="100%" scaleMode="zoom" smooth="true" smoothingQuality="high"
+                       source="{Resource.BACKGROUND}"/>
 
-	</s:BorderContainer>
+
+        <s:VGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+
+            <s:BitmapImage source="{Resource.LOGO}"/>
+            <s:Spacer height="33"/>
+            <s:Form id="userform" horizontalCenter="0" verticalCenter="0" backgroundAlpha="0">
+                <s:layout>
+                    <s:FormLayout/>
+                </s:layout>
+                <s:FormItem fontWeight="normal" label="First name:" backgroundAlpha="0">
+                    <s:TextInput id="userFirstName" text="Alfonso" autoCapitalize="word" autoCorrect="false"
+                                 enter="{userLastName.setFocus()}"/>
+                </s:FormItem>
+
+                <s:FormItem label="Surname:">
+                    <s:TextInput id="userLastName" autoCapitalize="word" autoCorrect="false" text="Florio"
+                                 enter="{userEmail.setFocus()}"/>
+                </s:FormItem>
+
+                <s:FormItem label="Email:" styleName="emailFormLabel">
+                    <s:TextInput id="userEmail" autoCorrect="false" text="lisophorm@gmail.com"
+                                 enter="{userMobile.setFocus()}" softKeyboardType="email"/>
+                </s:FormItem>
+
+                <s:FormItem label="Postcode:">
+                    <s:TextInput id="userMobile" autoCapitalize="all" autoCorrect="false" text="N15 3rg"
+                                 paddingLeft="20" enter="{submit()}" softKeyboardType="default"/>
+                </s:FormItem>
+                <s:Spacer height="30"/>
+                <s:HGroup width="100%" horizontalAlign="center">
+
+                    <s:Button label="CANCEL" click="clearForm()"/>
+                    <s:Spacer width="20"/>
+
+                    <s:Button label="SUBMIT" click="submit(event)"/>
+                </s:HGroup>
+
+            </s:Form>
+
+        </s:VGroup>
+
+    </s:BorderContainer>
 </s:View>

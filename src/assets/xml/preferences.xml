@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <preferences>
-  <serverIP>sunglasshut.wassermanexperience.com/</serverIP>
-  <localIP>192.168.0.9/SunglassHut_LocalServer/</localIP>
-  <facebookAppID>606919926007758</facebookAppID>
-  <urnLength>16</urnLength>
-  <scoreFormat>99:99.99</scoreFormat>
-  <applicationtype>photocapture</applicationtype>
-  <latitude></latitude>
-  <longitude></longitude>
+    <serverIP>sunglasshut.wassermanexperience.com/</serverIP>
+    <localIP>192.168.0.9/SunglassHut_LocalServer/</localIP>
+    <facebookAppID>606919926007758</facebookAppID>
+    <urnLength>16</urnLength>
+    <scoreFormat>99:99.99</scoreFormat>
+    <applicationtype>photocapture</applicationtype>
+    <latitude></latitude>
+    <longitude></longitude>
+    <debugMode>0</debugMode>
 </preferences>
