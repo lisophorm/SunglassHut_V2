@@ -48,7 +48,7 @@
 
         private function creationCompleteHandler(event:FlexEvent):void {
 
-
+            debugStuff.visible=Config.instance.debugMode;
             init();
 
         }
@@ -329,7 +329,7 @@
     <s:BorderContainer width="100%" height="100%" borderVisible="false" backgroundColor="0x000000">
         <s:BitmapImage width="100%" height="100%" smooth="true" smoothingQuality="high" source="{Resource.BACKGROUND}"
                        id="backgroundImg"/>
-        <s:HGroup visible="{Config.instance.debugMode}}">
+        <s:HGroup id="debugStuff" visible="{Config.instance.debugMode}}">
             <s:VGroup>
                 <s:Button label="INIT" click="callFBAPI(INIT)"/>
                 <s:Button label="CREATE" click="callFBAPI(CREATESESSION)"/>

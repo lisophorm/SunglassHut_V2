@@ -162,6 +162,7 @@
                 photoBitmaps[0] = photo1Preview.bitmapData.clone();
                 photoBitmaps[1] = photo2Preview.bitmapData.clone();
                 photoBitmaps[2] = photo3Preview.bitmapData.clone();
+                previewButton.enabled=true;
             }, 3000);
 
 
@@ -302,7 +303,7 @@
             } catch (e:Error) {
                 writeSuccess = false;
                 trace("******** error saving file" + e.message);
-                this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, e.message, "I/O error sending to printer, check SD Card available space"));
+                this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, e.message, "I/O error saving file, check device available space"));
             } finally {
                 fs.close();
             }
@@ -554,7 +555,7 @@
                     </s:VGroup>
                 </s:HGroup>
             </s:VGroup>
-            <s:Button label="GENERATE PREVIEW" skinClass="skins.CustomButtonWhite" id="previewButton"
+            <s:Button label="GENERATE PREVIEW" skinClass="skins.CustomButtonWhite" id="previewButton" enabled="false"
                       click="previewButton_clickHandler(event)"/>
         </s:VGroup>
 

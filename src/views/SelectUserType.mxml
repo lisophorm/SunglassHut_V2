@@ -31,6 +31,8 @@
             //this.navigator.addEventListener(UserObjectEvent.STATUS_CHANGE,checkNetStatus);
             trace("opening  welcome screen");
 
+            UserObject.instance.extraterms = extraCheck.selected;
+
 
             validatorArr = new Array();
             validatorArr.push(validateTerms);
@@ -97,6 +99,7 @@
         }
 
         protected function extraCheck_clickHandler(event:MouseEvent):void {
+
             UserObject.instance.extraterms = extraCheck.selected;
 
         }

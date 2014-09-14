@@ -191,7 +191,7 @@ public class UserObject extends Sprite {
         userDataObj = new Object();
         var now:Date = new Date();
         userDataObj.creationdate = convertASDateToMySQLTimestamp(now);
-        userDataObj.extraterms = "1";
+        userDataObj.extraterms = "0";
         trace("new userobject");
         var workDirectory:File = File.documentsDirectory.resolvePath(batchPath);
         trace("directory url:" + workDirectory.url);
