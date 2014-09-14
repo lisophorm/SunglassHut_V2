@@ -123,8 +123,8 @@
 
         protected function generate_urn(event:MouseEvent):void {
             barcode = StringUtils.generateRandomString(10);
-             UserObject.instance.urn = barcode;
-            trace("current urn:" +  UserObject.instance.urn);
+            UserObject.instance.urn = barcode;
+            trace("current urn:" + UserObject.instance.urn);
             this.navigator.dispatchEvent(new UserEvent(UserEvent.URN, barcode));
             this.navigator.dispatchEvent(new UserEvent(UserEvent.REGISTERED));
             this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_SELECT_USER_TYPE));
@@ -134,6 +134,10 @@
             trace("exit welcome screen");
 
         }
+
+        private function bitmapImage1_completeHandler(event:Event):void {
+            trace("main window size:")
+        }
         ]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -142,7 +146,7 @@
 	</fx:Declarations>
 	<s:BorderContainer width="100%" height="100%" borderVisible="false">
 		<s:VGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
-			<s:BitmapImage width="100%" height="100%" scaleMode="zoom" smooth="true" smoothingQuality="high" source="{Resource.BACKGROUND_HOME}"/>
+			<s:BitmapImage width="100%" height="100%" scaleMode="zoom" smooth="true" smoothingQuality="high" complete="bitmapImage1_completeHandler(event)" source="{Resource.BACKGROUND_HOME}"/>
 		</s:VGroup>
 		<s:VGroup width="100%" height="100%" horizontalAlign="left" verticalAlign="middle" paddingLeft="30">
 			<s:Label text="STYLE IT OUT" fontSize="150" color="0xED1C24"  fontFamily="Font Rg CFF"  />

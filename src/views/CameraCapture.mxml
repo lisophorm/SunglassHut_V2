@@ -20,8 +20,11 @@
         import events.ViewEvent;
 
         import mx.core.BitmapAsset;
+        import mx.core.DPIClassification;
+        import mx.core.FlexGlobals;
         import mx.events.FlexEvent;
         import mx.events.ResizeEvent;
+        import mx.graphics.BitmapScaleMode;
         import mx.rpc.events.FaultEvent;
         import mx.rpc.events.ResultEvent;
         import model.Config;
@@ -102,9 +105,11 @@
 
         private var iosLoader:Loader;
 
+        private var dpiScale:Number=1;
+
 
         function onCompletePhoto(event:Event):void {
-            trace("i am here!");
+
             photoBitmaps[currentPhoto] = DisplayUtils.createThumb(Bitmap(LoaderInfo(event.target).content).bitmapData, 620, 616, Alignment.MIDDLE, true).bitmapData;
             completedPhotos[currentPhoto] = true;
             //photoBitmaps[0] = Bitmap(LoaderInfo(event.target).content).bitmapData;
@@ -141,6 +146,9 @@
 
 
         protected function onAddToStage(event:Event):void {
+            trace("device DPI:"+FlexGlobals.topLevelApplication.runtimeDPI);
+
+
             this.stage.addEventListener(StageOrientationEvent.ORIENTATION_CHANGING, onOrientationChanging);
             compositeBitmap = new BitmapData(620, 1844, false, 0x000000);
 
@@ -158,14 +166,9 @@
                         photoBitmaps[2]=new BitmapData(400,400,0xcc);
 
             UserObject.instance.destFileName = UserObject.instance.urn + "-" + StringUtils.generateRandomString(4) + ".jpg";
-            trace("new filename: " + UserObject.instance.firstname);
+            trace("UserObject firstname: " + UserObject.instance.firstname);
 
-            if (data.facebook) {
-                UserObject.instance.facebook = true;
 
-            } else {
-                UserObject.instance.facebook = false;
-            }
             /*
              *
              * This is a new view to quickly logout from whichever view you are on.
@@ -404,10 +407,13 @@
 
 
         protected function photo1Preview_readyHandler(event:FlexEvent):void {
+            if(FlexGlobals.topLevelApplication.runtimeDPI == DPIClassification.DPI_320){   dpiScale = 2; }
             trace("************ image ready, current width:" + event.target.width+"stage width:0" + stage.width);
-            event.target.width = stage.width / 3 - 50;
+            // we divide the size accorting to DPI
+            var newWidth:Number= (stage.width / (3 * dpiScale)) - 50;
+            event.target.width = newWidth;
             event.target.height = event.target.width;
-
+            trace("************ newWidth:" + newWidth);
             trace("************ new width:" + event.target.width);
 
         }
@@ -459,6 +465,7 @@
             theJPG.encodeAsync(compositeBitmap);
             this.stage.setAspectRatio(StageAspectRatio.LANDSCAPE);
             backgroundImg.source = Resource.BACKGROUND;
+            backgroundImg.scaleMode=BitmapScaleMode.ZOOM;
         }
 
         private function hGroup1_updateCompleteHandler(event:FlexEvent):void {
@@ -483,7 +490,7 @@
 		<s:State name="pleasewait" />
 	</s:states>
 	<s:BorderContainer width="100%" height="100%" borderVisible="false" backgroundColor="0x000000">
-		<s:BitmapImage width="100%" height="100%" scaleMode="zoom" smooth="true" smoothingQuality="high" source="{Resource.BACKGROUND}" id="backgroundImg" />
+		<s:BitmapImage width="100%" height="100%" smooth="true" source="{Resource.BACKGROUND}" id="backgroundImg" />
 		<s:VGroup includeIn="pleasewait" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
 			<s:BusyIndicator horizontalCenter="0" verticalCenter="0" width="100" height="100" rotationInterval="200" symbolColor="#ED1C24" id="busone" />
 			<s:Label text="Processing image please wait.." color="#FFFFFF" />

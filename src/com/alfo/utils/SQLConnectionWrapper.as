@@ -12,6 +12,8 @@ import flash.net.Responder;
 
 public class SQLConnectionWrapper extends EventDispatcher
 {
+    // TODO bubble error event to the navigator
+
     private static const SINGLETON_INSTANCE:SQLConnectionWrapper = new SQLConnectionWrapper(SingletonLock);
 
     public var connection:SQLConnection;
@@ -39,12 +41,13 @@ public class SQLConnectionWrapper extends EventDispatcher
 
     private function createDatabase():void
     {
+        trace("****** create database");
         // This creates an SQLConnection object , which can be accessed publicly so that event listeners can be defined for it
         connection = new SQLConnection();
         connection.addEventListener( SQLEvent.OPEN, onSqlOpen );
+        dispatchEvent(new UploaderErrorEvent(UploaderErrorEvent.ERROR,"my message","my bubble",true));
 
-
-        var databaseFile:File = File.documentsDirectory.resolvePath("database.db");
+        var databaseFile:File = File.documentsDirectory.resolvePath("ddatabase.db");
         trace("database file:"+databaseFile.nativePath);
         connection.openAsync(databaseFile);
     }
@@ -72,12 +75,13 @@ public class SQLConnectionWrapper extends EventDispatcher
         errorLog+=new Date().toString();
         errorLog+=" - "+error.message;
         errorLog+=" - "+lastQuery;
+
     }
 
     public function totalRecords(tblName:String):SQLStatement {
         var totalRecordQuery:SQLStatement = new SQLStatement();
         totalRecordQuery.sqlConnection=connection;
-        totalRecordQuery.text = "SELECT count(*) as totalrows,status from "+tblName+ " group by status";
+        totalRecordQuery.text = "SELECT count(*) as totalrows,status,local from "+tblName+ " group by status,local";
         return totalRecordQuery;
     }
 

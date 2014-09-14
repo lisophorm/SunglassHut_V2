@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		xmlns:s="library://ns.adobe.com/flex/spark" title="Configuration"
+		xmlns:s="library://ns.adobe.com/flex/spark" title=""
 		creationComplete="onCreationCompleteHandler(event)" backgroundColor="0x000000" addedToStage=""  remove="view1_removeHandler(event)" >
 	<fx:Script>
 		<![CDATA[
@@ -30,8 +30,8 @@
             Uploader.instance.countRecords();
             //var statement:SQLStatement = SQLConnectionWrapper.instance.getAllRecords();
             //statement.execute(-1, new Responder(handleRecordCount, handleFailure));
-
-
+            trace("debug mode:"+    Config.instance.debugMode);
+            debugCheck.selected=Config.instance.debugMode;
             this.localserver.text = Config.instance.localIP;
             this.server.text = Config.instance.serverIP;
             this.facebookAPI_ID.text = Config.instance.facebookAppID;
@@ -103,10 +103,14 @@
 
         private function updateRecordCountHandler(event:UploaderEvent):void {
             trace("******* applicationType: updated record count")
-            var data:Array =  event.result.data;
+            var data:Array = event.result.data;
             uploadDP = new ArrayCollection(data);
             trace("got all the records from ApplicationType");
 
+        }
+
+        private function debugCheck_clickHandler(event:MouseEvent):void {
+                   Config.instance.debugMode=debugCheck.selected;
         }
         ]]>
 	</fx:Script>
@@ -143,6 +147,9 @@
 					<s:FormItem width="365" label="Facebook appID:" >
 						<s:TextInput id="facebookAPI_ID" width="400" color="0x000000" softKeyboardType="number"  fontFamily="Arial"/>
 					</s:FormItem>
+                    <s:FormItem label="Debug mode">
+                        <s:CheckBox id="debugCheck" click="debugCheck_clickHandler(event)" />
+                    </s:FormItem>
                     <s:HGroup verticalAlign="middle">
                         <s:Button label="Cancel" click="cancel(event)"/>
                         <s:Spacer  width="50" />
@@ -153,7 +160,7 @@
 				</s:Form>
 
 
-			<s:DataGrid height="400" dataProvider="{uploadDP}" width="700" />
+			<s:DataGrid skinClass="skins.CustomDataGridSkin" height="400" dataProvider="{uploadDP}" width="700" visible="{debugCheck.selected}" includeInLayout="{debugCheck.selected}" />
 			</s:VGroup>
 
 	</s:Scroller>

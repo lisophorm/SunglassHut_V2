@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:DefaultGridHeaderRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+                             xmlns:s="library://ns.adobe.com/flex/spark"
+                             xmlns:mx="library://ns.adobe.com/flex/mx">
+
+    <fx:Declarations>
+        <!-- Remove text styles as you wish.
+             I have removed fontWeight="bold" and textAlign="start" here.
+             Must be a TextBase instance (not a factory). -->
+        <s:Label id="labelDisplay"
+                 fontFamily="Font Bd"
+                 verticalCenter="1" left="0" right="0" top="0" bottom="0"
+                 verticalAlign="middle"
+                 maxDisplayedLines="1"
+                 showTruncationTip="true" />
+    </fx:Declarations>
+</s:DefaultGridHeaderRenderer>

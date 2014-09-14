@@ -10,6 +10,7 @@ import flash.events.EventDispatcher;
 import flash.events.HTTPStatusEvent;
 import flash.events.IOErrorEvent;
 import flash.events.ProgressEvent;
+import flash.events.SQLErrorEvent;
 import flash.events.SQLEvent;
 import flash.events.SecurityErrorEvent;
 import flash.filesystem.File;
@@ -48,8 +49,6 @@ public class Uploader extends EventDispatcher
         if(lock != SingletonLock){
             throw new Error("Class Cannot Be Instantiated: Use SQLConnectionWrapper.instance");
         }
-
-        initialize();
 
     }
     public var maxRetry:Number=5;
@@ -93,8 +92,9 @@ public class Uploader extends EventDispatcher
         statement.execute(-1,new Responder(handleRecordCount,handleFailure));
     }
 
-    private function initialize() : void {
-        trace("initializa");
+    public function initialize() : void {
+        trace("initializa function uploader");
+
         //we only need to initialize once.
         if(_initialized) {
             return;
@@ -104,7 +104,14 @@ public class Uploader extends EventDispatcher
         _initialized = true;
 
         SQLConnectionWrapper.instance.connection.addEventListener(SQLEvent.OPEN,countRecords);
-        SQLConnectionWrapper.instance.connection.open();
+         SQLConnectionWrapper.instance.connection.addEventListener(SQLErrorEvent.ERROR, errorHandler);
+        try {
+            SQLConnectionWrapper.instance.connection.open();
+        } catch (e:Error) {
+            trace("error on open"+e.message);
+            dispatchEvent(new UploaderErrorEvent(UploaderErrorEvent.ERROR,"Error opening SQL connection",e.message));
+        }
+
         _totalFiles=0;
         totalSize = 0;
     }
@@ -155,6 +162,7 @@ public class Uploader extends EventDispatcher
 
     private function handleFailure(error:SQLError):void
     {
+        dispatchEvent(new UploaderErrorEvent(UploaderErrorEvent.ERROR,"Error in Sql Query",error.message+"\r\n"+error.details));
 
         trace("Epic Fail: " + error.message);
     }
@@ -304,6 +312,9 @@ public class Uploader extends EventDispatcher
         //dispatchEvent(event);
     }
 
+    private function errorHandler(event:SQLErrorEvent):void {
+        trace("sql error event");
+    }
 }
 }
 

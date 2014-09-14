@@ -57,9 +57,7 @@
 
 
             init();
-            //setTimeout(function() {
-            //   callFBAPI(CREATESESSION);
-            //},3000)
+
         }
 
 
@@ -76,29 +74,35 @@
                 FacebookAPI.service.addEventListener(FacebookAPIEvent.SESSION_OPEN_ERROR, session_openErrorHandler);
                 FacebookAPI.service.addEventListener(FacebookAPIEvent.GET_PERMISSIONS_COMPLETED, permissionsResultHandler);
 
-                FacebookAPI.service.addEventListener(FacebookAPIEvent.APP_INVOKED, appInvokedHandler);
-                FacebookAPI.service.addEventListener(FacebookAppRequestEvent.APP_REQUESTS_FOUND, appRequestsFoundHandler);
-                FacebookAPI.service.addEventListener(FacebookAppRequestEvent.APP_REQUEST_DATA_LOADED, appRequestsDataHandler);
-                FacebookAPI.service.addEventListener(FacebookOpenGraphActionEvent.ACTION_IDS_FOUND, actionIdsFoundHandler);
-                FacebookAPI.service.addEventListener(FacebookAPIEvent.DIALOG_COMPLETED, dialog_completedHandler);
-                FacebookAPI.service.addEventListener(FacebookAPIEvent.DIALOG_CANCELLED, dialog_completedHandler);
-                FacebookAPI.service.addEventListener(FacebookAPIEvent.DIALOG_ERROR, dialog_completedHandler);
+                //FacebookAPI.service.addEventListener(FacebookAPIEvent.APP_INVOKED, appInvokedHandler);
+               // FacebookAPI.service.addEventListener(FacebookAppRequestEvent.APP_REQUESTS_FOUND, appRequestsFoundHandler);
+                //FacebookAPI.service.addEventListener(FacebookAppRequestEvent.APP_REQUEST_DATA_LOADED, appRequestsDataHandler);
+                //FacebookAPI.service.addEventListener(FacebookOpenGraphActionEvent.ACTION_IDS_FOUND, actionIdsFoundHandler);
+                //FacebookAPI.service.addEventListener(FacebookAPIEvent.DIALOG_COMPLETED, dialog_completedHandler);
+                //FacebookAPI.service.addEventListener(FacebookAPIEvent.DIALOG_CANCELLED, dialog_completedHandler);
+                //FacebookAPI.service.addEventListener(FacebookAPIEvent.DIALOG_ERROR, dialog_completedHandler);
                 // handling the request of extra permissions
-                FacebookAPI.service.addEventListener(FacebookAPIEvent.REQUEST_PERMISSIONS_COMPLETED, facebookapi_permissions_request_completedHandler);
-                FacebookAPI.service.addEventListener(FacebookAPIEvent.REQUEST_PERMISSIONS_CANCELLED, facebookapi_permissions_request_cancelledHandler);
-                FacebookAPI.service.addEventListener(FacebookAPIEvent.REQUEST_PERMISSIONS_ERROR, facebookapi_permissions_request_errorHandler);
+                //FacebookAPI.service.addEventListener(FacebookAPIEvent.REQUEST_PERMISSIONS_COMPLETED, facebookapi_permissions_request_completedHandler);
+                //FacebookAPI.service.addEventListener(FacebookAPIEvent.REQUEST_PERMISSIONS_CANCELLED, facebookapi_permissions_request_cancelledHandler);
+                //FacebookAPI.service.addEventListener(FacebookAPIEvent.REQUEST_PERMISSIONS_ERROR, facebookapi_permissions_request_errorHandler);
 
 
             }
             catch (e:Error) {
                 this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, e.message, "INIT API ERROR"));
             }
-            /*try {
+            try {
              FacebookAPI.service.initialiseApp("606919926007758");
              } catch (e:Error) {
              this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, e.message, "INIT APP ERROR"));
              }
-             callFBAPI(CREATESESSION);*/
+            setTimeout(function(){
+                trace("callFBApi CreateSession")
+                FacebookAPI.service.createSession([ "basic_info", "email","publish_actions" ], false,false);
+            },3000);
+
+
+
         }
 
         //
@@ -133,14 +137,16 @@
             // TODO add extra fields usedID username etc.
             if (event.rawData) {
                 var userInfo:Object = JSON.parse(event.rawData.toString());
-                UserObject.instance.firstname = userInfo.firstName;
-                UserObject.instance.lastname = userInfo.lastName;
-                UserObject.instance.email = userInfo.email;
-                UserObject.instance.token = userInfo.accessToken;
+                UserObject.instance.firstname = userInfo.result.firstName;
+                UserObject.instance.lastname = userInfo.result.lastName;
+                UserObject.instance.email = userInfo.result.email;
+                UserObject.instance.token = userInfo.result.accessToken;
                 UserObject.instance.facebook = true;
             }
-            trace("userobject updated:" + UserObject.instance.facebook);
-
+            trace("userobject updated:" + UserObject.instance.firstname);
+            FacebookAPI.service.closeSession(true);
+            this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_GAME));
+            // now let's close the session and get out of here
         }
 
         private function session_closedHandler(event:FacebookAPIEvent):void {
@@ -149,6 +155,7 @@
         }
 
         private function session_openDisabledHandler(event:FacebookAPIEvent):void {
+            this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, event.error, "Session Open failed"));
             trace("Session Open failed - application is disabled!");
         }
 
@@ -198,6 +205,13 @@
 
 
         private function removingHandler(event:ViewNavigatorEvent):void {
+            // removing event handlers
+            trace("******** facebookauth exit");
+            FacebookAPI.service.removeEventListener(FacebookAPIEvent.SESSION_OPENED, session_openedHandler);
+            FacebookAPI.service.removeEventListener(FacebookAPIEvent.SESSION_CLOSED, session_closedHandler);
+            FacebookAPI.service.removeEventListener(FacebookAPIEvent.SESSION_OPEN_DISABLED, session_openDisabledHandler);
+            FacebookAPI.service.removeEventListener(FacebookAPIEvent.SESSION_OPEN_ERROR, session_openErrorHandler);
+            FacebookAPI.service.removeEventListener(FacebookAPIEvent.GET_PERMISSIONS_COMPLETED, permissionsResultHandler);
 
         }
 
@@ -219,7 +233,7 @@
 
                 // Log in
                 case CREATESESSION:
-                    FacebookAPI.service.createSession([ "basic_info", "email" ], true, true);
+                    FacebookAPI.service.createSession([ "basic_info", "email","publish_actions" ], false,false);
                     break;
 
                 // Check session
@@ -246,8 +260,8 @@
                     params.title = "This is the title";
                     params.caption = "This is the caption";
                     params.description = "This is the description";
-                    params.image=new BitmapData(400,400,false,0xcc0000);
-                    //params.link = "http://bolleloz.herokuapp.com/test";
+                    //params.image=new BitmapData(400,400,false,0xcc0000);
+                    params.link = "http://bolleloz.herokuapp.com/test";
                     FacebookAPI.service.openShareDialog(params, dialogResultHandler);
                     break;
 
@@ -301,7 +315,7 @@
 	</fx:Declarations>
 
     <s:BorderContainer width="100%" height="100%" borderVisible="false" backgroundColor="0x000000">
-        <s:BitmapImage width="100%" height="100%" scaleMode="zoom" smooth="true" smoothingQuality="high" source="{Resource.BACKGROUND}" id="backgroundImg" />
+        <s:BitmapImage width="100%" height="100%" smooth="true" smoothingQuality="high" source="{Resource.BACKGROUND}" id="backgroundImg" />
     <s:HGroup>
         <s:VGroup>
             <s:Button label="INIT" click="callFBAPI(INIT)" />

@@ -20,7 +20,7 @@ public class UserObject extends Sprite
         if(lock != SingletonLock) {
             throw new Error("Invalid Config access. Use Config.instance");
         }
-
+    trace("inside instance of userObject");
 
     }
 		public var batchPath:String="specsavers_jpg_xml/";
@@ -203,11 +203,6 @@ public class UserObject extends Sprite
 			userDataObj =new Object();
 			var now:Date= new Date();
 			userDataObj.creationdate=convertASDateToMySQLTimestamp(now);
-			userDataObj.isConnected="1";
-			userDataObj.isBatch="0";
-			userDataObj.photo1="";
-			userDataObj.photo2="";
-			userDataObj.photo3="";
 			userDataObj.extraterms = "1";
 			trace("new userobject");
 			var workDirectory:File = File.documentsDirectory.resolvePath(batchPath);
@@ -222,6 +217,7 @@ public class UserObject extends Sprite
 			} else {
 				trace("work dir exists");
 			}
+            trace("end of init userobject")
 		}
 
 		public function eject():void {

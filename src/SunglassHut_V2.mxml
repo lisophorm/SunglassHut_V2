@@ -7,11 +7,10 @@
 	<fx:Script>
 		<![CDATA[
         import com.alfo.CleverUrlMonitor;
-        import com.alfo.UserObject;
-        import com.alfo.utils.GeoUtilEvent;
         import com.alfo.utils.GeoUtils;
         import com.alfo.utils.SQLConnectionWrapper;
         import com.alfo.utils.Uploader;
+        import com.alfo.utils.UploaderErrorEvent;
 
         import events.ApplicationEvent;
         import events.KioskError;
@@ -131,7 +130,13 @@
             NativeApplication.nativeApplication.addEventListener(Event.DEACTIVATE, onDeactivate);
             NativeApplication.nativeApplication.addEventListener(Event.EXITING, onExit)
 
+            // ensures that the instance exists before adding event listeners
             Uploader.instance.toString();
+            //
+            Uploader.instance.addEventListener(UploaderErrorEvent.ERROR, uploaderErrorHandler);
+            Uploader.instance.initialize();
+            trace("******* adding error event to uploader");
+
 
             NativeApplication.nativeApplication.executeInBackground = true;
 
@@ -334,37 +339,9 @@
 
                     trace("****** into the game" + Config.instance.applicationType + " type: " + APPLICATION_TYPE_PHOTO);
 
-                    if (Config.instance.applicationType == APPLICATION_TYPE_PHOTO) {
-                        this.navigator.pushView(CameraCapture, {urn: barcode, type: ApplicationTypeNumber, facebook: this.isFacebookRegistered});
-                        /*if (this.isFacebookRegistered)
-                         {
-                         this.navigator.pushView(views.CameraCapture, {urn: barcode, type: ApplicationTypeNumber, facebook: this.isFacebookRegistered});
-                         } else
-                         {
-                         this.navigator.popToFirstView();
-                         this.navigator.pushView( views.ScanWristband, null, null, fadeTrans );
-                         showError("USER NOT REGISTERED WITH FACEBOOK ACCOUNT", "FACEBOOK ACCOUNT REQUIRED", this.defaultView);
-                         }*/
-                    } else if (Config.instance.applicationType == APPLICATION_TYPE_PITSTOP || Config.instance.applicationType == APPLICATION_TYPE_SIMULATOR
-                            || Config.instance.applicationType == APPLICATION_TYPE_RACECAR || Config.instance.applicationType == APPLICATION_TYPE_WATERPOOL || Config.instance.applicationType == APPLICATION_TYPE_DJ) {
-                        this.navigator.pushView(ScoreCapture, {urn: barcode, type: ApplicationTypeNumber, facebook: this.isFacebookRegistered, activityTitle: this.activityTitle, scoreFormat: this.scoreFormat});
-                    } else if (Config.instance.applicationType == APPLICATION_TYPE_GREENSCREEN) {
 
-                        showError("GREEN SCREEN ACTIVTIY", "NOT IMPLEMENTED ON TABLETS");
-                        //							this.navigator.pushView(views.GreenscreenCapture, {urn: barcode, type: ApplicationTypeNumber, facebook: this.isFacebookRegistered});
+                    this.navigator.pushView(CameraCapture, {urn: barcode, type: ApplicationTypeNumber, facebook: this.isFacebookRegistered});
 
-                    } else if (Config.instance.applicationType == APPLICATION_TYPE_HELMET || Config.instance.applicationType == APPLICATION_TYPE_COOKING) {
-
-
-                        //showError("GAME: BRAND AMBASSADOR TAKES NOTES DOWN WHEN USER COMPLETES AN ACTIVITY", "NOT IMPLEMENTED");
-                        this.navigator.pushView(TaskCompleteCapture, {urn: barcode, type: ApplicationTypeNumber, facebook: this.isFacebookRegistered, activityTitle: this.activityTitle});
-
-                    } else {
-                        this.navigator.popToFirstView();
-                        this.navigator.pushView(ScanWristband);
-                        showError("UNKNOWN ACTIVTIY", "NOT IMPLEMENTED");
-
-                    }
                     break;
                 case ViewEvent.LOCATION_GAME_COMPLETE:
                     this.navigator.pushView(Thankyou);
@@ -402,7 +379,6 @@
         }
 
         protected function announceStatus(e:StatusEvent):void {
-
 
             var gino:UserObjectEvent;
             gino = new UserObjectEvent(UserObjectEvent.STATUS_CHANGE, cleverUrlMonitor.available);
@@ -608,6 +584,12 @@
         private function onDeactivate(event:Event):void {
             trace("on deactivate app");
         }
+
+        private function uploaderErrorHandler(event:UploaderErrorEvent):void {
+            trace("*********** upload error handler");
+            this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, event.details, event.message));
+
+        }
         ]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -622,7 +604,7 @@
 	<s:navigationContent>		
 		<s:HGroup verticalAlign="middle">
 			<s:Button id="takephoto" icon="assets/images/core/camera_icon.png" click="takephoto_clickHandler(event)" color="0xFFFFFF" />
-			<s:Label text="SUNGLASS HUT PHOTO UPLOADER" color="0xFFFFFF" fontSize="24" fontFamily="Font Light CFF" paddingLeft="10" />
+			<s:Label text="SUNGLASS HUT PHOTO UPLOADER" color="0xFFFFFF" fontSize="24" fontFamily="Font Bd" paddingLeft="10" paddingTop="10" />
 		</s:HGroup>
 	</s:navigationContent>
 	<s:actionContent>
@@ -631,7 +613,7 @@
 			
 			<s:Button icon="assets/images/core/nm-no-connection.gif" id="connStatus" label="NO CONNECTION" color="0xFFFFFF" visible="false" />
 			<s:Button label="Quit" click="exit(event)"  color="0xFFFFFF" />
-			<s:Button label="Config" click="config(event)" color="0xFFFFFF" />
+			<s:Button label="Config" fontFamily="Font Bd" click="config(event)" color="0xFFFFFF" />
 			
 			<s:Button icon="assets/images/core/home.png" click="{defaultView()}"/>
 		</s:HGroup>

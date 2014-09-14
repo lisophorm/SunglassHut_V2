@@ -75,9 +75,17 @@ public var stream:FileStream;
         prefsXML.localIP=val;
     }
 
-    public function  get facebookAppID():String {
-        return prefsXML.facebookAppID;
+    public function  get debugMode():Boolean {
+        return (prefsXML.debugMode=="1")?true:false;
     }
+
+    public function set debugMode(val:Boolean):void {
+        prefsXML.debugMode=(val==true?"1":"0");
+    }
+
+    public function  get facebookAppID():String {
+    return prefsXML.facebookAppID;
+}
 
     public function set facebookAppID(val:String):void {
         prefsXML.facebookAppID=val;
