@@ -12,7 +12,7 @@
 
     <!-- A universally unique application identifier. Must be unique across all AIR applications.
          Using a reverse DNS-style name as the id is recommended. (Eg. com.example.ExampleApplication.) Required. -->
-    <id>SunglassHut</id>
+    <id>com.wmgllc.sunglasshut</id>
 
     <!-- Used as the filename for the application. Required. -->
     <filename>SunglassHut</filename>
@@ -184,6 +184,8 @@
             <!--<string>UIStatusBarStyleBlackOpaque</string>-->
             <!--<key>UIRequiresPersistentWiFi</key>-->
             <!--<string>YES</string>-->
+            <key>MinimumOSVersion</key>
+            <string>5.1</string>
 			<!--key>CFBundleURLTypes</key>
 		   	<array>
 		    	<dict>

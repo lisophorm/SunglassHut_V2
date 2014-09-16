@@ -610,7 +610,7 @@
 
             <s:Button icon="assets/images/core/nm-no-connection.gif" id="connStatus" label="NO CONNECTION"
                       color="0xFFFFFF" visible="false"/>
-            <s:Button label="Quit" click="exit(event)" color="0xFFFFFF"/>
+            <!--s:Button label="Quit" click="exit(event)" color="0xFFFFFF"/-->
             <s:Button label="Config" fontFamily="Font Bd" click="config(event)" color="0xFFFFFF"/>
 
             <s:Button icon="assets/images/core/home.png" click="{defaultView()}"/>

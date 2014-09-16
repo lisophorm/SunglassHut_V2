@@ -90,7 +90,6 @@ public class SQLConnectionWrapper extends EventDispatcher {
     }
 
     public function insertRecord(vars:String, url:String, filename:String):SQLStatement {
-
         var insertRecordQuery:SQLStatement = new SQLStatement();
         insertRecordQuery.sqlConnection = connection;
         insertRecordQuery.text = "INSERT INTO userdata (vars,status,url,filename,created,modified) VALUES (:vars,:status,:url,:filename,datetime(),datetime())";

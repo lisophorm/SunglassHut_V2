@@ -8,6 +8,7 @@ import flash.events.Event;
 public class UploaderEvent extends Event {
 
     public static const UPDATE:String = "update";
+    public static const ALL_RECORDS:String = "allrecords";
     public static const SQLERROR:String = "sqlerror";
 
     public var result:SQLResult;

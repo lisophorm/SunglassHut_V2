@@ -4,7 +4,7 @@
     <entry_points version="2.0" />
   </component>
   <component name="IdProvider" IDEtalkID="26E2E0C59992BEBE68ED2DC8192E092E" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="AIR FLEX 4" project-jdk-type="Flex SDK Type (new)">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="FLEX_AIR_14_NEW" project-jdk-type="Flex SDK Type (new)">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

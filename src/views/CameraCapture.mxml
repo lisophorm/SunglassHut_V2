@@ -507,7 +507,7 @@
                            height="{previewContainer.height - copiesHolder.width - finalButtonBar.height - 30}"
                            scaleMode="letterbox" ready="finalImage_readyHandler(event)" smoothingQuality="high"
                            smooth="true"/>
-            <s:HGroup id="copiesHolder" horizontalAlign="center" verticalAlign="middle">
+            <s:HGroup id="copiesHolder" horizontalAlign="center" verticalAlign="middle" height="80">
                 <s:Label color="0xED1C24" fontSize="40" paddingTop="10" text="COPIES"/>
                 <s:Spacer width="5"/>
                 <s:HSlider id="numPhotos" maximum="10" skinClass="skins.SunglassHslider" minimum="1" width="150"/>
@@ -524,13 +524,12 @@
 
             </s:HGroup>
         </s:VGroup>
-        <s:VGroup styleName="Game" horizontalAlign="center" verticalAlign="middle" width="100%" height="592"
-                  includeIn="default,facebook">
-            <s:VGroup horizontalAlign="center" width="100%" height="100%">
+        <s:VGroup styleName="Game" horizontalAlign="center" verticalAlign="middle" width="100%" height="100%" includeIn="default,facebook">
+            <s:VGroup horizontalAlign="center" verticalAlign="middle" width="100%" >
                 <s:Label id="statusText" color="#009BD7"/>
                 <s:HGroup horizontalAlign="center" verticalAlign="middle"
                           updateComplete="hGroup1_updateCompleteHandler(event)" resize="hGroup1_resizeHandler(event)">
-                    <s:VGroup width="33%" height="100%" horizontalAlign="center">
+                    <s:VGroup width="33%" horizontalAlign="center">
                         <s:Image id="photo1Preview" source="@Embed('../assets/fbsubmission/face01.jpg')"
                                  ready="photo1Preview_readyHandler(event)"
                                  complete="photo1Preview_completeHandler(event)" scaleMode="zoom" smooth="true"/>
@@ -538,7 +537,7 @@
                                   label="TAKE PHOTO 1" click="takePhoto(0)"/>
                     </s:VGroup>
                     <s:Spacer width="10"/>
-                    <s:VGroup width="33%" height="100%" horizontalAlign="center">
+                    <s:VGroup width="33%" horizontalAlign="center">
                         <s:Image id="photo2Preview" source="@Embed('../assets/fbsubmission/face02.jpg')"
                                  ready="photo1Preview_readyHandler(event)"
                                  complete="photo1Preview_completeHandler(event)" scaleMode="zoom" smooth="true"/>
@@ -546,7 +545,7 @@
                                   click="takePhoto(1)"/>
                     </s:VGroup>
                     <s:Spacer width="10"/>
-                    <s:VGroup width="33%" height="100%" horizontalAlign="center">
+                    <s:VGroup width="33%" horizontalAlign="center">
                         <s:Image id="photo3Preview" source="@Embed('../assets/fbsubmission/face03.jpg')"
                                  ready="photo1Preview_readyHandler(event)"
                                  complete="photo1Preview_completeHandler(event)" scaleMode="zoom" smooth="true"/>

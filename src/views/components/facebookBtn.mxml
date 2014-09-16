@@ -4,5 +4,16 @@
     <fx:Declarations>
         <!-- Place non-visual elements (e.g., services, value objects) here -->
     </fx:Declarations>
-    <s:BitmapImage source="@Embed('/assets/images/core/facebookBtn.png')"/>
+    <s:HGroup left="2" right="2" top="2" bottom="2" horizontalAlign="left" verticalAlign="middle">
+    <s:BitmapImage source="@Embed('/assets/images/core/FB-f-Logo__blue_57.png')"/>
+        <s:Label id="labelDisplay"
+                 textAlign="left"
+                 text="CONNECT WITH FACEBOOK"
+                 maxDisplayedLines="1"
+                 fontFamily="Font Rg CFF"
+                 fontWeight="normal"
+                 fontSize="40"
+                 horizontalCenter="0" verticalCenter="1" verticalAlign="middle" paddingLeft="15" paddingTop="15"
+                 color="0xffffff" />
+    </s:HGroup>
 </s:View>
