@@ -107,22 +107,22 @@
                     <s:FormLayout/>
                 </s:layout>
                 <s:FormItem fontWeight="normal" label="First name:" backgroundAlpha="0">
-                    <s:TextInput id="userFirstName" text="" autoCapitalize="word" autoCorrect="false"
+                    <s:TextInput id="userFirstName" text="alfonso" autoCapitalize="word" autoCorrect="false"
                                  enter="{userLastName.setFocus()}"/>
                 </s:FormItem>
 
                 <s:FormItem label="Surname:">
-                    <s:TextInput id="userLastName" autoCapitalize="word" autoCorrect="false" text=""
+                    <s:TextInput id="userLastName" autoCapitalize="word" autoCorrect="false" text="florio"
                                  enter="{userEmail.setFocus()}"/>
                 </s:FormItem>
 
                 <s:FormItem label="Email:" styleName="emailFormLabel">
-                    <s:TextInput id="userEmail" autoCorrect="false" text=""
+                    <s:TextInput id="userEmail" autoCorrect="false" text="aflorio@wmgllc.com"
                                  enter="{userMobile.setFocus()}" softKeyboardType="email"/>
                 </s:FormItem>
 
                 <s:FormItem label="Postcode:">
-                    <s:TextInput id="userMobile" autoCapitalize="all" autoCorrect="false" text=""
+                    <s:TextInput id="userMobile" autoCapitalize="all" autoCorrect="false" text="n15 3rg"
                                  paddingLeft="20" enter="{submit()}" softKeyboardType="default"/>
                 </s:FormItem>
                 <s:Spacer height="30"/>

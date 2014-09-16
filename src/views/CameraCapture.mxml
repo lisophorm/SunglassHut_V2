@@ -285,7 +285,7 @@
 
             var fileParts:Array = UserObject.instance.destFileName.split(".");
 
-            UserObject.instance.destFileName = fileParts[0] + "-" + numPhotos.value.toString() + ".jpg";
+            UserObject.instance.destFileName = fileParts[0] + "_" + numPhotos.value.toString() + ".jpg";
 
             destFile = File.documentsDirectory.resolvePath(UserObject.instance.spoolerPath + File.separator + UserObject.instance.destFileName);
             trace("destFileName " + UserObject.instance.destFileName);
@@ -308,8 +308,9 @@
                 fs.close();
             }
             if (writeSuccess) {
+                Uploader.instance.addFile(UserObject.instance.destFileName, UserObject.instance.JSONobject, "http://" + Config.instance.localIP + "upload.php",true);
                 Uploader.instance.addFile(UserObject.instance.destFileName, UserObject.instance.JSONobject, "http://" + Config.instance.serverIP + "photoboothUpload.php");
-                //ftpCopy = new FTPCopy(destFile, this.parentApplication.localURL + "upload.php");/*
+
                 this.stage.setAspectRatio(StageAspectRatio.LANDSCAPE);
                 this.navigator.dispatchEvent(new ViewEvent(ViewEvent.LOCATION_GAME_COMPLETE));
             }

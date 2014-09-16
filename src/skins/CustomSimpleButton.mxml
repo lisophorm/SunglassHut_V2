@@ -101,6 +101,13 @@ in accordance with the terms of the license agreement accompanying it.
 
     <!-- layer 8: text -->
     <!--- @copy spark.components.supportClasses.ButtonBase#labelDisplay  -->
+    <s:Rect id="rct"
+            left="0" right="0" top="0" bottom="0"
+            >
+        <s:fill>
+            <s:SolidColor color="white" alpha="0.3" />
+        </s:fill>
+    </s:Rect>
     <s:HGroup left="2" right="2" top="2" bottom="2" horizontalAlign="left" verticalAlign="middle">
 
 
@@ -109,12 +116,10 @@ in accordance with the terms of the license agreement accompanying it.
                  maxDisplayedLines="1"
                  fontFamily="Font Rg CFF"
                  fontWeight="normal"
-                 fontSize="40"
+                 fontSize="30"
+                 typographicCase="uppercase"
                  horizontalCenter="0" verticalCenter="1" verticalAlign="middle" paddingTop="15"
                  color="0xED1C24">
         </s:Label>
-        <s:Spacer width="5"/>
-        <s:BitmapImage source="{Resource.BUTTON_NORMAL}" smooth="true" includeIn="up,disabled"/>
-        <s:BitmapImage source="{Resource.BUTTON_PRESSED}" smooth="true" includeIn="down"/>
     </s:HGroup>
 </s:SparkButtonSkin>

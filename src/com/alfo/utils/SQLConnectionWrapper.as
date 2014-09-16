@@ -80,24 +80,42 @@ public class SQLConnectionWrapper extends EventDispatcher {
 
     public function updateRecord(status:String, lastresult:String, id:String):SQLStatement {
 
+    var updateRecordQuery:SQLStatement = new SQLStatement();
+    updateRecordQuery.sqlConnection = connection;
+    updateRecordQuery.text = "UPDATE userdata SET modified=datetime(),status=:status,lastresult=:lastresult WHERE id=:id";
+    updateRecordQuery.parameters[":status"] = status;
+    updateRecordQuery.parameters[":lastresult"] = lastresult;
+    updateRecordQuery.parameters[":id"] = id;
+    return updateRecordQuery;
+}
+
+    public function requeueError(status:String, lastresult:String, id:String):SQLStatement {
+
         var updateRecordQuery:SQLStatement = new SQLStatement();
         updateRecordQuery.sqlConnection = connection;
-        updateRecordQuery.text = "UPDATE userdata SET modified=datetime(),status=:status,lastresult=:lastresult WHERE id=:id";
-        updateRecordQuery.parameters[":status"] = status;
-        updateRecordQuery.parameters[":lastresult"] = lastresult;
-        updateRecordQuery.parameters[":id"] = id;
+        updateRecordQuery.text = "UPDATE userdata SET modified=datetime(),status='QUEUED' WHERE status!='Succsess'";
         return updateRecordQuery;
     }
 
-    public function insertRecord(vars:String, url:String, filename:String):SQLStatement {
+    public function requeueAll(status:String, lastresult:String, id:String):SQLStatement {
+
+        var updateRecordQuery:SQLStatement = new SQLStatement();
+        updateRecordQuery.sqlConnection = connection;
+        updateRecordQuery.text = "UPDATE userdata SET modified=datetime(),status='QUEUED'";
+        return updateRecordQuery;
+    }
+
+    public function insertRecord(vars:String, url:String, filename:String,isLocal:Boolean=false):SQLStatement {
+        var locale:String=isLocal?"1":"0";
         var insertRecordQuery:SQLStatement = new SQLStatement();
         insertRecordQuery.sqlConnection = connection;
-        insertRecordQuery.text = "INSERT INTO userdata (vars,status,url,filename,created,modified) VALUES (:vars,:status,:url,:filename,datetime(),datetime())";
+        insertRecordQuery.text = "INSERT INTO userdata (vars,status,url,filename,local,created,modified) VALUES (:vars,:status,:url,:filename,:local,datetime(),datetime())";
 
 
         insertRecordQuery.parameters[":vars"] = vars;
         insertRecordQuery.parameters[":status"] = 'QUEUED';
         insertRecordQuery.parameters[":url"] = url;
+        insertRecordQuery.parameters[":local"] = locale;
         insertRecordQuery.parameters[":filename"] = filename;
         return insertRecordQuery;
     }

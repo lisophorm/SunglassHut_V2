@@ -57,9 +57,9 @@ public class Uploader extends EventDispatcher {
         return _initialized;
     }
 
-    public function addFile(file:String, vars:String, url:String):void {
+    public function addFile(file:String, vars:String, url:String,isLocal:Boolean=false):void {
         trace("adding file into uploader");
-        var statement:SQLStatement = SQLConnectionWrapper.instance.insertRecord(vars, url, file);
+        var statement:SQLStatement = SQLConnectionWrapper.instance.insertRecord(vars, url, file,isLocal);
         statement.execute(-1, new Responder(handleInsert, handleFailure));
     }
 
@@ -165,9 +165,11 @@ public class Uploader extends EventDispatcher {
         trace("queryNextRecord Statement");
         var statement:SQLStatement = SQLConnectionWrapper.instance.getNextRecord();
         statement.execute(-1, new Responder(uploadNext, handleFailure));
+
     }
 
     private function uploadNext(result:SQLResult):void {
+        dispatchEvent(new UploaderEvent(UploaderEvent.ALL_RECORDS,result));
         trace("uploadNext");
         if (result.data) {
             _totalFiles = result.data.length;

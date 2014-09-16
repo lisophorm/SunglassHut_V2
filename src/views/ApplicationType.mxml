@@ -24,9 +24,14 @@
         [Bindable]
         private var uploadDP:ArrayCollection = new ArrayCollection();
 
+        [Bindable]
+        private var uploadAllDP:ArrayCollection = new ArrayCollection();
+
+
         protected function onCreationCompleteHandler(event:FlexEvent):void {
 
             Uploader.instance.addEventListener(UploaderEvent.UPDATE, updateRecordCountHandler);
+            Uploader.instance.addEventListener(UploaderEvent.ALL_RECORDS, allrecordsHandler);
             Uploader.instance.countRecords();
             //var statement:SQLStatement = SQLConnectionWrapper.instance.getAllRecords();
             //statement.execute(-1, new Responder(handleRecordCount, handleFailure));
@@ -73,14 +78,15 @@
             file = File.applicationDirectory.resolvePath("assets/images/blankshot.jpg");
             if (file.exists) {
                 trace("file exists!");
-                var destFile:File = File.documentsDirectory.resolvePath(UserObject.instance.tempPath + File.separator + "blank_" + StringUtils.generateRandomString(4) + ".jpg");
+                var blankFilename:String = "blank_" + StringUtils.generateRandomString(4) + ".jpg";
+                var destFile:File = File.documentsDirectory.resolvePath(UserObject.instance.spoolerPath + File.separator + blankFilename);
                 try {
                     file.copyTo(destFile, true);
                 } catch (e:Error) {
                     trace("******** error saving file" + e.message);
                     this.navigator.dispatchEvent(new KioskError(KioskError.ERROR, e.message, "I/O error, check SD Card available space"));
                 } finally {
-                    trace("file copied");
+                    Uploader.instance.addFile(blankFilename, UserObject.instance.JSONobject, "http://" + Config.instance.localIP + "upload.php", true);
                 }
             } else {
                 trace("****** blank file does not exists");
@@ -99,18 +105,39 @@
         protected function view1_removeHandler(event:FlexEvent):void {
 
             Uploader.instance.removeEventListener(UploaderEvent.UPDATE, updateRecordCountHandler);
+            Uploader.instance.removeEventListener(UploaderEvent.ALL_RECORDS, allrecordsHandler);
         }
 
         private function updateRecordCountHandler(event:UploaderEvent):void {
-            trace("******* applicationType: updated record count")
-            var data:Array = event.result.data;
-            uploadDP = new ArrayCollection(data);
+            trace("******* applicationType: updated record count");
+            if (event.result != null) {
+                var data:Array = event.result.data;
+                uploadDP = new ArrayCollection(data);
+            }
             trace("got all the records from ApplicationType");
 
         }
 
         private function debugCheck_clickHandler(event:MouseEvent):void {
             Config.instance.debugMode = debugCheck.selected;
+        }
+
+        private function allrecordsHandler(event:UploaderEvent):void {
+            trace("******* applicationType: updated record count");
+            if (event.result != null) {
+                var data:Array = event.result.data;
+                uploadAllDP = new ArrayCollection(data);
+            }
+
+            trace("got all the records from ApplicationType");
+        }
+
+        private function button1_clickHandler(event:MouseEvent):void {
+
+        }
+
+        private function button2_clickHandler(event:MouseEvent):void {
+
         }
         ]]>
 	</fx:Script>
@@ -159,8 +186,13 @@
                 </s:HGroup>
             </s:Form>
 
-
+            <s:HGroup>
+                <s:Button label="RETRY ERROR" skinClass="skins.CustomSimpleButton" click="button1_clickHandler(event)" />
+                <s:Button label="RE-UPLOAD ALL" skinClass="skins.CustomSimpleButton" click="button2_clickHandler(event)" />
+            </s:HGroup>
             <s:DataGrid skinClass="skins.CustomDataGridSkin" height="400" dataProvider="{uploadDP}" width="700"
+                        visible="{debugCheck.selected}" includeInLayout="{debugCheck.selected}"/>
+            <s:DataGrid skinClass="skins.CustomDataGridSkin" height="400" dataProvider="{uploadAllDP}" width="700"
                         visible="{debugCheck.selected}" includeInLayout="{debugCheck.selected}"/>
         </s:VGroup>
 
